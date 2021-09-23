@@ -1,0 +1,12 @@
+# ignore everything
+# ...except json/yml/yaml
+*.*
+!*.json
+!*.yml
+!*.yaml
+
+# just to be safe
+node_modules
+dist
+lib
+coverage
