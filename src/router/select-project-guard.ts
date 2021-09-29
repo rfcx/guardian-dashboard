@@ -7,6 +7,8 @@ export const createSelectProjectGuard = (store: Vuex.Store<RootState>): Navigati
   (to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
     const currentProjectId = store.state.selectedProject?.id ?? ''
     const newProjectId = to.params.projectId // TODO 44: Extract `projectId` as a const?
+    console.log('\n\n----currentProjectId------', currentProjectId)
+    console.log('\n\n----to.params------', to.params)
 
     if (newProjectId !== currentProjectId) {
       void store.dispatch(ACTIONS.root.updateSelectedProject, store.state.projects?.find(p => p.id === newProjectId))

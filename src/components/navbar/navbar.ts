@@ -35,21 +35,15 @@ export default class NavigationBarComponent extends Vue {
     return selectedProjectId
       ? [
           {
-            label: 'Overview',
-            destination: { name: ROUTES_NAME.overview, params: { projectId: selectedProjectId } }
+            label: 'Open',
+            destination: { name: ROUTES_NAME.guardians, params: { isOpenedIncidents: 'true' } }
           },
           {
-            label: 'Species Richness',
-            destination: { name: ROUTES_NAME.species_richness, params: { projectId: selectedProjectId } }
+            label: 'Closed',
+            destination: { name: ROUTES_NAME.guardians, params: { isOpenedIncidents: 'false' } }
           }
         ]
       : []
-  }
-
-  public get arbimonLink (): string {
-    const selectedProjectId = this.selectedProject?.id
-    if (!selectedProjectId) return ''
-    else return `https://arbimon.rfcx.org/project/${selectedProjectId}` // TODO 17: change this to support staging / production
   }
 
   // Menu

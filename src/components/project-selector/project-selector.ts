@@ -24,6 +24,7 @@ export default class ProjectSelectorComponent extends Vue {
   }
 
   setSelectedProject (project: ProjectModels.ProjectListItem): void {
+    console.log('\n\n----------setSelectedProject--------', project)
     this.currentSelectedProject = project
   }
 
@@ -32,7 +33,7 @@ export default class ProjectSelectorComponent extends Vue {
     this.closeProjectSelector()
 
     const newProjectId = this.currentSelectedProject?.id
-    if (newProjectId !== undefined) void this.$router.push({ name: ROUTES_NAME.overview, params: { projectId: newProjectId } })
+    if (newProjectId !== undefined) void this.$router.push({ name: ROUTES_NAME.guardians, params: { projectId: newProjectId } })
   }
 
   @Emit('closeProjectSelector')

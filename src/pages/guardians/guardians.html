@@ -1,0 +1,66 @@
+<div id="guardians-page" class="pt-10 px-20">
+  <div class="bg-gray shadow overflow-hidden">
+    <div>
+      <dl>
+
+        <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-500" v-for="(guardian, index) of guardians">
+          <dt class="text-sm font-medium">
+            <router-link :to="{ path: '/project/' + currentSelectedProject.id + '/incidents/'+ (index+1), params: guardian.id}">
+              <span class="border-b border-gray-200 text-white mr-4">#{{index+1}} {{guardian.shortname}}</span>
+            </router-link>
+            <span class="text-secondary italic">{{guardian.status}} {{guardian.label}}</span>
+          </dt>
+              <div class="col-span-3 flex flex-col">
+                <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div class="shadow overflow-hidden">
+                      <table class="min-w-full">
+                        <tbody class="bg-gray">
+                          <tr class="table-row" v-for="event in guardian.events" >
+                            <td class="px-6 py-4 whitespace-nowrap" v-if="event.created_by" title="Alert">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap" v-if="!event.created_by" title="Report">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                              </svg>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                              <div class="text-sm font-medium text-white">
+                                Today AM
+                              </div>
+                            </td>
+                            <td v-if="!event.created_by" class="px-6 py-4 whitespace-nowrap w-1/5">
+                              <div class="text-sm text-white">09:15-09:45</div>
+                            </td>
+                            <td v-if="!event.created_by" class="px-6 py-4 whitespace-nowrap w-1/5">
+                              <div class="text-sm text-white">{{event.title}}</div>
+                            </td>
+                            <td v-if="event.created_by" class="px-6 py-4 whitespace-nowrap text-sm text-white w-1/5">
+                            </td>
+                            <td v-if="event.created_by" class="px-6 py-4 whitespace-nowrap text-sm text-white w-1/5">
+                              Response by {{event.created_by}}
+                            </td>
+                            <td v-else class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                              {{event.detections}} detections
+                            </td>
+                            <td v-if="event.created_by" class="px-6 py-4 whitespace-nowrap text-sm">
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+        </div>
+
+
+      </dl>
+    </div>
+  </div>
+
+</div>

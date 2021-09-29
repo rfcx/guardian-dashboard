@@ -6,3 +6,7 @@ export const formatDateRange = (start: dayjs.Dayjs, end: dayjs.Dayjs): string =>
   if (start.date() !== end.date()) return start.format('MMM DD') + ' - ' + end.format('DD, YYYY')
   return start.format('MMM DD, YYYY')
 }
+
+export const formatDateLabel = (label: string): string => {
+  return dayjs(label).format('MMM DD, YYYY HH:mm')
+}
