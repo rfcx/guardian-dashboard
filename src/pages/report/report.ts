@@ -1,7 +1,14 @@
-import { Vue } from 'vue-class-component'
+import { Vue, Options } from 'vue-class-component'
 import { formatDateLabel } from '@/utils'
+import RangerTrackModalComponent from '../../components/ranger-track-modal/ranger-track-modal.vue'
 
+@Options({
+  components: {
+    RangerTrackModalComponent
+  }
+})
 export default class ReportPage extends Vue {
+  isTrackOpen: boolean = false
   guardian: any = {}
   messages: Array<string> =[
     'Equipment Encountered',
@@ -10,13 +17,24 @@ export default class ReportPage extends Vue {
     'No damage',
     'No action'
   ]
+
   mounted (): void {
-    console.log('ReportPage')
+    console.log('IncidentPage')
     this.getGuardianData()
   }
+
+  public closeRangerTrack (toggle: boolean): void {
+    this.isTrackOpen = toggle
+  }
+
+  public toggleRangerTrack (): void {
+    this.isTrackOpen = !this.isTrackOpen
+  }
+
   public closeReport (): string {
     return 'Closed on 20 Sep 2021'
   }
+
   public getColor(n: number): string {
     const classes = ['ic-violet', 'ic-blue', 'ic-green', 'ic-orange', 'ic-pink'];
     return classes[n]

@@ -28,20 +28,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: ROUTES_NAME.guardians,
-        component: Pages.GuardiansPage,
-        props: true
-      },
-      {
-        path: '/project/:projectId',
-        name: ROUTES_NAME.guardians,
-        component: Pages.GuardiansPage,
-        props: true
+        component: Pages.GuardiansPage
       },
       {
         path: '/project/:projectId/incidents/:id',
         name: ROUTES_NAME.report,
-        component: Pages.ReportPage,
-        props: true
+        component: Pages.ReportPage
       }
     ]
   },

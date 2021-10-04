@@ -4,8 +4,8 @@
 export interface RawProjectListItem {
   id: string
   name: string
-  is_public: boolean
-  external_id: number
+  isPublic: boolean
+  externalId: number
 }
 /* eslint-enable camelcase */
 

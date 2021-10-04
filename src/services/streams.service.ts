@@ -3,14 +3,15 @@ import rawStreams from '@/api/raw-site-01-07-apr-2021.json'
 import { StreamModels } from '@/models'
 import ApiClient from './api.service'
 
-// Api calling example
-export async function getStreams (): Promise<StreamModels.Stream[]> {
-  const { method, url } = Endpoints.getStreams
-
+export async function getStreams (projectsId: any): Promise<StreamModels.Stream[]> {
+  if (projectsId) {
+    Endpoints.getStreams.config = {
+      params: { projects: projectsId }
+    }
+  }
   try {
     const resp = await ApiClient.request<StreamModels.Stream[]>({
-      url,
-      method
+      ...Endpoints.getStreams
     })
     return resp
   } catch (e) {

@@ -20,18 +20,27 @@ export default class NavigationBarComponent extends Vue {
   @VuexService.Auth.user.bind()
   public user!: Auth0User | undefined
 
-  @VuexService.Project.selectedProject.bind()
-  selectedProject!: ProjectModels.ProjectListItem | undefined
+  @VuexService.Project.projects.bind()
+  projects!: ProjectModels.ProjectListItem[]
+
+  public selectedProject: any
 
   public hasToggledMobileMenu = false
   public hasOpenedProjectSelector = false
 
+  updated(): void {
+    if (this.$route.params && (this.selectedProject && this.selectedProject.id !== this.$route.params.projectId)) {
+      this.getSelectedProject()
+    }
+  }
+
   public get selectedProjectName (): string {
+    this.getSelectedProject()
     return this.selectedProject?.name ?? 'Select Project'
   }
 
   public get navMenus (): NavMenu[] {
-    const selectedProjectId = this.selectedProject?.id
+    let selectedProjectId = this.$route.params.projectId
     return selectedProjectId
       ? [
           {
@@ -44,6 +53,10 @@ export default class NavigationBarComponent extends Vue {
           }
         ]
       : []
+  }
+
+  getSelectedProject (): any {
+    this.selectedProject = this.projects.find(p=>p.id===this.$route.params.projectId)
   }
 
   // Menu

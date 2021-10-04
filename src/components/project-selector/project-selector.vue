@@ -30,7 +30,7 @@
                 >
                   {{ project.name }}
                   <i
-                    v-if="isSelectedProject(project)"
+                    v-show="isSelectedProject(project)"
                     class="icon-check"
                   />
                 </div>

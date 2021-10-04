@@ -1,19 +1,24 @@
 import { Vue } from 'vue-class-component'
 import { ProjectModels } from '@/models'
-import { VuexService } from '@/services'
+import { VuexService, StreamServices } from '@/services'
 
 export default class GuardiansPage extends Vue {
   @VuexService.Project.projects.bind()
   projects!: ProjectModels.ProjectListItem[]
 
-  public currentSelectedProject: ProjectModels.ProjectListItem | undefined = { ...VuexService.Project.selectedProject.get() }
+  public selectedProject: ProjectModels.ProjectListItem | undefined // = { ...VuexService.Project.selectedProject.get() }
+  public isLoading: boolean = false
   public guardians: Array<any> = []
   public originalData: Array<any> = []
 
   public routerParam: any = {}
 
   updated(): void {
-    console.log('updated', this.$route.params)
+    if (this.$route.params && (this.selectedProject && this.selectedProject.id !== this.$route.params.projectId)) {
+      this.getSelectedProject()
+      this.isLoading = true
+      this.getIncidentsData(this.$route.params.projectId)
+    }
     if (this.$route.params && this.$route.params.isOpenedIncidents) {
       this.guardians = this.originalData.filter(item => {
         if (this.$route.params.isOpenedIncidents === 'false') {
@@ -28,12 +33,18 @@ export default class GuardiansPage extends Vue {
   }
 
   mounted (): void {
-    console.log('GuardiansPage')
-    this.getGuardiansData()
-    this.routerParam = this.$route.params.isOpenedIncidents
+    this.getSelectedProject()
+    this.isLoading = true
+    this.getIncidentsData(this.$route.params.projectId)
   }
 
-  private getGuardiansData (): void {
+  public getSelectedProject (): any {
+    this.selectedProject = this.projects.find(p=>p.id===this.$route.params.projectId)
+  }
+
+  async getIncidentsData (projectId: any): Promise<void> {
+    this.originalData = await StreamServices.getStreams([projectId]);
+
     this.originalData = [
       {
         shortname: "Guama - Sede - North Road #1",
@@ -129,6 +140,7 @@ export default class GuardiansPage extends Vue {
       }
     ]
     this.guardians = this.originalData
+    this.isLoading = false
   }
 }
 
