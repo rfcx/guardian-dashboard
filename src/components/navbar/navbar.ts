@@ -20,36 +20,43 @@ export default class NavigationBarComponent extends Vue {
   @VuexService.Auth.user.bind()
   public user!: Auth0User | undefined
 
-  @VuexService.Project.selectedProject.bind()
-  selectedProject!: ProjectModels.ProjectListItem | undefined
+  @VuexService.Project.projects.bind()
+  projects!: ProjectModels.ProjectListItem[]
+
+  public selectedProject: any
 
   public hasToggledMobileMenu = false
   public hasOpenedProjectSelector = false
 
+  updated (): void {
+    if (this.$route.params && (this.selectedProject && this.selectedProject.id !== this.$route.params.projectId)) {
+      this.getSelectedProject()
+    }
+  }
+
   public get selectedProjectName (): string {
+    this.getSelectedProject()
     return this.selectedProject?.name ?? 'Select Project'
   }
 
   public get navMenus (): NavMenu[] {
-    const selectedProjectId = this.selectedProject?.id
+    const selectedProjectId = this.$route.params.projectId
     return selectedProjectId
       ? [
           {
-            label: 'Overview',
-            destination: { name: ROUTES_NAME.overview, params: { projectId: selectedProjectId } }
+            label: 'Open',
+            destination: { name: ROUTES_NAME.incidents, params: { isOpenedIncidents: 'true' } }
           },
           {
-            label: 'Species Richness',
-            destination: { name: ROUTES_NAME.species_richness, params: { projectId: selectedProjectId } }
+            label: 'Closed',
+            destination: { name: ROUTES_NAME.incidents, params: { isOpenedIncidents: 'false' } }
           }
         ]
       : []
   }
 
-  public get arbimonLink (): string {
-    const selectedProjectId = this.selectedProject?.id
-    if (!selectedProjectId) return ''
-    else return `https://arbimon.rfcx.org/project/${selectedProjectId}` // TODO 17: change this to support staging / production
+  getSelectedProject (): any {
+    this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 
   // Menu

@@ -14,29 +14,32 @@ export default class ProjectSelectorComponent extends Vue {
   @VuexService.Project.projects.bind()
   projects!: ProjectModels.ProjectListItem[]
 
-  @VuexService.Project.selectedProject.bind()
-  selectedProject!: ProjectModels.ProjectListItem | undefined
-
-  public currentSelectedProject: ProjectModels.ProjectListItem | undefined = { ...VuexService.Project.selectedProject.get() }
+  public selectedProject: any = {}
 
   isSelectedProject (project: ProjectModels.ProjectListItem): boolean {
-    return project.id === this.currentSelectedProject?.id
+    return project.id === this.selectedProject?.id
+  }
+
+  getSelectedProject (): any {
+    this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 
   setSelectedProject (project: ProjectModels.ProjectListItem): void {
-    this.currentSelectedProject = project
+    this.selectedProject = project
   }
 
   async confirmedSelectedProject (): Promise<void> {
-    await VuexService.Project.selectedProject.set(this.currentSelectedProject)
+    const newProjectId = this.selectedProject?.id
+    if (newProjectId !== undefined) void this.$router.push({ name: ROUTES_NAME.incidents, params: { projectId: newProjectId } })
     this.closeProjectSelector()
-
-    const newProjectId = this.currentSelectedProject?.id
-    if (newProjectId !== undefined) void this.$router.push({ name: ROUTES_NAME.overview, params: { projectId: newProjectId } })
   }
 
   @Emit('closeProjectSelector')
   public closeProjectSelector (): boolean {
     return false
+  }
+
+  mounted (): void {
+    this.getSelectedProject()
   }
 }

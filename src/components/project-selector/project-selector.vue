@@ -8,12 +8,10 @@
       aria-modal="true"
     >
       <div class="flex justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!-- This element is to trick the browser into centering the modal contents. -->
         <span
           class="hidden sm:inline-block sm:align-middle sm:h-screen"
           aria-hidden="true"
         />
-
         <div class="inline-block align-bottom bg-steel-grey rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div class="bg-steel-grey px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <on-click-outside @trigger="closeProjectSelector">
@@ -30,7 +28,7 @@
                 >
                   {{ project.name }}
                   <i
-                    v-if="isSelectedProject(project)"
+                    v-show="isSelectedProject(project)"
                     class="icon-check"
                   />
                 </div>

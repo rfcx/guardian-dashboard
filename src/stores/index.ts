@@ -13,7 +13,8 @@ const MUTATIONS = {
     updateAuth: 'updateAuth',
     updateUser: 'updateUser',
     updateProjects: 'updateProjects',
-    updateSelectedProject: 'updateSelectedProject'
+    updateSelectedProject: 'updateSelectedProject',
+    updateStreams: 'updateStreams'
   }
 }
 
@@ -22,6 +23,7 @@ export class RootState {
   user?: Models.Auth0User
   projects: Models.ProjectModels.ProjectListItem[] = []
   selectedProject?: Models.ProjectModels.ProjectListItem
+  streams?: Models.StreamModels.Stream[] = []
 }
 
 const rootActions: ActionTree<RootState, RootState> = {
@@ -30,25 +32,23 @@ const rootActions: ActionTree<RootState, RootState> = {
     commit(MUTATIONS.root.updateUser, user)
 
     const projects = user ? await ProjectServices.getProjects() : []
-    // URGENT 44 - Remove this
-    // const projects: Models.ProjectModels.ProjectListItem[] = user
-    //   ? [
-    //       { id: '123', name: 'Test 1', isPublic: true, externalId: 123 },
-    //       { id: '456', name: 'Test 2', isPublic: false, externalId: 456 }
-    //     ]
-    //   : []
     commit(MUTATIONS.root.updateProjects, projects)
+
+    const streams = undefined
+    commit(MUTATIONS.root.updateStreams, streams)
 
     const selectedProject = projects.length > 0 ? projects[0] : undefined
     commit(MUTATIONS.root.updateSelectedProject, selectedProject)
   },
-  [ACTIONS.root.updateSelectedProject]: ({ commit }, project?: Models.ProjectModels.ProjectListItem) => commit(MUTATIONS.root.updateSelectedProject, project)
+  [ACTIONS.root.updateSelectedProject]: ({ commit }, project?: Models.ProjectModels.ProjectListItem) => commit(MUTATIONS.root.updateSelectedProject, project),
+  [ACTIONS.root.updateStreams]: ({ commit }, streams?: Models.StreamModels.Stream) => commit(MUTATIONS.root.updateStreams, streams)
 }
 
 const rootMutations: MutationTree<RootState> = {
   [MUTATIONS.root.updateAuth]: (state, auth?: Models.Auth0Option) => { state.auth = auth },
   [MUTATIONS.root.updateUser]: (state, user?: Models.Auth0User) => { state.user = user },
   [MUTATIONS.root.updateProjects]: (state, projects: Models.ProjectModels.ProjectListItem[]) => { state.projects = projects },
+  [MUTATIONS.root.updateStreams]: (state, streams: Models.StreamModels.Stream[]) => { state.streams = streams },
   [MUTATIONS.root.updateSelectedProject]: (state, project?: Models.ProjectModels.ProjectListItem) => { state.selectedProject = project }
 }
 
@@ -56,6 +56,7 @@ const rootGetters: GetterTree<RootState, RootState> = {
   [ITEMS.root.auth]: state => state.auth,
   [ITEMS.root.user]: state => state.user,
   [ITEMS.root.projects]: state => state.projects,
+  [ITEMS.root.streams]: state => state.streams,
   [ITEMS.root.selectedProject]: state => state.selectedProject
 }
 

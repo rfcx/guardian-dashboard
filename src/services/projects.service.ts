@@ -12,8 +12,8 @@ function mapProjectList (data: ProjectModels.RawProjectListItem): ProjectModels.
   return {
     id: data.id,
     name: data.name,
-    isPublic: data.is_public,
-    externalId: data.external_id
+    isPublic: data.isPublic,
+    externalId: data.externalId
   }
 }
 
