@@ -1,7 +1,7 @@
 
 import dayjs from 'dayjs'
 
-import { formatDateRange, formatDateLabel } from './dates'
+import { formatDateLabel, formatDateRange } from './dates'
 
 describe('formatDateRange: different days, months, years', () => {
   const examples = [
@@ -19,7 +19,7 @@ describe('formatDateRange: different days, months, years', () => {
 describe('formatDateLabel', () => {
   const examples = [
     ['2021-09-06T18:51:19.707Z', 'Sep 06, 2021 18:51'],
-    ['2021-08-26T21:28:46.606Z', 'Aug 26, 2021 21:28'],
+    ['2021-08-26T21:28:46.606Z', 'Aug 26, 2021 21:28']
   ]
 
   test.each(examples)('%s', (label, expected) => {

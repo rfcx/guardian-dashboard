@@ -6,6 +6,6 @@ export interface Incident {
   stream_id: string
   project_id: string
   closedBy?: any
-  events?: Array<any>
-  responses?: Array<any>
+  events?: any[]
+  responses?: any[]
 }

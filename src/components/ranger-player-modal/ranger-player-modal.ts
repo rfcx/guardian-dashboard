@@ -1,7 +1,7 @@
-import { Vue, Options } from 'vue-class-component'
-import { OnClickOutside } from '@vueuse/components'
+import { Options, Vue } from 'vue-class-component'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
-import { AudioModel } from '@/models'
+
+import { OnClickOutside } from '@vueuse/components'
 
 @Options({
   components: {
@@ -9,15 +9,14 @@ import { AudioModel } from '@/models'
   }
 })
 export default class RangerPlayerComponent extends Vue {
-
   @Prop({ default: null })
   audioProp!: any
 
   @Prop({ default: false })
   initialState!: boolean | false
 
-  public isLoading: boolean = false
-  public isPlaying: boolean = false
+  public isLoading = false
+  public isPlaying = false
   public audio: any
 
   @Watch('initialState')
@@ -33,15 +32,15 @@ export default class RangerPlayerComponent extends Vue {
     return { key: 'player', toggle: false }
   }
 
-  public initializeAudio() {
+  public initializeAudio () {
     this.audio = new Audio()
     this.audio.volume = 0.9
     this.audio.addEventListener('canplay', (data: any) => {
-      console.log('canplay', data);
-    });
+      console.log('canplay', data)
+    })
     this.audio.addEventListener('error', (e: any) => {
-      console.log('err', e);
-    });
+      console.log('err', e)
+    })
     this.audio.src = window.URL.createObjectURL(this.audioProp.src)
     this.isLoading = false
   }
@@ -59,5 +58,4 @@ export default class RangerPlayerComponent extends Vue {
     }
     this.closePlayer()
   }
-
 }

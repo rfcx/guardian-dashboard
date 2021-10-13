@@ -3,20 +3,20 @@ import { IncidentModel } from '@/models'
 import ApiClient from './api.service'
 
 interface paramsModel {
-  streams?: Array<any>,
-  projects?: Array<any>,
-  closed?: string,
-  sort?: string,
-  limit?: number,
+  streams?: any[]
+  projects?: any[]
+  closed?: string
+  sort?: string
+  limit?: number
   offset?: number
 }
 
 export async function getIncidents (options: any): Promise<IncidentModel.Incident[]> {
-  let params: paramsModel = {
+  const params: paramsModel = {
     ...!!options.closed !== undefined && { closed: options.closed },
     ...!!options.sort !== undefined && { sort: options.sort },
     ...!!options.limit !== undefined && { limit: options.limit },
-    ...!!options.offset !== undefined && { offset: options.offset },
+    ...!!options.offset !== undefined && { offset: options.offset }
   }
   if (options.streams) {
     params.streams = options.streams
@@ -121,5 +121,4 @@ export function combineIncidentItems (incident: any) {
     const dateB = new Date(b.type === 'event' ? b.createdAt : b.submittedAt).valueOf()
     return dateB - dateA
   })
-
 }

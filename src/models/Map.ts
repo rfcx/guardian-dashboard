@@ -1,6 +1,6 @@
 import Mapbox from 'mapbox-gl'
 
 export interface MapboxOptions {
-  center: Mapbox.LngLatLike,
+  center: Mapbox.LngLatLike
   zoom: number
 }

@@ -1,13 +1,15 @@
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
+
 import { formatDayLabel, formatTimeLabel } from '@/utils'
 
 export default class IncidentsTableRows extends Vue {
-
   @Prop({ default: null })
   timezone!: string
+
   @Prop({ default: [] })
-  items!: Array<any>
+  items!: any[]
+
   @Prop({ default: '' })
   itemsLabel!: string
 
@@ -19,8 +21,7 @@ export default class IncidentsTableRows extends Vue {
     return formatTimeLabel(date, this.timezone)
   }
 
-  public isEvent (item: any) {
+  public isEvent (item: any): boolean {
     return item.type === 'event'
   }
-
 }

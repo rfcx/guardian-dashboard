@@ -1,6 +1,7 @@
 import { Options, Vue } from 'vue-class-component'
-import { ProjectModels } from '@/models'
+
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
+import { ProjectModels } from '@/models'
 import { VuexService } from '@/services'
 import { formatHoursLabel } from '@/utils'
 
@@ -12,8 +13,8 @@ export default class IndexPage extends Vue {
   projects!: ProjectModels.ProjectListItem[]
 
   public selectedProject: ProjectModels.ProjectListItem | undefined
-  public isLoading: boolean = false
-  public allProjects: Array<any> = []
+  public isLoading = false
+  public allProjects: any[] = []
   public routerParam: any = {}
 
   mounted (): void {

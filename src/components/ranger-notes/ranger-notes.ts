@@ -1,6 +1,7 @@
-import { Vue, Options } from 'vue-class-component'
-import { OnClickOutside } from '@vueuse/components'
+import { Options, Vue } from 'vue-class-component'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
+
+import { OnClickOutside } from '@vueuse/components'
 
 @Options({
   components: {
@@ -8,11 +9,10 @@ import { Emit, Prop, Watch } from 'vue-property-decorator'
   }
 })
 export default class RangerNotes extends Vue {
-
   @Prop({ default: [] })
-  notes!: Array<any> | []
+  notes!: any[] | []
 
-  public isLoading: boolean = false
+  public isLoading = false
 
   @Watch('notes')
   onNotesChange (): void {
@@ -37,5 +37,4 @@ export default class RangerNotes extends Vue {
   public close (): void {
     this.closeNotes()
   }
-
 }

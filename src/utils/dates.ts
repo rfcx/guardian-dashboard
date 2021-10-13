@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -18,13 +18,13 @@ export const formatDateLabel = (label: string, timezone: string = 'UTC'): string
 }
 
 export const formatHoursLabel = (label: string, timezone?: string): any => {
-  let hoursDiff = dayjs().tz(timezone).diff(label, 'hour')
+  const hoursDiff = dayjs().tz(timezone).diff(label, 'hour')
   if (hoursDiff < 1) {
     if (timezone) return dayjs().tz(timezone).diff(label, 'minute') + ' minutes'
     else return dayjs().diff(label, 'minute') + ' min'
   }
   if (timezone) return dayjs().tz(timezone).diff(label, 'hour') + ' hours'
-  else return dayjs().diff(label, 'hour')+ ' hours'
+  else return dayjs().diff(label, 'hour') + ' hours'
 }
 
 export const formatDayLabel = (label: string, timezone?: string): string => {
@@ -43,18 +43,17 @@ export const formatTimeLabel = (label: string, timezone?: string): string => {
 }
 
 export const hoursDiffFormatted = (labelFrom: string, labelTo: string): any => {
-  let hoursDiff = dayjs().diff(labelTo, 'hour') - dayjs().diff(labelFrom, 'hour')
+  const hoursDiff = dayjs().diff(labelTo, 'hour') - dayjs().diff(labelFrom, 'hour')
   if (hoursDiff < 1) {
-    let minDiff = dayjs().diff(labelTo, 'minute') - dayjs().diff(labelFrom, 'minute')
-    let secDiff = dayjs().diff(labelTo, 'second') - dayjs().diff(labelFrom, 'second')
+    const minDiff = dayjs().diff(labelTo, 'minute') - dayjs().diff(labelFrom, 'minute')
+    const secDiff = dayjs().diff(labelTo, 'second') - dayjs().diff(labelFrom, 'second')
     if (secDiff <= 1 && secDiff > 0) return `+ ${secDiff} sec`
     if (minDiff <= 0) return 0
     else return `+ ${minDiff} min`
   }
   if (hoursDiff >= 24) {
-    let dayDiff = dayjs().diff(labelTo, 'day') - dayjs().diff(labelFrom, 'day')
-    let hours = 24 * dayDiff
+    const dayDiff = dayjs().diff(labelTo, 'day') - dayjs().diff(labelFrom, 'day')
+    const hours = 24 * dayDiff
     return `+ ${dayDiff} d` + (hoursDiff - hours > 0 ? `${hoursDiff - hours} h` : '')
-  }
-  else return `+ ${hoursDiff} h`
+  } else return `+ ${hoursDiff} h`
 }

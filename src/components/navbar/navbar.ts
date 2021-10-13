@@ -28,7 +28,7 @@ export default class NavigationBarComponent extends Vue {
   public hasToggledMobileMenu = false
   public hasOpenedProjectSelector = false
 
-  updated(): void {
+  updated (): void {
     if (this.$route.params && (this.selectedProject && this.selectedProject.id !== this.$route.params.projectId)) {
       this.getSelectedProject()
     }
@@ -40,7 +40,7 @@ export default class NavigationBarComponent extends Vue {
   }
 
   public get navMenus (): NavMenu[] {
-    let selectedProjectId = this.$route.params.projectId
+    const selectedProjectId = this.$route.params.projectId
     return selectedProjectId
       ? [
           {
@@ -56,7 +56,7 @@ export default class NavigationBarComponent extends Vue {
   }
 
   getSelectedProject (): any {
-    this.selectedProject = this.projects.find(p=>p.id===this.$route.params.projectId)
+    this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 
   // Menu
