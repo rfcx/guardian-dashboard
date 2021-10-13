@@ -1,0 +1,50 @@
+<div id="incidents-page" class="pt-10 px-20">
+  <div class="bg-gray shadow overflow-hidden">
+    <div>
+      <div v-if="isLoading" class="bg-mirage-grey h-10 w-10" v-bind:style="{margin: [0, 'auto']}">
+        <svg class="animate-spin bg-mirage-grey text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+      <dl v-if="!isLoading">
+        <div v-if="!incidents.length" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
+          No incidents data
+        </div>
+        <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-500" v-for="incident of incidents">
+          <dt class="text-sm font-medium">
+            <router-link :to="{ path: '/project/' + selectedProject.id + '/incidents/'+ incident.id}">
+              <span class="border-b border-gray-200 text-white mr-4">#{{incident.ref}} {{getStreamName(incident.streamId)}}</span>
+            </router-link>
+            <span class="text-secondary italic" v-bind:class="{'ic-pink': !incident.closedAt && !incident.responses.length}">{{getIncidentStatus(incident)}}</span>
+          </dt>
+          <div class="col-span-3 flex flex-col">
+            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="shadow overflow-hidden">
+                  <table class="min-w-full">
+                    <tbody class="bg-gray">
+                      <incidents-table-rows v-if="incident.items.length" :report-data="true" :timezone="getStreamTimezone(incident.streamId)" :items="incident.items.slice(0, 4)" />
+                      <tr v-if="incident.items.length > 4" class="flex-row">
+                        <td class="px-6 py-2 whitespace-nowrap w-1/8"></td>
+                        <td class="px-5 py-2 whitespace-nowrap text-sm text-white italic w-1/5">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-flex" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                          </svg>
+                          {{itemsLabel(incident)}}
+                        </td>
+                        <td class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"></td>
+                        <td class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"></td>
+                        <td class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>

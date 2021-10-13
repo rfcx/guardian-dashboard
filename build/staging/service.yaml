@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: biodiversity-analytics-service
+  name: incident-center-service
   namespace: staging
   labels:
-    app: biodiversity-analytics
+    app: incident-center
 spec:
   selector:
-    app: biodiversity-analytics
+    app: incident-center
   type: ClusterIP
   ports:
     - name: node

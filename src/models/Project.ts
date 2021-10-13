@@ -1,5 +1,3 @@
-// TODO: Update after connect to /projects endpoint
-
 /* eslint-disable camelcase */
 export interface RawProjectListItem {
   id: string

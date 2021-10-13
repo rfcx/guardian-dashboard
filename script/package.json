@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rfcx/biodiversity-analytics.git"
+    "url": "git+https://github.com/rfcx/incident-center.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rfcx/biodiversity-analytics/issues"
+    "url": "https://github.com/rfcx/incident-center/issues"
   },
-  "homepage": "https://github.com/rfcx/biodiversity-analytics#readme",
+  "homepage": "https://github.com/rfcx/incident-center#readme",
   "dependencies": {
     "dotenv": "^10.0.0",
     "mysql": "^2.18.1"

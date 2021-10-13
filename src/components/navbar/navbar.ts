@@ -45,11 +45,11 @@ export default class NavigationBarComponent extends Vue {
       ? [
           {
             label: 'Open',
-            destination: { name: ROUTES_NAME.guardians, params: { isOpenedIncidents: 'true' } }
+            destination: { name: ROUTES_NAME.incidents, params: { isOpenedIncidents: 'true' } }
           },
           {
             label: 'Closed',
-            destination: { name: ROUTES_NAME.guardians, params: { isOpenedIncidents: 'false' } }
+            destination: { name: ROUTES_NAME.incidents, params: { isOpenedIncidents: 'false' } }
           }
         ]
       : []

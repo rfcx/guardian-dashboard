@@ -7,8 +7,8 @@ import { createSelectProjectGuard } from './select-project-guard'
 
 export const ROUTES_NAME = Object.freeze({
   index: 'index',
-  guardians: 'guardians',
-  report: 'report',
+  incidents: 'incidents',
+  incident: 'incident',
   error: 'error'
 })
 
@@ -27,13 +27,13 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        name: ROUTES_NAME.guardians,
-        component: Pages.GuardiansPage
+        name: ROUTES_NAME.incidents,
+        component: Pages.IncidentsPage
       },
       {
         path: '/project/:projectId/incidents/:id',
-        name: ROUTES_NAME.report,
-        component: Pages.ReportPage
+        name: ROUTES_NAME.incident,
+        component: Pages.IncidentPage
       }
     ]
   },

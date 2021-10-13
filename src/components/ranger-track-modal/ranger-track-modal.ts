@@ -1,6 +1,6 @@
 import { Vue, Options } from 'vue-class-component'
 import { OnClickOutside } from '@vueuse/components'
-import { Emit } from 'vue-property-decorator'
+import { Emit, Prop, Watch } from 'vue-property-decorator'
 import Mapbox from 'mapbox-gl'
 import MapboxSettings from '../../../config/map.json'
 import { MapboxOptions } from '@/models'
@@ -13,6 +13,9 @@ import rawRangerTrack from '@/api/raw-ranger-track.json'
 })
 export default class RangerTrackModalComponent extends Vue {
 
+  @Prop({ default: null })
+  rawRangerTrack!: any | null
+
   public mapOptions: MapboxOptions = {
     center: [100.19, 16.74],
     zoom: 13
@@ -20,14 +23,24 @@ export default class RangerTrackModalComponent extends Vue {
   public mapbox: any
   public isLoading: boolean = false
 
-  @Emit('closeRangerTrack')
-  public closeRangerTrack (): boolean {
-    return false
+  @Watch('rawRangerTrack')
+  onRawRangerTrackChange (): void {
+    this.isLoading = true
+    if (rawRangerTrack) {
+      this.createMap()
+    }
   }
 
   mounted (): void {
     this.isLoading = true
-    this.createMap()
+    if (rawRangerTrack) {
+      this.createMap()
+    }
+  }
+
+  @Emit('closeRangerTrack')
+  public closeRangerTrack (): any {
+    return { key: 'track', toggle: false }
   }
 
   async createMap() {
@@ -41,14 +54,14 @@ export default class RangerTrackModalComponent extends Vue {
       })
       this.isLoading = false
       this.mapbox.on('load', () => {
-          console.log('mapbox loaded', rawRangerTrack)
+          // console.log('mapbox loaded', rawRangerTrack)
           this.mapbox.addSource('track',
             {
               'type': 'geojson',
               'data': rawRangerTrack
             }
           )
-          console.log('mapbox map', this.mapbox)
+          // console.log('mapbox map', this.mapbox)
           this.mapbox.addLayer({
             'id': 'track',
             'type': 'line',
