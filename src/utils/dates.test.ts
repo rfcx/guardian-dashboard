@@ -18,7 +18,7 @@ describe('formatDateRange: different days, months, years', () => {
 
 describe('formatDateLabel', () => {
   const examples = [
-    ['2021-09-06T18:51:19.707Z', 'Sep 26, 2021 18:51'],
+    ['2021-09-06T18:51:19.707Z', 'Sep 06, 2021 18:51'],
     ['2021-08-26T21:28:46.606Z', 'Aug 26, 2021 21:28'],
   ]
 

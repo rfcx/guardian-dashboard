@@ -12,7 +12,7 @@ export const formatDateRange = (start: dayjs.Dayjs, end: dayjs.Dayjs): string =>
   return start.format('MMM DD, YYYY')
 }
 
-export const formatDateLabel = (label: string, timezone?: string): string => {
+export const formatDateLabel = (label: string, timezone: string = 'UTC'): string => {
   if (timezone) return dayjs(label).tz(timezone).format('MMM DD, YYYY HH:mm')
   else return dayjs(label).format('MMM DD, YYYY HH:mm')
 }
