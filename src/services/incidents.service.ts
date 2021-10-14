@@ -64,10 +64,10 @@ export async function closeIncident (id: any): Promise<IncidentModel.Incident[]>
   }
 }
 
-export async function getResposesAssets (id: any): Promise<any> {
+export async function getResposesAssets (id: any): Promise<IncidentModel.ResponseAsset[]> {
   try {
     const assetsUrl = Endpoints.getResponse.url + `/${id}/assets`
-    const resp = await ApiClient.request<any>({
+    const resp = await ApiClient.request<IncidentModel.ResponseAsset[]>({
       method: 'GET',
       url: assetsUrl
     })
@@ -77,10 +77,10 @@ export async function getResposesAssets (id: any): Promise<any> {
   }
 }
 
-export async function getResposeDetails (id: any): Promise<any> {
+export async function getResposeDetails (id: any): Promise<IncidentModel.Response> {
   try {
     const assetsUrl = Endpoints.getResponse.url + `/${id}`
-    const resp = await ApiClient.request<any>({
+    const resp = await ApiClient.request<IncidentModel.Response>({
       method: 'GET',
       url: assetsUrl
     })
@@ -106,7 +106,7 @@ export async function getFiles (id: any): Promise<any> {
   }
 }
 
-export function combineIncidentItems (incident: any) {
+export function combineIncidentItems (incident: IncidentModel.Incident) {
   incident.items = [
     ...incident.events.map((event: any) => {
       event.type = 'event'

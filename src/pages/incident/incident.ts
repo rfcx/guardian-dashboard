@@ -1,6 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
-
-import { StreamModels } from '@/models'
+import { StreamModels, IncidentModel } from '@/models'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { formatDayLabel, formatDayWithoutTime, formatTimeLabel, hoursDiffFormatted } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
@@ -53,8 +52,8 @@ export default class IncidentPage extends Vue {
   }
 
   public streamsData: StreamModels.Stream[] = []
-  public incident: any = {}
-  public stream: any = {}
+  public incident: IncidentModel.Incident = {} as IncidentModel.Incident
+  public stream: StreamModels.Stream | undefined
   public incidentStatus = 'Mark as closed'
 
   mounted (): void {
@@ -75,7 +74,7 @@ export default class IncidentPage extends Vue {
 
   public async closeReport (): Promise<void> {
     await IncidentsService.closeIncident(this.$route.params.id)
-    this.incidentStatus = `Closed on ${formatDayWithoutTime(new Date())}`
+    this.incidentStatus = `Closed on ${formatDayWithoutTime(new Date(), this.stream && this.stream.timezone)}`
   }
 
   public getColor (n: number): string {
@@ -84,11 +83,11 @@ export default class IncidentPage extends Vue {
   }
 
   public dateFormatted (date: string): string {
-    return formatDayLabel(date, this.stream.timezone)
+    return formatDayLabel(date, this.stream && this.stream.timezone)
   }
 
   public timeFormatted (date: string): string {
-    return formatTimeLabel(date, this.stream.timezone)
+    return formatTimeLabel(date, this.stream && this.stream.timezone)
   }
 
   public hoursDiffFormatted (from: string, to: string): string {
@@ -105,13 +104,13 @@ export default class IncidentPage extends Vue {
 
   public async getData (): Promise<void> {
     this.incident = await IncidentsService.getIncident(this.$route.params.id)
-      .then((incident) => {
+      .then((incident: IncidentModel.Incident) => {
         IncidentsService.combineIncidentItems(incident)
         return incident
       })
     this.getStreamsData()
       .then(() => {
-        this.stream = this.streamsData.find((s: any) => s.id === this.incident.streamId)
+        this.stream = this.streamsData.find((s: StreamModels.Stream) => s.id === this.incident.streamId)
       })
     await this.getResponsesAssets()
     await this.getResposeDetails()

@@ -3,7 +3,7 @@
       <dl v-show="incident">
         <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6 border-b border-gray-500">
           <dt class="text-sm font-medium text-white">
-            #{{incident.ref}} {{stream.name}}
+            #{{incident.ref}} {{stream? stream.name : ''}}
           </dt>
           <dt class="mt-1 text-sm text-gray-500 sm:mt-0 text-white">
             <div class="flex rounded-md shadow justify-end">

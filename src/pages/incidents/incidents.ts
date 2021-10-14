@@ -1,6 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
-
-import { ProjectModels, StreamModels } from '@/models'
+import { ProjectModels, StreamModels, IncidentModel } from '@/models'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { formatDayWithoutTime, formatHoursLabel } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
@@ -66,17 +65,19 @@ export default class IncidentsPage extends Vue {
     return stream ? stream.timezone : null
   }
 
-  public getIncidentStatus (incident: any): any {
+  public getIncidentStatus (incident: IncidentModel.Incident): any {
     const timezone = this.getStreamTimezone(incident.streamId)
-    const status = incident.closedAt
-      ? `report closed ${formatHoursLabel(incident.closedAt, timezone)} ago`
-      : incident.responses.length
-        ? `response time ${formatHoursLabel(incident.responses[0].createdAt, timezone)}`
-        : `${formatHoursLabel(incident.createdAt, timezone)} without responce`
-    return status
+    if (timezone) {
+      const status = incident.closedAt
+        ? `report closed ${formatHoursLabel(incident.closedAt, timezone)} ago`
+        : incident.responses.length
+          ? `response time ${formatHoursLabel(incident.responses[0].createdAt, timezone)}`
+          : `${formatHoursLabel(incident.createdAt, timezone)} without responce`
+      return status
+    }
   }
 
-  public itemsLabel (incident: any): string {
+  public itemsLabel (incident: IncidentModel.Incident): string {
     const timezone = this.getStreamTimezone(incident.streamId)
     const items = incident.items.slice(4)
     const eventsCount = items.filter((i: any) => i.type === 'event').length
