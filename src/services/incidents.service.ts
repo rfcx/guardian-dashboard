@@ -37,10 +37,10 @@ export async function getIncidents (options: any): Promise<IncidentModel.Inciden
   }
 }
 
-export async function getIncident (id: any): Promise<IncidentModel.Incident[]> {
+export async function getIncident (id: any): Promise<IncidentModel.Incident> {
   try {
     const incidentDetails = Endpoints.getIncidents.url + `/${id}`
-    const resp = await ApiClient.request<IncidentModel.Incident[]>({
+    const resp = await ApiClient.request<IncidentModel.Incident>({
       method: 'GET',
       url: incidentDetails
     })

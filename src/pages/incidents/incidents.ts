@@ -15,9 +15,9 @@ export default class IncidentsPage extends Vue {
 
   public selectedProject: ProjectModels.ProjectListItem | undefined
   public isLoading = false
-  public incidents: any[] = []
+  public incidents: IncidentModel.Incident[] = []
   public streamsData: StreamModels.Stream[] = []
-  public originalData: any[] = []
+  public originalData: IncidentModel.Incident[] = []
   public limit = 2
   public routerParam: any = {}
   public alertsLabel = ''
