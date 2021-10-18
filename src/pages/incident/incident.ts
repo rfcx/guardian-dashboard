@@ -2,14 +2,13 @@ import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, Response, Stream } from '@/types'
-import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDifferent } from '@/utils'
+import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDifferent, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '../../components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '../../components/ranger-track-modal/ranger-track-modal.vue'
 
 type statesModelType = 'player' | 'track' | 'slider' | 'notes'
-type Falsy = 0 | '' | false | null | undefined
 
 interface statesModel {
   player: boolean
@@ -67,16 +66,6 @@ export default class IncidentPage extends Vue {
     void this.getData()
   }
 
-  public isDefined<T>(x: T): x is Exclude<T, Falsy> {
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    return (x as any) !== undefined && (x as any) !== null
-  }
-
-  public isNotDefined<T>(x: T): x is T & Falsy {
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    return (x as any) === undefined && (x as any) === null
-  }
-
   public toggleState (key: statesModelType): void {
     this.compStates[key] = !this.compStates[key]
   }
@@ -103,7 +92,7 @@ export default class IncidentPage extends Vue {
 
   public async closeReport (): Promise<void> {
     await IncidentsService.closeIncident((this.$route.params.id as string))
-    if (this.isDefined(this.stream?.timezone)) {
+    if (isDefined(this.stream?.timezone)) {
       this.incidentStatus = `Closed on ${formatDayWithoutTime(new Date(), this.stream.timezone)}`
     }
   }
@@ -114,14 +103,14 @@ export default class IncidentPage extends Vue {
   }
 
   public dateFormatted (date: string): string {
-    if (this.isDefined(this.stream?.timezone)) {
+    if (isDefined(this.stream?.timezone)) {
       return formatDayTimeLabel(date, this.stream.timezone)
     }
     return ''
   }
 
   public timeFormatted (date: string): string {
-    if (this.isDefined(this.stream?.timezone)) {
+    if (isDefined(this.stream?.timezone)) {
       return formatTimeLabel(date, this.stream.timezone)
     }
     return ''
@@ -167,8 +156,8 @@ export default class IncidentPage extends Vue {
           item.audioObject = {}
           for (const a of item.assetsData) {
             const asset = await IncidentsService.getFiles(a.id)
-            if (this.isDefined(a) && this.isNotDefined(a.mimeType)) return
-            if (a.mimeType.includes('audio') === true && this.isDefined(asset)) {
+            if (isDefined(a) && isNotDefined(a.mimeType)) return
+            if (a.mimeType.includes('audio') === true && isDefined(asset)) {
               item.audioObject.src = asset
             }
             await new Promise((resolve, reject) => {
@@ -206,7 +195,7 @@ export default class IncidentPage extends Vue {
         if (item.type === 'response') {
           const response = await IncidentsService.getResposeDetails(item.id)
           this.isAssetsLoading = false
-          if (this.isDefined(response.damageScale) || this.isDefined(response.loggingScale) || this.isDefined(response.actions) || this.isDefined(response.evidences)) {
+          if (isDefined(response.damageScale) || isDefined(response.loggingScale) || isDefined(response.actions) || isDefined(response.evidences)) {
             item.messages = {}
             item.messages.actions = response.actions
             item.messages.damageScale = [`Damage: ${this.damageScale[response.damageScale]}`]
