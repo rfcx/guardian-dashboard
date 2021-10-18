@@ -1,5 +1,5 @@
-import { Auth0Option, Auth0User, Project, Stream } from '@/models'
 import store, { ACTIONS, createVuexDecorator, ITEMS } from '@/stores'
+import { Auth0Option, Auth0User, Project, Stream } from '@/types'
 
 const get = <T>(key: string, defaultValue: T): T => store.getters[key] ?? defaultValue
 const set = async (action: string, data: any): Promise<void> => await store.dispatch(action, data)

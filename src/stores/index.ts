@@ -1,8 +1,8 @@
 import { createDecorator, VueDecorator } from 'vue-class-component'
 import Vuex, { ActionTree, GetterTree, MutationTree } from 'vuex'
 
-import * as Models from '@/models'
 import { ProjectServices } from '@/services'
+import * as Models from '@/types'
 import * as ACTIONS from './actions'
 import * as ITEMS from './items'
 

@@ -2,8 +2,8 @@ import { Options, Vue } from 'vue-class-component'
 
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import NavBarComponent from '@/components/navbar/navbar.vue'
-import { Auth0Option, Auth0User, Project, Stream } from '@/models'
 import { VuexService } from '@/services'
+import { Auth0Option, Auth0User, Project, Stream } from '@/types'
 
 @Options({
   components: {

@@ -1,7 +1,7 @@
 import { Vue } from 'vue-class-component'
 
-import { Auth0Option, Auth0User } from '@/models'
 import { VuexService } from '@/services'
+import { Auth0Option, Auth0User } from '@/types'
 
 export default class AuthNavbarItemComponent extends Vue {
   @VuexService.Auth.auth.bind()

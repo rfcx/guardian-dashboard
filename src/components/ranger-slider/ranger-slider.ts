@@ -3,7 +3,7 @@ import { Emit, Prop, Watch } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
 
-import { RawImageItem } from '@/models'
+import { RawImageItem } from '@/types'
 
 @Options({
   components: {

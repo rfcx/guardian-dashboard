@@ -1,7 +1,7 @@
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 
-import { Event, Response } from '@/models'
+import { Event, Response } from '@/types'
 import { formatDayTimeLabel, formatTimeLabel } from '@/utils'
 
 interface ItemsTypes extends Event, Response {}

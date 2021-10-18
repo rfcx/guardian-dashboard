@@ -1,5 +1,5 @@
 import * as Endpoints from '@/api/endpoints'
-import { Project } from '@/models'
+import { Project } from '@/types'
 import ApiClient from './api.service'
 
 interface ProjectRequest {

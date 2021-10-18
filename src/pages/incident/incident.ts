@@ -1,7 +1,7 @@
 import { Options, Vue } from 'vue-class-component'
 
-import { Incident, Response, Stream } from '@/models'
 import { IncidentsService, StreamService, VuexService } from '@/services'
+import { Incident, Response, Stream } from '@/types'
 import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDifferent } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'

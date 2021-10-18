@@ -11,7 +11,7 @@ import createAuth0Client, {
   RedirectLoginOptions
 } from '@auth0/auth0-spa-js'
 
-import { Auth0User } from '@/models'
+import { Auth0User } from '@/types'
 import config from './config'
 
 let client: Auth0Client

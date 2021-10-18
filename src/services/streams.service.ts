@@ -1,5 +1,5 @@
 import * as Endpoints from '@/api/endpoints'
-import { Stream } from '@/models'
+import { Stream } from '@/types'
 import ApiClient from './api.service'
 
 export async function getStreams (projectsId: any): Promise<Stream[]> {

@@ -1,8 +1,8 @@
 import { Options, Vue } from 'vue-class-component'
 
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
-import { Project } from '@/models'
 import { VuexService } from '@/services'
+import { Project } from '@/types'
 import { formatDifferentFromNow } from '@/utils'
 
 @Options({

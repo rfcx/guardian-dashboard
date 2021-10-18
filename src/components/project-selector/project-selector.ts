@@ -3,9 +3,9 @@ import { Emit } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
 
-import { Project } from '@/models'
 import { ROUTES_NAME } from '@/router'
 import { VuexService } from '@/services'
+import { Project } from '@/types'
 
 @Options({
   components: { OnClickOutside }

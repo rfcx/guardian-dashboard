@@ -4,7 +4,7 @@ import { Emit, Prop, Watch } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
 
-import { MapboxOptions } from '@/models'
+import { MapboxOptions } from '@/types'
 import MapboxSettings from '../../../config/map.json'
 
 @Options({

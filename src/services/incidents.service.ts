@@ -1,5 +1,5 @@
 import * as Endpoints from '@/api/endpoints'
-import { Incident, Response, ResponseAsset } from '@/models'
+import { Incident, Response, ResponseAsset } from '@/types'
 import ApiClient from './api.service'
 
 interface paramsModel {

@@ -1,7 +1,7 @@
 import { Options, Vue } from 'vue-class-component'
 
-import { Event, Incident, Project, Response, Stream } from '@/models'
 import { IncidentsService, StreamService, VuexService } from '@/services'
+import { Event, Incident, Project, Response, Stream } from '@/types'
 import { formatDayWithoutTime, formatDifferentFromNow } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
 
