@@ -114,14 +114,14 @@ export default class IncidentPage extends Vue {
   }
 
   public dateFormatted (date: string): string {
-    if (this.isDefined(this.stream) && this.isDefined(this.stream.timezone)) {
+    if (this.isDefined(this.stream?.timezone)) {
       return formatDayTimeLabel(date, this.stream.timezone)
     }
     return ''
   }
 
   public timeFormatted (date: string): string {
-    if (this.isDefined(this.stream) && this.isDefined(this.stream.timezone)) {
+    if (this.isDefined(this.stream?.timezone)) {
       return formatTimeLabel(date, this.stream.timezone)
     }
     return ''
