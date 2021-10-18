@@ -4,14 +4,14 @@ import { Prop } from 'vue-property-decorator'
 import { Event, Response } from '@/types'
 import { formatDayTimeLabel, formatTimeLabel } from '@/utils'
 
-interface ItemsTypes extends Event, Response {}
+interface IncidentItem extends Event, Response {}
 
 export default class IncidentsTableRows extends Vue {
   @Prop({ default: null })
   timezone!: string
 
   @Prop({ default: [] })
-  itemsData!: ItemsTypes[]
+  itemsData!: IncidentItem[]
 
   public dateFormatted (date: string): string {
     return formatDayTimeLabel(date, this.timezone)
@@ -21,7 +21,7 @@ export default class IncidentsTableRows extends Vue {
     return formatTimeLabel(date, this.timezone)
   }
 
-  public isEvent (item: ItemsTypes): boolean {
+  public isEvent (item: IncidentItem): boolean {
     return item.type === 'event'
   }
 }

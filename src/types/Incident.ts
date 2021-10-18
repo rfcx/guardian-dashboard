@@ -5,10 +5,19 @@ export interface Incident {
   ref?: number
   streamId: string
   projectId: string
-  closedBy?: any
-  events: any[]
-  responses: any[]
+  closedBy?: User
+  events: Event[]
+  responses: Response[]
   items: any[]
+}
+
+export interface IncidentLite {
+  id: string
+  createdAt: string
+  closedAt: string
+  ref: number
+  streamId: string
+  projectId: string
 }
 
 export interface ResponseAsset {
@@ -18,13 +27,15 @@ export interface ResponseAsset {
   response: {
     id: string
   }
-  createdBy: {
-    firstname: string
-    lastname: string
-    guid: string
-    email: string
-  }
+  createdBy: User
   createdAt: string
+}
+
+export interface User {
+  firstname: string
+  lastname: string
+  guid: string
+  email: string
 }
 
 export interface Response {
@@ -33,29 +44,22 @@ export interface Response {
   startedAt: string
   submittedAt: string
   createdAt: string
-  createdBy: {
-    firstname: string
-    lastname: string
-    guid: string
-    email: string
-  }
+  createdBy: User
   loggingScale: number
   damageScale: number
-  evidences: any[]
-  actions: any[]
-  incident: {
-    id: string
-    createdAt: string
-    closedAt: string
-    ref: number
-    streamId: string
-    projectId: string
-  }
+  evidences: string[]
+  actions: string[]
+  incident: IncidentLite
   type: string
   showNotes: boolean
   showSlider: boolean
   showTrack: boolean
   showPlayer: boolean
+  assetsData: any[]
+  sliderData: any[]
+  notesData: string[]
+  audioObject: any
+  messages: any
 }
 
 export interface Event {

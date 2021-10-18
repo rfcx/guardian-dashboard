@@ -36,14 +36,6 @@ export default class RangerPlayerComponent extends Vue {
   public initializeAudio (): void {
     this.audio = new Audio()
     this.audio.volume = 0.9
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    this.audio.addEventListener('canplay', (data: any) => {
-      console.log('canplay', data)
-    })
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    this.audio.addEventListener('error', (e: any) => {
-      console.log('err', e)
-    })
     this.audio.src = window.URL.createObjectURL(this.audioProp.src)
     this.isLoading = false
   }
@@ -52,7 +44,7 @@ export default class RangerPlayerComponent extends Vue {
     this.isPlaying = !this.isPlaying
     if (this.audio) {
       if (!this.isPlaying) {
-        this.audio.pause()
+        void this.audio.pause()
       } else {
         void this.audio.play()
       }

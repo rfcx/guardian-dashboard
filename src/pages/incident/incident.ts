@@ -103,7 +103,7 @@ export default class IncidentPage extends Vue {
 
   public async closeReport (): Promise<void> {
     await IncidentsService.closeIncident((this.$route.params.id as string))
-    if (this.isDefined(this.stream) && this.isDefined(this.stream.timezone)) {
+    if (this.isDefined(this.stream?.timezone)) {
       this.incidentStatus = `Closed on ${formatDayWithoutTime(new Date(), this.stream.timezone)}`
     }
   }
