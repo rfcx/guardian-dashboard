@@ -1,15 +1,6 @@
-/* eslint-disable camelcase */
-export interface RawProjectListItem {
+export interface Project {
   id: string
   name: string
   isPublic: boolean
   externalId: number
-}
-/* eslint-enable camelcase */
-
-export interface ProjectListItem {
-  id?: string
-  name?: string
-  isPublic?: boolean
-  externalId?: number
 }

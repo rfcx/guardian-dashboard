@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import NavBarComponent from '@/components/navbar/navbar.vue'
-import { Auth0Option, Auth0User, ProjectModels, StreamModels } from '@/models'
+import { Auth0Option, Auth0User, Project, Stream } from '@/models'
 import { VuexService } from '@/services'
 
 @Options({
@@ -18,9 +18,9 @@ export default class RootPage extends Vue {
   @VuexService.Auth.user.bind()
   protected user!: Auth0User | undefined
 
-  @VuexService.Project.streams.bind()
-  protected streams!: StreamModels.Stream | undefined
+  @VuexService.Projects.streams.bind()
+  protected streams!: Stream | undefined
 
-  @VuexService.Project.selectedProject.bind()
-  selectedProject!: ProjectModels.ProjectListItem | undefined
+  @VuexService.Projects.selectedProject.bind()
+  selectedProject!: Project | undefined
 }

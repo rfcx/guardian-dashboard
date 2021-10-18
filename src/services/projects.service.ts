@@ -1,5 +1,5 @@
 import * as Endpoints from '@/api/endpoints'
-import { ProjectModels } from '@/models'
+import { Project } from '@/models'
 import ApiClient from './api.service'
 
 interface ProjectRequest {
@@ -8,7 +8,7 @@ interface ProjectRequest {
   keyword?: string
 }
 
-function mapProjectList (data: ProjectModels.RawProjectListItem): ProjectModels.ProjectListItem {
+function mapProjectList (data: Project): Project {
   return {
     id: data.id,
     name: data.name,
@@ -17,9 +17,9 @@ function mapProjectList (data: ProjectModels.RawProjectListItem): ProjectModels.
   }
 }
 
-export async function getProjects (options?: ProjectRequest): Promise<ProjectModels.ProjectListItem[]> {
+export async function getProjects (options?: ProjectRequest): Promise<Project[]> {
   try {
-    const resp = await ApiClient.request<ProjectModels.RawProjectListItem[]>({
+    const resp = await ApiClient.request<Project[]>({
       ...Endpoints.getProjects
     })
     return Array.isArray(resp) ? resp.map(d => mapProjectList(d)) : []

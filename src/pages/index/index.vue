@@ -44,7 +44,7 @@
                 <span class="text-white">Curaci, Tembe Reserve</span>
               </dt>
               <dt class="text-sm font-medium flex items-center">
-                <span class="ic-pink">{{ hoursFormatted('2021-10-05T13:42:28.256Z') }} hours no response</span>
+                <span class="ic-pink">{{ formatDifferentFromNow('2021-10-05T13:42:28.256Z') }} no response</span>
               </dt>
             </div>
           </dl>

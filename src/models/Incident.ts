@@ -44,11 +44,28 @@ export interface Response {
   evidences: any[]
   actions: any[]
   incident: {
-    id: string,
-    createdAt: string,
-    closedAt: string,
-    ref: number,
-    streamId: string,
+    id: string
+    createdAt: string
+    closedAt: string
+    ref: number
+    streamId: string
     projectId: string
   }
+  type: string
+  showNotes: boolean
+  showSlider: boolean
+  showTrack: boolean
+  showPlayer: boolean
+}
+
+export interface Event {
+  id: string
+  start: string
+  end: string
+  createdAt: string
+  classification: {
+    value: string
+    title: string
+  }
+  type: string
 }

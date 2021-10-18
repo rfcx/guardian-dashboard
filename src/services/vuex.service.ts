@@ -1,4 +1,4 @@
-import { Auth0Option, Auth0User, ProjectModels, StreamModels } from '@/models'
+import { Auth0Option, Auth0User, Project, Stream } from '@/models'
 import store, { ACTIONS, createVuexDecorator, ITEMS } from '@/stores'
 
 const get = <T>(key: string, defaultValue: T): T => store.getters[key] ?? defaultValue
@@ -40,9 +40,9 @@ export const Auth = (() => ({
 
 // ===================== Project | Streams =====================
 
-export const Project = (() => ({
+export const Projects = (() => ({
   projects: (() => {
-    type ProjectType = ProjectModels.ProjectListItem[]
+    type ProjectType = Project[]
     return {
       bind () {
         return createVuexDecorator(ITEMS.root.projects)
@@ -54,7 +54,7 @@ export const Project = (() => ({
   })(),
 
   streams: (() => {
-    type StreamType = StreamModels.Stream[]
+    type StreamType = Stream[]
     return {
       bind () {
         return createVuexDecorator(ITEMS.root.streams)
@@ -69,7 +69,7 @@ export const Project = (() => ({
   })(),
 
   selectedProject: (() => {
-    type ProjectType = ProjectModels.ProjectListItem | undefined
+    type ProjectType = Project | undefined
     return {
       bind () {
         return createVuexDecorator(ITEMS.root.selectedProject)

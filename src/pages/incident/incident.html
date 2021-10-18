@@ -1,117 +1,155 @@
 <div id="report-page" class="pt-10 px-20">
   <div class="bg-gray shadow overflow-hidden">
-      <dl v-show="incident">
-        <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6 border-b border-gray-500">
-          <dt class="text-sm font-medium text-white">
-            #{{incident.ref}} {{stream? stream.name : ''}}
-          </dt>
-          <dt class="mt-1 text-sm text-gray-500 sm:mt-0 text-white">
-            <div class="flex rounded-md shadow justify-end">
-              <a v-if="incidentStatus === 'Mark as closed'" @click="closeReport()" class="inline-flex items-center justify-center px-3 py-0.5 border border-transparent text-white font-small rounded-md bg-gray-600 hover:bg-gray-800 cursor-pointer">
-                {{incidentStatus}}
-              </a>
-              <span class="text-sm font-medium text-white px-3 py-0.7" v-if="incidentStatus !== 'Mark as closed'">{{incidentStatus}}</span>
-            </div>
-          </dt>
-        </div>
-        <div v-for="item in incident.items">
-          <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 border-b border-gray-500" v-if="item.type === 'response'">
-            <dd class="text-sm font-medium text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 ic-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              {{item.createdBy.firstname}} {{item.createdBy.lastname}}
-            </dd>
-            <dd class="text-sm font-medium text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {{dateFormatted(item.investigatedAt)}}
-            </dd>
-            <dd class="text-sm font-medium text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293h3.172a1 1 0 00.707-.293l2.414-2.414a1 1 0 01.707-.293H20" />
-              </svg>
-              {{hoursDiffFormatted(item.submittedAt, item.investigatedAt)}}
-            </dd>
-            <dd class="text-sm font-medium text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-              </svg>
-              {{hoursDiffFormatted(item.createdAt, item.submittedAt)}}
-            </dd>
-            <dd class="col-span-4 flex flex-col bg-gray px-4 py-5">
-              <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
-                <dd class="border border-gray-200 rounded-md p-6">
-                  <div class="text-sm font-medium text-white mb-3">
-                    Response items:
+    <div v-if="isLoading" class="bg-mirage-grey h-10 w-10" v-bind:style="{margin: '0 auto'}">
+      <svg class="animate-spin bg-mirage-grey text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+    </div>
+    <dl v-if="!isLoading && incident !== undefined">
+      <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6 border-b border-gray-500">
+        <dt class="text-sm font-medium text-white">
+          #{{incident.ref}} {{stream? stream.name : ''}}
+        </dt>
+        <dt class="mt-1 text-sm text-gray-500 sm:mt-0 text-white">
+          <div class="flex rounded-md shadow justify-end">
+            <a v-if="incidentStatus === 'Mark as closed'" @click="closeReport()" class="inline-flex items-center justify-center px-3 py-0.5 border border-transparent text-white font-small rounded-md bg-gray-600 hover:bg-gray-800 cursor-pointer">
+              {{incidentStatus}}
+            </a>
+            <span class="text-sm font-medium text-white px-3 py-0.7" v-if="incidentStatus !== 'Mark as closed'">{{incidentStatus}}</span>
+          </div>
+        </dt>
+      </div>
+      <div v-for="item in incident.items">
+        <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 border-b border-gray-500" v-if="item.type === 'response'">
+          <dd class="text-sm font-medium text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 ic-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {{item.createdBy.firstname}} {{item.createdBy.lastname}}
+          </dd>
+          <dd class="text-sm font-medium text-white" title='Investigated at'>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{dateFormatted(item.investigatedAt) || 0}}
+          </dd>
+          <dd class="text-sm font-medium text-white" title='Difference between Investigated at and Submitted at'>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293h3.172a1 1 0 00.707-.293l2.414-2.414a1 1 0 01.707-.293H20" />
+            </svg>
+            {{ hoursDiffFormatted(item.investigatedAt, item.submittedAt) || 0 }}
+          </dd>
+          <dd class="text-sm font-medium text-white" title='Difference between Submitted at and Created at'>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+            </svg>
+            {{ hoursDiffFormatted(item.submittedAt, item.createdAt) || 0 }}
+          </dd>
+          <dd class="col-span-4 flex flex-col bg-gray px-4 py-5">
+            <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+              <dd class="border border-gray-200 rounded-md p-6">
+                <div class="text-sm font-medium text-white mb-3">
+                  Response items:
+                </div>
+                <div
+                  v-if="isAssetsLoading"
+                  class="flex flex-row bg-grey h-10 w-10"
+                  :style="{margin: '0 auto'}"
+                >
+                  <svg
+                    class="animate-spin bg-grey text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    />
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                </div>
+                <div v-if="!isAssetsLoading && item.messages && Object.values(item.messages) && !Object.values(item.messages).length" class="text-sm font-medium text-white mb-3">No messages</div>
+                <div v-if="!isAssetsLoading && item.messages && Object.values(item.messages) && Object.values(item.messages).length">
+                  <div class="text-sm font-medium" v-for="(messageType, index) of Object.values(item.messages)">
+                    <div class="text-sm font-medium" v-for="message of messageType">
+                      <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" :class="getColor(index)" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        {{message}}
+                      </span>
+                    </div>
                   </div>
-                  <div class="text-sm font-medium" v-for="(message, index) of item.messages">
-                    <span>
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" v-bind:class="getColor(index)" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                      </svg>
-                      {{message}}
-                    </span>
-                  </div>
-                </dd>
-                <dd class="border border-gray-200 rounded-md p-6">
-                  <div v-if="!item.sliderData" class="text-sm font-medium text-white mb-3">
-                    Loading assets
-                  </div>
+                </div>
+              </dd>
+              <dd class="border border-gray-200 rounded-md p-6">
+                <div v-if="isAssetsLoading" class="text-sm font-medium text-white mb-3">
+                  Loading assets
+                </div>
+                <div v-else="!isAssetsLoading">
                   <div v-if="item.sliderData && item.sliderData.length || item.notesData && item.notesData.length || item.audioObject && item.audioObject.src || item.track" class="text-sm font-medium text-white mb-3">
                     Assets:
                   </div>
                   <div v-else class="text-sm font-medium text-white mb-3">
                     No assets
                   </div>
-                  <a class="cursor-pointer" v-if="item.sliderData && item.sliderData.length" @click="toggleState('slider')" title="Attachments">
+                  <a class="cursor-pointer" v-if="item.sliderData && item.sliderData.length" @click="toggleSlider(item, true)" title="Attachments">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </a>
-                  <a class="cursor-pointer" v-if="item.notesData && item.notesData.length" @click="toggleState('notes')" title="Notes">
+                  <a class="cursor-pointer" v-if="item.notesData && item.notesData.length" @click="toggleNotes(item, true)" title="Notes">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </a>
-                  <a class="cursor-pointer" v-if="item.audioObject && item.audioObject.src" @click="toggleState('player')" title="Play Sound">
+                  <a class="cursor-pointer" v-if="item.audioObject && item.audioObject.src" @click="togglePlayer(item, true)" title="Play Sound">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                     </svg>
                   </a>
-                  <a class="cursor-pointer" v-if="item.track" @click="toggleTrack(response)" title="Ranger Track">
+                  <a class="cursor-pointer" v-if="item.trackData" @click="toggleTrack(item, true)" title="Ranger Track">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </a>
-                </dd>
-              </div>
-            </dd>
-            <ranger-track-modal-component v-if="item.track===true" @close-ranger-track="item.track=false" />
-            <ranger-player-component v-show="compStates['player']" :initial-state="compStates['player']" :audio-prop="item.audioObject" @close-player="closeComponent" />
-            <ranger-slider-component v-if="compStates['slider']" :images-props="item.sliderData" @close-slider="closeComponent" />
-            <ranger-notes v-if="compStates['notes']" :notes="item.notesData" @close-notes="closeComponent" />
-          </div>
-          <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 border-b border-gray-500" v-if="item.type === 'event'">
-            <dd class="text-sm font-medium text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 ic-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              {{dateFormatted(item.createdAt)}}
-            </dd>
-            <dd class="text-sm font-medium text-white">
-              {{timeFormatted(item.start)}}-{{timeFormatted(item.end)}}
-            </dd>
-            <dd class="text-sm font-medium text-white">
-              {{item.classification && item.classification.title}}
-            </dd>
-            <dd class="text-sm font-medium text-white"></dd>
-          </div>
+                </div>
+              </dd>
+            </div>
+          </dd>
+          <ranger-track-modal-component v-if="item.showTrack !== undefined && item.showTrack === true" :raw-ranger-track="item.trackData" @close-ranger-track="toggleTrack(item, false)" />
+          <ranger-player-component v-show="item.showPlayer !== undefined && item.showPlayer === true && item.audioObject.src" :initial-state="item.showPlayer === true" :audio-prop="item.audioObject" @close-player="togglePlayer(item, false)" />
+          <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
+          <ranger-notes v-if="item.showNotes !== undefined && item.showNotes === true" :notes="item.notesData" @close-notes="toggleNotes(item, false)"/>
         </div>
-      </dl>
+        <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 border-b border-gray-500" v-if="item.type === 'event'">
+          <dd class="text-sm font-medium text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 ic-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            {{dateFormatted(item.createdAt)}}
+          </dd>
+          <dd class="text-sm font-medium text-white">
+            {{timeFormatted(item.start)}}-{{timeFormatted(item.end)}}
+          </dd>
+          <dd class="text-sm font-medium text-white">
+            {{item.classification && item.classification.title}}
+          </dd>
+          <dd class="text-sm font-medium text-white"></dd>
+        </div>
+      </div>
+    </dl>
   </div>
-
 </div>

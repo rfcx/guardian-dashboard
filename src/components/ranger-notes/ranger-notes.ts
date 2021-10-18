@@ -10,28 +10,24 @@ import { OnClickOutside } from '@vueuse/components'
 })
 export default class RangerNotes extends Vue {
   @Prop({ default: [] })
-  notes!: any[] | []
+  notes!: string[]
 
   public isLoading = false
 
   @Watch('notes')
   onNotesChange (): void {
     this.isLoading = true
-    if (this.notes) {
-      this.isLoading = false
-    }
+    this.isLoading = false
   }
 
   @Emit('closeNotes')
-  public closeNotes (): any {
-    return { key: 'notes', toggle: false }
+  public closeNotes (): boolean {
+    return true
   }
 
   mounted (): void {
     this.isLoading = true
-    if (this.notes) {
-      this.isLoading = false
-    }
+    this.isLoading = false
   }
 
   public close (): void {

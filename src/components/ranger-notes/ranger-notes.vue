@@ -1,6 +1,5 @@
 <template>
   <div
-    id="ranger-notes"
     class="fixed inset-0 z-10 bg-mirage-grey bg-opacity-75 transition-opacity overflow-y-auto h-full w-full"
     role="dialog"
     aria-modal="true"

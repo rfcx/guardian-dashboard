@@ -75,7 +75,7 @@
           />
           <a
             class="cursor-pointer relative z-1"
-            title="isPlaying? 'Stop' : 'Play'"
+            :title="isPlaying? 'Stop' : 'Play'"
             @click.prevent="toggleSound()"
           >
             <svg

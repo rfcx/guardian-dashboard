@@ -16,26 +16,22 @@ export default class RangerSliderComponent extends Vue {
 
   public isLoading = false
   public currentIndex = 0
-  public images: any[] = []
+  public images: RawImageItem[] = []
 
   @Watch('imagesProps')
   onImagesPropsChange (): void {
     this.isLoading = true
-    if (this.imagesProps) {
-      this.getSourceFiles()
-    }
+    this.getSourceFiles()
   }
 
   @Emit('closeSlider')
-  public closeSlider (): any {
-    return { key: 'slider', toggle: false }
+  public closeSlider (): boolean {
+    return true
   }
 
   mounted (): void {
     this.isLoading = true
-    if (this.imagesProps) {
-      this.getSourceFiles()
-    }
+    this.getSourceFiles()
   }
 
   public getSourceFiles (): void {
@@ -44,19 +40,19 @@ export default class RangerSliderComponent extends Vue {
     this.getImage(this.currentIndex)
   }
 
-  public getNextImage (): any {
+  public getNextImage (): void {
     let index = this.currentIndex
     console.log('getNextImage', index++ > this.images.length - 1)
     index++ > this.images.length - 1 ? this.getImage(this.currentIndex = 0) : this.getImage(this.currentIndex++)
   }
 
-  public getPrevImage (): any {
+  public getPrevImage (): void {
     let index = this.currentIndex
     index-- === 0 ? this.getImage(this.currentIndex = this.images.length - 1) : this.getImage(this.currentIndex--)
   }
 
-  public getImage (i: number): any {
-    if (!this.images[i]) {
+  public getImage (i: number): RawImageItem {
+    if (this.images[i] !== undefined) {
       return this.images[0]
     } else return this.images[i]
   }
