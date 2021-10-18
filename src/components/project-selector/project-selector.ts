@@ -14,12 +14,14 @@ export default class ProjectSelectorComponent extends Vue {
   @VuexService.Projects.projects.bind()
   projects!: Project[]
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public selectedProject: any = {}
 
   isSelectedProject (project: Project): boolean {
     return project.id === this.selectedProject?.id
   }
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   getSelectedProject (): any {
     this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }

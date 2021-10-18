@@ -49,6 +49,7 @@ export default class IncidentsPage extends Vue {
     this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public getStreamById (streamId: string): any {
     const stream = this.streamsData.find(s => s.id === streamId)
     return stream

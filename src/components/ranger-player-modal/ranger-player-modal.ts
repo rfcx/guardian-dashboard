@@ -10,6 +10,7 @@ import { OnClickOutside } from '@vueuse/components'
 })
 export default class RangerPlayerComponent extends Vue {
   @Prop({ default: null })
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   audioProp!: any
 
   @Prop({ default: false })
@@ -35,9 +36,11 @@ export default class RangerPlayerComponent extends Vue {
   public initializeAudio (): void {
     this.audio = new Audio()
     this.audio.volume = 0.9
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     this.audio.addEventListener('canplay', (data: any) => {
       console.log('canplay', data)
     })
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     this.audio.addEventListener('error', (e: any) => {
       console.log('err', e)
     })

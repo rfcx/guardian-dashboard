@@ -54,7 +54,9 @@ export default class IncidentPage extends Vue {
   }
 
   public streamsData: Stream[] = []
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public incident: Incident = {} as any
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public stream = {} as any
   public incidentStatus = 'Mark as closed'
   public isLoading = false
@@ -66,10 +68,12 @@ export default class IncidentPage extends Vue {
   }
 
   public isDefined<T>(x: T): x is Exclude<T, Falsy> {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     return (x as any) !== undefined && (x as any) !== null
   }
 
   public isNotDefined<T>(x: T): x is T & Falsy {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     return (x as any) === undefined && (x as any) === null
   }
 

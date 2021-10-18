@@ -14,6 +14,7 @@ import MapboxSettings from '../../../config/map.json'
 })
 export default class RangerTrackModalComponent extends Vue {
   @Prop({ default: null })
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   rawRangerTrack!: any | null
 
   public mapOptions: MapboxOptions = {
@@ -21,6 +22,7 @@ export default class RangerTrackModalComponent extends Vue {
     zoom: 13
   }
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public mapbox: any
   public isLoading = false
 
@@ -40,6 +42,7 @@ export default class RangerTrackModalComponent extends Vue {
     return true
   }
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   async createMap (): Promise<any> {
     try {
       Mapbox.accessToken = MapboxSettings.MAPBOX_ACCESS_TOKEN
