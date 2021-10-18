@@ -1,7 +1,7 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Event, Incident, Project, Response, Stream } from '@/types'
+import { Incident, Project, Stream } from '@/types'
 import { formatDayWithoutTime, formatDifferentFromNow } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
 
@@ -85,8 +85,8 @@ export default class IncidentsPage extends Vue {
   public itemsLabel (incident: Incident): string {
     const timezone = this.getStreamTimezone(incident.streamId)
     const items = incident.items.slice(4)
-    const eventsCount = items.filter((i: Event) => i.type === 'event').length
-    const responsesCount = items.filter((i: Response) => i.type === 'response').length
+    const eventsCount = items.filter((i) => i.type === 'event').length
+    const responsesCount = items.filter((i) => i.type === 'response').length
     let str = ''
     if (eventsCount > 0) {
       str += `${eventsCount} events `

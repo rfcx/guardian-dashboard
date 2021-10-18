@@ -1,10 +1,10 @@
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 
-import { Event, Response } from '@/types'
+import { EventExtended, ResponseExtended } from '@/types'
 import { formatDayTimeLabel, formatTimeLabel } from '@/utils'
 
-interface IncidentItem extends Event, Response {}
+interface IncidentItem extends EventExtended, ResponseExtended {}
 
 export default class IncidentsTableRows extends Vue {
   @Prop({ default: null })

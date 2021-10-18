@@ -8,7 +8,7 @@ export interface Incident {
   closedBy?: User
   events: Event[]
   responses: Response[]
-  items: any[]
+  items: Array<ResponseExtended | EventExtended>
 }
 
 export interface IncidentLite {
@@ -50,6 +50,9 @@ export interface Response {
   evidences: string[]
   actions: string[]
   incident: IncidentLite
+}
+
+export interface ResponseExtended extends Response {
   type: string
   showNotes: boolean
   showSlider: boolean
@@ -57,6 +60,7 @@ export interface Response {
   showPlayer: boolean
   assetsData: any[]
   sliderData: any[]
+  trackData: any
   notesData: string[]
   audioObject: any
   messages: any
@@ -71,5 +75,8 @@ export interface Event {
     value: string
     title: string
   }
+}
+
+export interface EventExtended extends Event {
   type: string
 }
