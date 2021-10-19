@@ -7,8 +7,8 @@
 import { Vue } from 'vue-class-component'
 import { Inject } from 'vue-property-decorator'
 
-import { Auth0Option, Auth0User } from './models'
 import { VuexService } from './services'
+import { Auth0Option, Auth0User } from './types'
 
 export default class App extends Vue {
   @Inject()
