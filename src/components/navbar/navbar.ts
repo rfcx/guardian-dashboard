@@ -1,9 +1,9 @@
 import { Options, Vue } from 'vue-class-component'
 
-import { Auth0User, ProjectModels } from '@/models'
-import { NavMenu } from '@/models/Navbar'
 import { ROUTES_NAME } from '@/router'
 import { VuexService } from '@/services'
+import { Auth0User, Project } from '@/types'
+import { NavMenu } from '@/types/Navbar'
 import ProjectSelectorComponent from '../project-selector/project-selector.vue'
 import AuthNavbarItemComponent from './auth-navbar-item/auth-navbar-item.vue'
 import MobileMenuToggleButton from './mobile-menu-toggle-button/mobile-menu-toggle-button.vue'
@@ -20,18 +20,16 @@ export default class NavigationBarComponent extends Vue {
   @VuexService.Auth.user.bind()
   public user!: Auth0User | undefined
 
-  @VuexService.Project.projects.bind()
-  projects!: ProjectModels.ProjectListItem[]
+  @VuexService.Projects.projects.bind()
+  projects!: Project[]
 
-  public selectedProject: any
+  public selectedProject!: Project | undefined
 
   public hasToggledMobileMenu = false
   public hasOpenedProjectSelector = false
 
   updated (): void {
-    if (this.$route.params && (this.selectedProject && this.selectedProject.id !== this.$route.params.projectId)) {
-      this.getSelectedProject()
-    }
+    this.getSelectedProject()
   }
 
   public get selectedProjectName (): string {
@@ -41,7 +39,7 @@ export default class NavigationBarComponent extends Vue {
 
   public get navMenus (): NavMenu[] {
     const selectedProjectId = this.$route.params.projectId
-    return selectedProjectId
+    return selectedProjectId !== undefined
       ? [
           {
             label: 'Open',
@@ -55,7 +53,7 @@ export default class NavigationBarComponent extends Vue {
       : []
   }
 
-  getSelectedProject (): any {
+  getSelectedProject (): void {
     this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 

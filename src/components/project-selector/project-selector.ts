@@ -3,28 +3,30 @@ import { Emit } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
 
-import { ProjectModels } from '@/models'
 import { ROUTES_NAME } from '@/router'
 import { VuexService } from '@/services'
+import { Project } from '@/types'
 
 @Options({
   components: { OnClickOutside }
 })
 export default class ProjectSelectorComponent extends Vue {
-  @VuexService.Project.projects.bind()
-  projects!: ProjectModels.ProjectListItem[]
+  @VuexService.Projects.projects.bind()
+  projects!: Project[]
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public selectedProject: any = {}
 
-  isSelectedProject (project: ProjectModels.ProjectListItem): boolean {
+  isSelectedProject (project: Project): boolean {
     return project.id === this.selectedProject?.id
   }
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   getSelectedProject (): any {
     this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 
-  setSelectedProject (project: ProjectModels.ProjectListItem): void {
+  setSelectedProject (project: Project): void {
     this.selectedProject = project
   }
 

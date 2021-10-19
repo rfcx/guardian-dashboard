@@ -1,7 +1,7 @@
 <template>
   <tr
-    v-for="item in items"
-    :key="item"
+    v-for="item in itemsData"
+    :key="item.id"
     class="table-row"
   >
     <td

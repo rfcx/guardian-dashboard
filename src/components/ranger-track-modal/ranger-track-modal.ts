@@ -4,8 +4,7 @@ import { Emit, Prop, Watch } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
 
-import rawRangerTrack from '@/api/raw-ranger-track.json'
-import { MapboxOptions } from '@/models'
+import { MapboxOptions } from '@/types'
 import MapboxSettings from '../../../config/map.json'
 
 @Options({
@@ -15,6 +14,7 @@ import MapboxSettings from '../../../config/map.json'
 })
 export default class RangerTrackModalComponent extends Vue {
   @Prop({ default: null })
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   rawRangerTrack!: any | null
 
   public mapOptions: MapboxOptions = {
@@ -22,30 +22,28 @@ export default class RangerTrackModalComponent extends Vue {
     zoom: 13
   }
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public mapbox: any
   public isLoading = false
 
   @Watch('rawRangerTrack')
   onRawRangerTrackChange (): void {
     this.isLoading = true
-    if (rawRangerTrack) {
-      this.createMap()
-    }
+    void this.createMap()
   }
 
   mounted (): void {
     this.isLoading = true
-    if (rawRangerTrack) {
-      this.createMap()
-    }
+    void this.createMap()
   }
 
   @Emit('closeRangerTrack')
-  public closeRangerTrack (): any {
-    return { key: 'track', toggle: false }
+  public closeRangerTrack (): boolean {
+    return true
   }
 
-  async createMap () {
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  async createMap (): Promise<any> {
     try {
       Mapbox.accessToken = MapboxSettings.MAPBOX_ACCESS_TOKEN
       this.mapbox = new Mapbox.Map({
@@ -60,7 +58,7 @@ export default class RangerTrackModalComponent extends Vue {
         this.mapbox.addSource('track',
           {
             type: 'geojson',
-            data: rawRangerTrack
+            data: this.rawRangerTrack
           }
         )
         // console.log('mapbox map', this.mapbox)
@@ -73,7 +71,7 @@ export default class RangerTrackModalComponent extends Vue {
             'line-cap': 'round'
           },
           paint: {
-            'line-color': rawRangerTrack.features[0].properties.color,
+            'line-color': this.rawRangerTrack.features[0].properties.color,
             'line-width': 2
           }
         })

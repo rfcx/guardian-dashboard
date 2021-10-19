@@ -7,11 +7,11 @@
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <dl v-if="!isLoading">
-        <div v-if="!incidents.length" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
-          No incidents data
-        </div>
-        <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-500" v-for="incident of incidents">
+      <div v-if="!incidents.length" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
+        No incidents data
+      </div>
+      <dl v-if="incidents !== undefined && incidents.length">
+        <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 border-b border-gray-500" v-for="incident of incidents">
           <dt class="text-sm font-medium">
             <router-link :to="{ path: '/project/' + selectedProject.id + '/incidents/'+ incident.id}">
               <span class="border-b border-gray-200 text-white mr-4">#{{incident.ref}} {{getStreamName(incident.streamId)}}</span>
@@ -24,7 +24,7 @@
                 <div class="shadow overflow-hidden">
                   <table class="min-w-full">
                     <tbody class="bg-gray">
-                      <incidents-table-rows v-if="incident.items.length" :report-data="true" :timezone="getStreamTimezone(incident.streamId)" :items="incident.items.slice(0, 4)" />
+                      <incidents-table-rows v-if="incident.items.length && getStreamTimezone(incident.streamId) !== undefined" :timezone="getStreamTimezone(incident.streamId)" :items-data="incident.items.slice(0, 4)" />
                       <tr v-if="incident.items.length > 4" class="flex-row">
                         <td class="px-6 py-2 whitespace-nowrap w-1/8"></td>
                         <td class="px-5 py-2 whitespace-nowrap text-sm text-white italic w-1/5">

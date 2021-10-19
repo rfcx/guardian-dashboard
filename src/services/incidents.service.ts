@@ -1,5 +1,5 @@
 import * as Endpoints from '@/api/endpoints'
-import { IncidentModel } from '@/models'
+import { Incident, Response, ResponseAsset } from '@/types'
 import ApiClient from './api.service'
 
 interface paramsModel {
@@ -11,24 +11,24 @@ interface paramsModel {
   offset?: number
 }
 
-export async function getIncidents (options: any): Promise<IncidentModel.Incident[]> {
+export async function getIncidents (options: any): Promise<Incident[]> {
   const params: paramsModel = {
-    ...!!options.closed !== undefined && { closed: options.closed },
-    ...!!options.sort !== undefined && { sort: options.sort },
-    ...!!options.limit !== undefined && { limit: options.limit },
-    ...!!options.offset !== undefined && { offset: options.offset }
+    ...options.closed !== undefined && { closed: options.closed },
+    ...options.sort !== undefined && { sort: options.sort },
+    ...options.limit !== undefined && { limit: options.limit },
+    ...options.offset !== undefined && { offset: options.offset }
   }
-  if (options.streams) {
+  if (options.streams !== undefined) {
     params.streams = options.streams
   };
-  if (options.projects) {
+  if (options.projects !== undefined) {
     params.projects = options.projects
   };
   Endpoints.getIncidents.config = {
     params: params
   }
   try {
-    const resp = await ApiClient.request<IncidentModel.Incident[]>({
+    const resp = await ApiClient.request<Incident[]>({
       ...Endpoints.getIncidents
     })
     return resp
@@ -37,10 +37,10 @@ export async function getIncidents (options: any): Promise<IncidentModel.Inciden
   }
 }
 
-export async function getIncident (id: any): Promise<IncidentModel.Incident[]> {
+export async function getIncident (id: string): Promise<Incident> {
   try {
     const incidentDetails = Endpoints.getIncidents.url + `/${id}`
-    const resp = await ApiClient.request<IncidentModel.Incident[]>({
+    const resp = await ApiClient.request<Incident>({
       method: 'GET',
       url: incidentDetails
     })
@@ -50,10 +50,10 @@ export async function getIncident (id: any): Promise<IncidentModel.Incident[]> {
   }
 }
 
-export async function closeIncident (id: any): Promise<IncidentModel.Incident[]> {
+export async function closeIncident (id: string): Promise<Incident[]> {
   try {
     const incident = Endpoints.closeIncident.url + `/${id}`
-    const resp = await ApiClient.request<IncidentModel.Incident[]>({
+    const resp = await ApiClient.request<Incident[]>({
       method: 'PATCH',
       url: incident,
       data: { closed: true }
@@ -64,10 +64,10 @@ export async function closeIncident (id: any): Promise<IncidentModel.Incident[]>
   }
 }
 
-export async function getResposesAssets (id: any): Promise<any> {
+export async function getResposesAssets (id: string): Promise<ResponseAsset[]> {
   try {
     const assetsUrl = Endpoints.getResponse.url + `/${id}/assets`
-    const resp = await ApiClient.request<any>({
+    const resp = await ApiClient.request<ResponseAsset[]>({
       method: 'GET',
       url: assetsUrl
     })
@@ -77,10 +77,10 @@ export async function getResposesAssets (id: any): Promise<any> {
   }
 }
 
-export async function getResposeDetails (id: any): Promise<any> {
+export async function getResposeDetails (id: string): Promise<Response> {
   try {
     const assetsUrl = Endpoints.getResponse.url + `/${id}`
-    const resp = await ApiClient.request<any>({
+    const resp = await ApiClient.request<Response>({
       method: 'GET',
       url: assetsUrl
     })
@@ -90,7 +90,7 @@ export async function getResposeDetails (id: any): Promise<any> {
   }
 }
 
-export async function getFiles (id: any): Promise<any> {
+export async function getFiles (id: string): Promise<any> {
   try {
     const assetsUrl = Endpoints.getAssets.url + `/${id}`
     const resp = await ApiClient.request<any>({
@@ -106,7 +106,7 @@ export async function getFiles (id: any): Promise<any> {
   }
 }
 
-export function combineIncidentItems (incident: any) {
+export function combineIncidentItems (incident: Incident): void {
   incident.items = [
     ...incident.events.map((event: any) => {
       event.type = 'event'
