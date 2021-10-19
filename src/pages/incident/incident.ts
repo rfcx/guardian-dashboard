@@ -2,25 +2,11 @@ import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, ResponseExtended, Stream } from '@/types'
-import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDifferent, isDefined, isNotDefined } from '@/utils'
+import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDifferent, isDefined, isDifferentMoreOneDay, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '../../components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '../../components/ranger-track-modal/ranger-track-modal.vue'
-
-type statesModelType = 'player' | 'track' | 'slider' | 'notes'
-
-interface statesModel {
-  player: boolean
-  track: boolean
-  slider: boolean
-  notes: boolean
-}
-
-interface closeDataModel {
-  key: statesModelType
-  toggle: boolean
-}
 
 @Options({
   components: {
@@ -45,13 +31,6 @@ export default class IncidentPage extends Vue {
     'large area substantially clear cut'
   ]
 
-  public compStates: statesModel = {
-    player: false,
-    track: false,
-    slider: false,
-    notes: false
-  }
-
   public streamsData: Stream[] = []
   public incident: Incident | undefined
   public stream: Stream | undefined
@@ -71,10 +50,6 @@ export default class IncidentPage extends Vue {
     void this.getData()
   }
 
-  public toggleState (key: statesModelType): void {
-    this.compStates[key] = !this.compStates[key]
-  }
-
   public toggleTrack (response: ResponseExtended, open: boolean): void {
     response.showTrack = open
   }
@@ -91,13 +66,15 @@ export default class IncidentPage extends Vue {
     response.showPlayer = open
   }
 
-  public closeComponent (opt: closeDataModel): void {
-    this.compStates[opt.key] = opt.toggle
-  }
-
   public async closeReport (): Promise<void> {
     await IncidentsService.closeIncident((this.$route.params.id as string))
-    this.incidentStatus = `Closed on ${formatDayWithoutTime(new Date(), this.stream?.timezone ?? 'UTC')}`
+    this.incidentStatus = `Closed on ${formatDayTimeLabel(new Date(), this.stream?.timezone ?? 'UTC')}`
+  }
+
+  public getIncidentStatus (): void {
+    if (this.incident !== undefined) {
+      this.incidentStatus = this.incident.closedAt ? `Closed on ${(isDifferentMoreOneDay(this.incident.closedAt, this.stream?.timezone ?? 'UTC') ? formatDayTimeLabel : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+    }
   }
 
   public getColor (n: number): string {
@@ -131,6 +108,7 @@ export default class IncidentPage extends Vue {
         IncidentsService.combineIncidentItems(incident)
         return incident
       })
+    this.getIncidentStatus()
     this.isLoading = false
     this.isAssetsLoading = true
     void this.getStreamsData()
