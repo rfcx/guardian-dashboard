@@ -32,7 +32,7 @@
                   >
                 </div>
                 <div
-                  v-for="(project, idx) in componentProjects.concat(componentProjects)"
+                  v-for="(project, idx) in componentProjects"
                   :key="'project-list-' + idx"
                   class="flex justify-between text-white cursor-pointer hover:bg-steel-grey-dark py-2"
                   @click="setSelectedProject(project)"
