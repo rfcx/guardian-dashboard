@@ -30,21 +30,35 @@
               />
             </svg>
           </div>
-          <dl v-if="!isLoading">
+          <dl v-if="!isLoading && componentStreams !== undefined">
             <div
-              v-for="(project, index) of projects"
-              :key="project.id"
+              v-for="(stream, index) of componentStreams"
+              :key="stream.id"
               class="bg-gray px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-500"
             >
               <dt class="text-sm font-medium flex items-center">
-                <div class="h-10 w-10 bg-red-500 rounded-full inline-block mr-2 flex justify-center items-center">
-                  8
+                <div
+                  :class="{'bg-red-500': stream.incidents && stream.incidents.length && isLastItemEvent(stream.incidents), 'bg-green-500': stream.incidents && (stream.incidents.length && !isLastItemEvent(stream.incidents) || !stream.incidents.length)}"
+                  class="h-10 w-10 rounded-full inline-block mr-2 flex justify-center items-center"
+                >
+                  {{ (stream.responsesCount === 0 && stream.eventsCount !== 0) || (stream.incidents && stream.incidents.length && isLastItemEvent(stream.incidents)) ? stream.eventsCount : ' ' }}
                 </div>
-                <span class="border-b border-gray-200 text-white mr-4">#{{ index+1 }} {{ project.name }}</span>
-                <span class="text-white">Curaci, Tembe Reserve</span>
+                <span class="text-white mr-1">#{{ index+1 }} {{ stream.name }}{{ stream.countryName? ', ' : '' }}</span>
+                <span class="text-secondary italic">{{ stream.countryName }}</span>
               </dt>
               <dt class="text-sm font-medium flex items-center">
-                <span class="ic-pink">{{ formatDifferentFromNow('2021-10-05T13:42:28.256Z') }} no response</span>
+                <span
+                  v-if="stream.incidents && !stream.incidents.length"
+                  class="text-white"
+                >
+                  no events and responses
+                </span>
+                <span
+                  v-if="stream.incidents && stream.incidents.length"
+                  :class="{'ic-green' : !isLastItemEvent(stream.incidents), 'ic-pink': isLastItemEvent(stream.incidents)}"
+                >
+                  {{ getLabel(stream.incidents, stream.timezone) }}
+                </span>
               </dt>
             </div>
           </dl>

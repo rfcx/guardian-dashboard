@@ -53,8 +53,12 @@ export default class NavigationBarComponent extends Vue {
       : []
   }
 
-  getSelectedProject (): void {
+  public getSelectedProject (): void {
     this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
+  }
+
+  public removeSelectedProject (): void {
+    delete this.$route.params.projectId
   }
 
   // Menu

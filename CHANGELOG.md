@@ -2,6 +2,7 @@
 
 ## 0.0.1 (2021-??-??)
 
+* **feature:** Homepage updates ([CE-1477](https://jira.rfcx.org/browse/CE-1477))
 * **setup:** Fixed the player title label. Fixed the alignment of the navbar items ([CE-1480](https://jira.rfcx.org/browse/CE-1480))
 * **setup:** Updated the logic to return the dates difference into the dates util ([CE-1475](https://jira.rfcx.org/browse/CE-1475))
 * **setup:** Interfaces are added to all responses types ([CE-1476](https://jira.rfcx.org/browse/CE-1476))

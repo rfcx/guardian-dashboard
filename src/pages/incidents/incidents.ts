@@ -41,27 +41,27 @@ export default class IncidentsPage extends Vue {
   mounted (): void {
     this.getSelectedProject()
     this.isLoading = true
-    void this.getStreamsData(this.$route.params.projectId)
-    void this.getIncidentsData(this.$route.params.projectId)
+    const params: string = this.$route.params.projectId as string
+    void this.getStreamsData(params)
+    void this.getIncidentsData(params)
   }
 
   public getSelectedProject (): void {
     this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  public getStreamById (streamId: string): any {
+  public getStreamById (streamId: string): Stream | undefined {
     const stream = this.streamsData.find(s => s.id === streamId)
     return stream
   }
 
   public getStreamName (streamId: string): string | null {
-    const stream: Stream = this.getStreamById(streamId)
+    const stream: Stream | undefined = this.getStreamById(streamId)
     return stream !== undefined ? stream.name : null
   }
 
   public getStreamTimezone (streamId: string): string | undefined {
-    const stream: Stream = this.getStreamById(streamId)
+    const stream: Stream | undefined = this.getStreamById(streamId)
     if (stream !== undefined) {
       return stream.timezone
     }
@@ -75,6 +75,8 @@ export default class IncidentsPage extends Vue {
         status = `report closed ${(formatDifferentFromNow(incident.closedAt, timezone) as string)} ago`
       } else if (incident.responses.length > 0) {
         status = `response time ${(formatDifferentFromNow(incident.responses[0].createdAt, timezone) as string)}`
+      } else if (!incident.items.length) {
+        return 'no events and responses'
       } else {
         status = `${(formatDifferentFromNow(incident.createdAt, timezone) as string)} without responce`
       }
@@ -101,7 +103,7 @@ export default class IncidentsPage extends Vue {
     return str
   }
 
-  public async getStreamsData (projectId: string | string[]): Promise<void> {
+  public async getStreamsData (projectId: string): Promise<void> {
     this.streamsData = await StreamService.getStreams([projectId])
     await VuexService.Projects.streams.set(this.streamsData)
   }
