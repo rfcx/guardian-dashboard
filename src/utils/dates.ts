@@ -28,13 +28,13 @@ export const formatDifferentFromNow = (label: string, timezone?: string): any =>
   } else return combineLabel(dayjs.duration(dayjs().diff(dayjs(label))))
 }
 
-export const isDifferentMoreOneDay = (label: string, timezone?: string): boolean => {
-  const dateDiff = timezone !== undefined ? dayjs.duration(dayjs().tz(timezone).diff(dayjs(label).tz(timezone))) : dayjs.duration(dayjs().diff(dayjs(label)))
+export const inLast24Hours = (label: string): boolean => {
+  const dateDiff = dayjs.duration(dayjs().diff(dayjs(label)))
   const data: any = Object.values(dateDiff)[0]
   return data.days < 1
 }
 
-export const formatTwoDateDifferent = (labelFrom: string, labelTo: string): any => {
+export const formatTwoDateDiff = (labelFrom: string, labelTo: string): any => {
   const dateDiff = dayjs.duration(dayjs(labelTo).diff(dayjs(labelFrom)))
   return combineLabel(dateDiff)
 }

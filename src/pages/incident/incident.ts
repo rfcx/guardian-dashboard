@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, ResponseExtended, Stream } from '@/types'
-import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDifferent, isDefined, isDifferentMoreOneDay, isNotDefined } from '@/utils'
+import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '../../components/ranger-slider/ranger-slider.vue'
@@ -67,13 +67,22 @@ export default class IncidentPage extends Vue {
   }
 
   public async closeReport (): Promise<void> {
-    await IncidentsService.closeIncident((this.$route.params.id as string))
-    this.incidentStatus = `Closed on ${formatDayTimeLabel(new Date(), this.stream?.timezone ?? 'UTC')}`
+    try {
+      await IncidentsService.closeIncident((this.$route.params.id as string))
+      this.isLoading = true
+      void this.getData()
+    } catch (e) {
+      this.incidentStatus = 'Error occurred'
+    }
+  }
+
+  public isError (): boolean {
+    return this.incidentStatus === 'Error occurred'
   }
 
   public getIncidentStatus (): void {
     if (this.incident !== undefined) {
-      this.incidentStatus = this.incident.closedAt ? `Closed on ${(isDifferentMoreOneDay(this.incident.closedAt, this.stream?.timezone ?? 'UTC') ? formatDayTimeLabel : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+      this.incidentStatus = this.incident.closedAt ? `Closed on ${(inLast24Hours(this.incident.closedAt) ? formatDayTimeLabel : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
     }
   }
 
@@ -91,7 +100,7 @@ export default class IncidentPage extends Vue {
   }
 
   public hoursDiffFormatted (from: string, to: string): string {
-    return formatTwoDateDifferent(from, to)
+    return formatTwoDateDiff(from, to)
   }
 
   public async getStreamsData (): Promise<void> {
