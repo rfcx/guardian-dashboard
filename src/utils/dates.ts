@@ -44,9 +44,8 @@ function combineLabel (dateDiff: duration.Duration): string {
   const data: any = Object.values(dateDiff)[0]
   dataArray.forEach((item: string) => {
     if (data[item] !== 0) {
-      if (item === 'seconds' && (data.minutes !== 0 && data.hours !== 0)) {
-        // console.log(data[item])
-      } else string += ` ${(data[item] as string)} ${getEndLabel(data[item], item)}`
+      if (item === 'seconds' && (data.minutes !== 0 && data.hours !== 0)) return string
+      else string += ` ${(data[item] as string)} ${getEndLabel(data[item], item)}`
     }
   })
   return string
