@@ -125,6 +125,15 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </a>
+                  <a v-if="((item.sliderData && item.sliderData.length) || (item.audioObject && item.audioObject.src))"
+                    class="cursor-pointer" :class="{'opacity-50 cursor-not-allowed': item.isDownloading || item.isError}" @click="downloadAssets(item)"
+                    title="Download Assets"
+                  >
+                    <img class="h-7 w-7 inline-block mr-0.5" src="/src/assets/download.svg" alt="">
+                  </a>
+                  <span v-if='item.isError' class="text-sm font-medium ic-pink">
+                    Error occurred
+                  </span>
                 </div>
               </dd>
             </div>
