@@ -34,7 +34,7 @@ export default class IncidentPage extends Vue {
   public streamsData: Stream[] = []
   public incident: Incident | undefined
   public stream: Stream | undefined
-  public incidentStatus = 'Mark as closed'
+  public incidentStatus = ''
   public isLoading = false
   public isAssetsLoading = false
 
@@ -48,6 +48,15 @@ export default class IncidentPage extends Vue {
   mounted (): void {
     this.isLoading = true
     void this.getData()
+      .then(() => {
+        void this.getStreamsData()
+          .then(() => {
+            this.stream = this.streamsData.find((s: Stream) => {
+              return s.id === this.incident?.streamId
+            })
+          })
+        void this.getAssets()
+      })
   }
 
   public toggleTrack (response: ResponseExtended, open: boolean): void {
@@ -119,13 +128,10 @@ export default class IncidentPage extends Vue {
       })
     this.getIncidentStatus()
     this.isLoading = false
+  }
+
+  public async getAssets (): Promise<void> {
     this.isAssetsLoading = true
-    void this.getStreamsData()
-      .then(() => {
-        this.stream = this.streamsData.find((s: Stream) => {
-          return s.id === this.incident?.streamId
-        })
-      })
     await this.getResponsesAssets()
     await this.getResposeDetails()
   }
