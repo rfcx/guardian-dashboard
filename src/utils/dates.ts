@@ -28,7 +28,13 @@ export const formatDifferentFromNow = (label: string, timezone?: string): any =>
   } else return combineLabel(dayjs.duration(dayjs().diff(dayjs(label))))
 }
 
-export const formatTwoDateDifferent = (labelFrom: string, labelTo: string): any => {
+export const inLast24Hours = (label: string): boolean => {
+  const dateDiff = dayjs.duration(dayjs().diff(dayjs(label)))
+  const data: any = Object.values(dateDiff)[0]
+  return data.days < 1
+}
+
+export const formatTwoDateDiff = (labelFrom: string, labelTo: string): any => {
   const dateDiff = dayjs.duration(dayjs(labelTo).diff(dayjs(labelFrom)))
   return combineLabel(dateDiff)
 }
@@ -38,9 +44,8 @@ function combineLabel (dateDiff: duration.Duration): string {
   const data: any = Object.values(dateDiff)[0]
   dataArray.forEach((item: string) => {
     if (data[item] !== 0) {
-      if (item === 'seconds' && (data.minutes !== undefined || data.hours !== undefined)) {
-        // console.log(data[item])
-      } else string += ` ${(data[item] as string)} ${getEndLabel(data[item], item)}`
+      if (item === 'seconds' && (data.minutes !== 0 && data.hours !== 0)) return string
+      else string += ` ${(data[item] as string)} ${getEndLabel(data[item], item)}`
     }
   })
   return string
@@ -51,7 +56,7 @@ function getEndLabel (count: number, item: string): string {
   return item
 }
 
-export const formatDayTimeLabel = (label: string, timezone?: string): string => {
+export const formatDayTimeLabel = (label: string | any, timezone?: string): string => {
   if (timezone) return dayjs(label).tz(timezone).format('MMM DD, HH:mm')
   else return dayjs(label).format('MMM DD, HH:mm')
 }
