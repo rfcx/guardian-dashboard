@@ -2,25 +2,11 @@ import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, ResponseExtended, Stream } from '@/types'
-import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDifferent, isDefined, isNotDefined } from '@/utils'
+import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '../../components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '../../components/ranger-track-modal/ranger-track-modal.vue'
-
-type statesModelType = 'player' | 'track' | 'slider' | 'notes'
-
-interface statesModel {
-  player: boolean
-  track: boolean
-  slider: boolean
-  notes: boolean
-}
-
-interface closeDataModel {
-  key: statesModelType
-  toggle: boolean
-}
 
 @Options({
   components: {
@@ -45,17 +31,10 @@ export default class IncidentPage extends Vue {
     'large area substantially clear cut'
   ]
 
-  public compStates: statesModel = {
-    player: false,
-    track: false,
-    slider: false,
-    notes: false
-  }
-
   public streamsData: Stream[] = []
   public incident: Incident | undefined
   public stream: Stream | undefined
-  public incidentStatus = 'Mark as closed'
+  public incidentStatus = ''
   public isLoading = false
   public isAssetsLoading = false
   private timerSub!: NodeJS.Timeout
@@ -71,10 +50,15 @@ export default class IncidentPage extends Vue {
   mounted (): void {
     this.isLoading = true
     void this.getData()
-  }
-
-  public toggleState (key: statesModelType): void {
-    this.compStates[key] = !this.compStates[key]
+      .then(() => {
+        void this.getStreamsData()
+          .then(() => {
+            this.stream = this.streamsData.find((s: Stream) => {
+              return s.id === this.incident?.streamId
+            })
+          })
+        void this.getAssets()
+      })
   }
 
   public toggleTrack (response: ResponseExtended, open: boolean): void {
@@ -93,13 +77,24 @@ export default class IncidentPage extends Vue {
     response.showPlayer = open
   }
 
-  public closeComponent (opt: closeDataModel): void {
-    this.compStates[opt.key] = opt.toggle
+  public async closeReport (): Promise<void> {
+    try {
+      await IncidentsService.closeIncident((this.$route.params.id as string))
+      this.isLoading = true
+      void this.getData()
+    } catch (e) {
+      this.incidentStatus = 'Error occurred'
+    }
   }
 
-  public async closeReport (): Promise<void> {
-    await IncidentsService.closeIncident((this.$route.params.id as string))
-    this.incidentStatus = `Closed on ${formatDayWithoutTime(new Date(), this.stream?.timezone ?? 'UTC')}`
+  public isError (): boolean {
+    return this.incidentStatus === 'Error occurred'
+  }
+
+  public getIncidentStatus (): void {
+    if (this.incident !== undefined) {
+      this.incidentStatus = this.incident.closedAt ? `Closed on ${(inLast24Hours(this.incident.closedAt) ? formatDayTimeLabel : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+    }
   }
 
   public getColor (n: number): string {
@@ -116,7 +111,7 @@ export default class IncidentPage extends Vue {
   }
 
   public hoursDiffFormatted (from: string, to: string): string {
-    return formatTwoDateDifferent(from, to)
+    return formatTwoDateDiff(from, to)
   }
 
   public async getStreamsData (): Promise<void> {
@@ -133,14 +128,12 @@ export default class IncidentPage extends Vue {
         IncidentsService.combineIncidentItems(incident)
         return incident
       })
+    this.getIncidentStatus()
     this.isLoading = false
+  }
+
+  public async getAssets (): Promise<void> {
     this.isAssetsLoading = true
-    void this.getStreamsData()
-      .then(() => {
-        this.stream = this.streamsData.find((s: Stream) => {
-          return s.id === this.incident?.streamId
-        })
-      })
     await this.getResponsesAssets()
     await this.getResposeDetails()
   }
