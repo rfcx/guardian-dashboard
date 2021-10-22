@@ -13,12 +13,15 @@
         </dt>
         <dt class="mt-1 text-sm text-gray-500 sm:mt-0 text-white">
           <div class="flex rounded-md shadow justify-end">
-            <a v-if="incidentStatus === 'Mark as closed'" @click="closeReport()" class="inline-flex items-center justify-center px-3 py-0.5 border border-transparent text-white font-small rounded-md bg-gray-600 hover:bg-gray-800 cursor-pointer">
-              {{incidentStatus}}
+            <a v-if="!incident.closedAt && !isError()" @click="closeReport()" class="inline-flex items-center justify-center px-3 py-0.5 border border-transparent text-white font-small rounded-md bg-gray-600 hover:bg-gray-800 cursor-pointer">
+              Mark as closed
             </a>
-            <span class="text-sm font-medium text-white px-3 py-0.7" v-if="incidentStatus !== 'Mark as closed'">{{incidentStatus}}</span>
+            <span v-else class="text-sm font-medium text-white px-3 py-0.7" :class="{'ic-pink': isError()}">{{incidentStatus}}</span>
           </div>
         </dt>
+      </div>
+      <div v-if="!incident.items.length" class="px-4 py-5">
+        No responses and events data
       </div>
       <div v-for="item in incident.items">
         <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 border-b border-gray-500" v-if="item.type === 'response'">
