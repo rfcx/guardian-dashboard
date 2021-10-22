@@ -35,7 +35,6 @@ export default class RangerSliderComponent extends Vue {
   }
 
   mounted (): void {
-    console.log(this.images)
     this.isLoading = true
     this.getSourceFiles()
   }

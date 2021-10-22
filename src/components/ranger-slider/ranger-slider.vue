@@ -118,6 +118,7 @@
               <button
                 v-if="!isError"
                 :class="{'opacity-50 cursor-not-allowed': isDownloading}"
+                :disabled="isDownloading"
                 class="btn btn-primary"
                 @click="downloadAssets()"
               >
