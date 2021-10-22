@@ -1,13 +1,15 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Incident, Project, Stream } from '@/types'
+import { Incident, Pagination, Project, Stream } from '@/types'
 import { formatDayWithoutTime, formatDifferentFromNow } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
+import PaginationComponent from '../../components/pagination/pagination.vue'
 
 @Options({
   components: {
-    IncidentsTableRows
+    IncidentsTableRows,
+    PaginationComponent
   }
 })
 export default class IncidentsPage extends Vue {
@@ -21,6 +23,12 @@ export default class IncidentsPage extends Vue {
   public originalData: Incident[] = []
   public limit = 2
   public alertsLabel = ''
+  public paginationSettings: Pagination = {
+    total: 72, // TODO: get data from server
+    limit: 10,
+    offset: 0,
+    page: 1
+  }
 
   updated (): void {
     if (this.selectedProject !== undefined && this.selectedProject.id !== this.$route.params.projectId) {
@@ -106,8 +114,16 @@ export default class IncidentsPage extends Vue {
     await VuexService.Projects.streams.set(this.streamsData)
   }
 
+  public getPage (): void {
+    void this.getIncidentsData(this.$route.params.projectId)
+  }
+
   public async getIncidentsData (projectId: string | string[]): Promise<void> {
-    this.originalData = await IncidentsService.getIncidents({ projects: projectId })
+    this.originalData = await IncidentsService.getIncidents({
+      projects: projectId,
+      limit: this.paginationSettings.limit,
+      offset: this.paginationSettings.offset * this.paginationSettings.limit
+    })
     this.incidents = this.formatIncidents()
     this.isLoading = false
   }

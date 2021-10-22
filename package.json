@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.17.0",
+    "@heroicons/vue": "^1.0.4",
     "@vueuse/components": "^6.4.1",
     "@vueuse/core": "^6.4.1",
     "axios": "^0.21.3",

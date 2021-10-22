@@ -45,6 +45,7 @@
           </div>
         </div>
       </dl>
+      <pagination-component v-if="paginationSettings && paginationSettings.total" :pagination-settings="paginationSettings" @selected-page="getPage()" />
     </div>
   </div>
 </div>
