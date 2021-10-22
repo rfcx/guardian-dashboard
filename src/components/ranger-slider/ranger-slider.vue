@@ -69,7 +69,7 @@
             <div
               v-if="!isLoading && images.length"
               class="flex flex-row min-h-lg items-center justify-between"
-              :style="{'background': 'center / contain no-repeat url(' + images[currentIndex] + ')'}"
+              :style="{'background': 'center / contain no-repeat url(' + images[currentIndex].src + ')'}"
             >
               <a
                 v-if="images.length > 1"
@@ -113,6 +113,29 @@
                   />
                 </svg>
               </a>
+            </div>
+            <div class="flex justify-end px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <button
+                v-if="!isError"
+                :class="{'opacity-50 cursor-not-allowed': isDownloading}"
+                :disabled="isDownloading"
+                class="btn btn-primary"
+                @click="downloadAssets()"
+              >
+                <img
+                  class="h-5 w-5 inline-block align-top mr-0.5"
+                  src="/src/assets/download.svg"
+                  alt=""
+                >
+                Download
+              </button>
+              <span
+                v-else
+                class="text-sm font-medium text-white px-3 py-2.5"
+                :class="{'ic-pink': isError}"
+              >
+                Error occurred
+              </span>
             </div>
           </div>
         </OnClickOutside>
