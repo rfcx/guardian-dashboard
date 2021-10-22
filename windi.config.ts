@@ -9,7 +9,6 @@ import pluginInteractionVariants from '@windicss/plugin-interaction-variants'
 
 export default defineConfig({
   darkMode: false,
-  borderStyle: false,
   plugins: [
     plugin(({ addComponents }) => {
       const navbarItems = {
