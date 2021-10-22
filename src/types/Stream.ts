@@ -1,4 +1,4 @@
-import { Incident, Project } from '@/types'
+import { Event, Incident, Project } from '@/types'
 
 export interface Stream {
   id: string
@@ -9,6 +9,6 @@ export interface Stream {
   longitude?: number
   project?: Project
   eventsCount: number
-  responsesCount: number
+  lastEvents: Event[]
   incidents: Incident[]
 }

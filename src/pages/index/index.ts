@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { IncidentsService, StreamService } from '@/services'
-import { EventExtended, Incident, Project, ResponseExtended, Stream } from '@/types'
+import { Event, EventExtended, Incident, Project, ResponseExtended, Stream } from '@/types'
 import { formatDifferentFromNow } from '@/utils'
 
 @Options({
@@ -44,10 +44,15 @@ export default class IndexPage extends Vue {
     const originalData = await IncidentsService.getIncidents({ projects: stream.project?.id })
     stream.incidents = this.formatIncidents(originalData)
     stream.eventsCount = 0
-    stream.responsesCount = 0
+    stream.lastEvents = []
     stream.incidents.forEach(i => {
-      stream.eventsCount += i.items.filter((i) => i.type === 'event').length
-      stream.responsesCount += i.items.filter((i) => i.type === 'response').length
+      if (i.events.length && i.responses.length) {
+        const lastResponse = i.responses[0]
+        const events = i.events.filter(e => e.createdAt > lastResponse.createdAt)
+        stream.lastEvents = events
+        stream.eventsCount += events.length
+        this.sortItems(stream.lastEvents)
+      }
     })
   }
 
@@ -58,38 +63,31 @@ export default class IndexPage extends Vue {
     })
   }
 
-  public isLastItemEvent (incidents: Incident[]): boolean {
-    const item = this.getLastItem(incidents)
-    return item?.type === 'event'
+  public getItemDatetime (item: ResponseExtended | EventExtended | Event): string {
+    if ((item as Event).createdAt) {
+      return (item as Event).createdAt
+    }
+    return (item as EventExtended).type === 'event' ? (item as EventExtended).createdAt : (item as ResponseExtended).submittedAt
   }
 
-  public getLastItem (incidents: Incident[]): ResponseExtended | EventExtended | undefined {
-    const temp: Array<ResponseExtended | EventExtended> = []
-    incidents.forEach((i: Incident) => {
-      temp.push(i.items[0])
-    })
-    temp.sort((a: ResponseExtended | EventExtended, b: ResponseExtended | EventExtended) => {
+  public sortItems (items: Array<ResponseExtended | EventExtended | Event>): void {
+    items.sort((a: ResponseExtended | EventExtended | Event, b: ResponseExtended | EventExtended | Event) => {
       const dateA = new Date(this.getItemDatetime(a)).valueOf()
       const dateB = new Date(this.getItemDatetime(b)).valueOf()
       return dateB - dateA
     })
-    return temp.length ? temp[0] : undefined
   }
 
-  public getItemDatetime (item: ResponseExtended | EventExtended): string {
-    return item.type === 'event' ? (item as EventExtended).createdAt : (item as ResponseExtended).submittedAt
+  public noEventsLabel (events: Event[], timezone: string): string {
+    return events.length ? `${this.formatDifferentFromNow(events[0].createdAt, timezone)} no response` : ''
   }
 
-  public getLabel (incidents: Incident[], timezone: string): string {
-    let label = ''
-    const lastItem = this.getLastItem(incidents)
-    if (lastItem !== undefined) {
-      if (this.isLastItemEvent(incidents)) {
-        label += `${this.formatDifferentFromNow(lastItem.createdAt, timezone)} no response`
-      } else {
-        label += `response time ${this.formatDifferentFromNow(lastItem.createdAt, timezone)}`
-      }
-    } else label += 'no data'
-    return label
+  public getResponsesLabel (incidents: Incident[], timezone: string): string {
+    const temp: Array<ResponseExtended | EventExtended> = []
+    incidents.forEach((i: Incident) => {
+      temp.push(i.items[0])
+    })
+    this.sortItems(temp)
+    return `response time ${this.formatDifferentFromNow(temp[0].createdAt, timezone)}`
   }
 }

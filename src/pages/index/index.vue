@@ -38,10 +38,10 @@
             >
               <dt class="text-sm font-medium flex items-center">
                 <div
-                  :class="{'bg-red-500': stream.incidents && stream.incidents.length && isLastItemEvent(stream.incidents), 'bg-green-500': stream.incidents && (stream.incidents.length && !isLastItemEvent(stream.incidents) || !stream.incidents.length)}"
+                  :class="{'bg-red-500': stream.eventsCount !== 0, 'bg-green-500': stream.eventsCount === 0 || !stream.eventsCount}"
                   class="h-10 w-10 rounded-full inline-block mr-2 flex justify-center items-center"
                 >
-                  {{ (stream.responsesCount === 0 && stream.eventsCount !== 0) || (stream.incidents && stream.incidents.length && isLastItemEvent(stream.incidents)) ? stream.eventsCount : ' ' }}
+                  {{ stream?.eventsCount || ' ' }}
                 </div>
                 <span class="text-white mr-1">#{{ index+1 }} {{ stream.name }}{{ stream.countryName? ', ' : '' }}</span>
                 <span class="text-secondary italic">{{ stream.countryName }}</span>
@@ -54,10 +54,10 @@
                   no events and responses
                 </span>
                 <span
-                  v-if="stream.incidents && stream.incidents.length"
-                  :class="{'ic-green' : !isLastItemEvent(stream.incidents), 'ic-pink': isLastItemEvent(stream.incidents)}"
+                  v-if="stream.incidents && stream.incidents.length && stream.eventsCount !== undefined"
+                  :class="{'text-white': !stream.eventsCount, 'ic-green': stream.eventsCount === 0, 'ic-pink': stream.eventsCount !== 0}"
                 >
-                  {{ getLabel(stream.incidents, stream.timezone) }}
+                  {{ stream.eventsCount !== 0 ? noEventsLabel(stream.lastEvents, stream.timezone) : getResponsesLabel(stream.incidents, stream.timezone) }}
                 </span>
               </dt>
             </div>
