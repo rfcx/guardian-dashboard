@@ -9,13 +9,14 @@ import { formatDifferentFromNow } from '@/utils'
   components: { NavigationBarComponent }
 })
 export default class IndexPage extends Vue {
-  public componentStreams: Stream[] | undefined
+  public incidents: Incident[] | undefined
+  public streamsData: Stream[] = []
   public selectedProject: Project | undefined
   public isLoading = false
 
   data (): Record<string, unknown> {
     return {
-      componentStreams: this.componentStreams,
+      incidents: this.incidents,
       selectedProject: this.selectedProject
     }
   }
@@ -23,6 +24,7 @@ export default class IndexPage extends Vue {
   mounted (): void {
     this.isLoading = true
     if (this.$route.params.projectId === undefined) {
+      void this.getIncidentsData()
       void this.getStreamsData()
     }
   }
@@ -32,35 +34,73 @@ export default class IndexPage extends Vue {
   }
 
   public async getStreamsData (): Promise<void> {
-    const streamsData: Stream[] = await StreamService.getStreams()
-    this.componentStreams = streamsData
-    this.isLoading = false
-    for (const item of this.componentStreams) {
-      await this.getIncidentsData(item)
+    this.streamsData = await StreamService.getStreams()
+  }
+
+  public getStreamName (streamId: string): string | null {
+    const stream: Stream | undefined = this.getStreamById(streamId)
+    return stream !== undefined ? stream.name : null
+  }
+
+  public getProjectName (streamId: string): string | null | undefined {
+    const stream: Stream | undefined = this.getStreamById(streamId)
+    return stream !== undefined ? stream.project?.name : null
+  }
+
+  public getProjectId (streamId: string): string | null | undefined {
+    const stream: Stream | undefined = this.getStreamById(streamId)
+    return stream !== undefined ? stream.project?.id : null
+  }
+
+  public getStreamTimezone (streamId: string): string | undefined {
+    const stream: Stream | undefined = this.getStreamById(streamId)
+    if (stream !== undefined) {
+      return stream.timezone
     }
   }
 
-  public async getIncidentsData (stream: Stream): Promise<void> {
-    const originalData = await IncidentsService.getIncidents({ projects: stream.project?.id })
-    stream.incidents = this.formatIncidents(originalData)
-    stream.eventsCount = 0
-    stream.lastEvents = []
-    stream.incidents.forEach(i => {
-      if (i.events.length && i.responses.length) {
-        const lastResponse = i.responses[0]
-        const events = i.events.filter(e => e.createdAt > lastResponse.createdAt)
-        stream.lastEvents = events
-        stream.eventsCount += events.length
-        this.sortItems(stream.lastEvents)
-      }
-    })
+  public getStreamById (streamId: string): Stream | undefined {
+    const stream = this.streamsData.find(s => s.id === streamId)
+    return stream
   }
 
-  public formatIncidents (originalData: Incident[]): Incident[] {
-    return originalData.map((incident) => {
-      IncidentsService.combineIncidentItems(incident)
-      return incident
-    })
+  public async getIncidentsData (): Promise<void> {
+    const incidentsData: Incident[] = await IncidentsService.getIncidents()
+    this.incidents = incidentsData
+    this.isLoading = false
+    for (const item of this.incidents) {
+      void IncidentsService.combineIncidentItems(item)
+    }
+  }
+
+  public getEventsCount (incident: Incident): number {
+    let eventsCount = 0
+    if (incident.events.length && incident.responses.length) {
+      const events = this.filterEvents(incident)
+      eventsCount += events.length
+    }
+    if (incident.events.length && !incident.responses.length) {
+      eventsCount += incident.events.length
+    }
+    return eventsCount
+  }
+
+  public getLastEvents (incident: Incident): Event[] {
+    let lastEvents: Event[] = []
+    if (incident.events.length && incident.responses.length) {
+      const events = this.filterEvents(incident)
+      lastEvents = events
+    }
+    if (incident.events.length && !incident.responses.length) {
+      lastEvents = incident.events
+    }
+    lastEvents.length ?? this.sortItems(lastEvents)
+    return lastEvents
+  }
+
+  public filterEvents (incident: Incident): Event[] {
+    const lastResponse = incident.responses[incident.responses.length - 1]
+    return incident.events.filter(e => e.createdAt > lastResponse.createdAt)
   }
 
   public getItemDatetime (item: ResponseExtended | EventExtended | Event): string {
@@ -78,16 +118,11 @@ export default class IndexPage extends Vue {
     })
   }
 
-  public noEventsLabel (events: Event[], timezone: string): string {
+  public getEventsLabel (events: Event[], timezone: string): string {
     return events.length ? `${this.formatDifferentFromNow(events[0].createdAt, timezone)} no response` : ''
   }
 
-  public getResponsesLabel (incidents: Incident[], timezone: string): string {
-    const temp: Array<ResponseExtended | EventExtended> = []
-    incidents.forEach((i: Incident) => {
-      temp.push(i.items[0])
-    })
-    this.sortItems(temp)
-    return `response time ${this.formatDifferentFromNow(temp[0].createdAt, timezone)}`
+  public getResponsesLabel (incident: Incident, timezone: string): string {
+    return `last response was ${this.formatDifferentFromNow(incident.items[0].createdAt, timezone)} ago`
   }
 }

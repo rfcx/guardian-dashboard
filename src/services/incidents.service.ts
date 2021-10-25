@@ -11,21 +11,23 @@ interface paramsModel {
   offset?: number
 }
 
-export async function getIncidents (options: any): Promise<Incident[]> {
-  const params: paramsModel = {
-    ...options.closed !== undefined && { closed: options.closed },
-    ...options.sort !== undefined && { sort: options.sort },
-    ...options.limit !== undefined && { limit: options.limit },
-    ...options.offset !== undefined && { offset: options.offset }
-  }
-  if (options.streams !== undefined) {
-    params.streams = options.streams
-  };
-  if (options.projects !== undefined) {
-    params.projects = options.projects
-  };
-  Endpoints.getIncidents.config = {
-    params: params
+export async function getIncidents (options?: any): Promise<Incident[]> {
+  if (options !== undefined) {
+    const params: paramsModel = {
+      ...options.closed !== undefined && { closed: options.closed },
+      ...options.sort !== undefined && { sort: options.sort },
+      ...options.limit !== undefined && { limit: options.limit },
+      ...options.offset !== undefined && { offset: options.offset }
+    }
+    if (options.streams !== undefined) {
+      params.streams = options.streams
+    }
+    if (options.projects !== undefined) {
+      params.projects = options.projects
+    }
+    Endpoints.getIncidents.config = {
+      params: params
+    }
   }
   try {
     const resp = await ApiClient.request<Incident[]>({

@@ -30,34 +30,45 @@
               />
             </svg>
           </div>
-          <dl v-if="!isLoading && componentStreams !== undefined">
+          <div
+            v-if="incidents !== undefined && !incidents.length && !isLoading"
+            class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white"
+          >
+            No incidents data
+          </div>
+          <dl v-if="!isLoading && incidents !== undefined && incidents.length">
             <div
-              v-for="(stream, index) of componentStreams"
-              :key="stream.id"
+              v-for="incident of incidents"
+              :key="incident.id"
               class="bg-gray px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-500"
             >
               <dt class="text-sm font-medium flex items-center">
                 <div
-                  :class="{'bg-red-500': stream.eventsCount !== 0, 'bg-green-500': stream.eventsCount === 0 || !stream.eventsCount}"
+                  :class="{'bg-red-500': getEventsCount(incident) !== 0, 'bg-green-500': getEventsCount(incident) === 0 || !getEventsCount(incident)}"
                   class="h-10 w-10 rounded-full inline-block mr-2 flex justify-center items-center"
                 >
-                  {{ stream?.eventsCount || ' ' }}
+                  {{ getEventsCount(incident) || ' ' }}
                 </div>
-                <span class="text-white mr-1">#{{ index+1 }} {{ stream.name }}{{ stream.countryName? ', ' : '' }}</span>
-                <span class="text-secondary italic">{{ stream.countryName }}</span>
+                <router-link
+                  v-if="incident !== undefined"
+                  :to="{ path: '/project/' + getProjectId(incident.streamId) + '/incidents/'+ incident.id}"
+                >
+                  <span class="border-b border-gray-200 text-white mr-2">#{{ incident.ref }} {{ getStreamName(incident.streamId) }} {{ getProjectName(incident.streamId)? ', ' : '' }}</span>
+                </router-link>
+                <span class="text-white">{{ getProjectName(incident.streamId) }}</span>
               </dt>
               <dt class="text-sm font-medium flex items-center">
                 <span
-                  v-if="stream.incidents && !stream.incidents.length"
+                  v-if="incident.items && !incident.items.length"
                   class="text-white"
                 >
                   no events and responses
                 </span>
                 <span
-                  v-if="stream.incidents && stream.incidents.length && stream.eventsCount !== undefined"
-                  :class="{'text-white': !stream.eventsCount, 'ic-green': stream.eventsCount === 0, 'ic-pink': stream.eventsCount !== 0}"
+                  v-if="incident.items && incident.items.length && getEventsCount(incident) !== undefined"
+                  :class="{'text-white': !getEventsCount(incident), 'ic-green': getEventsCount(incident) === 0, 'ic-pink': getEventsCount(incident) !== 0}"
                 >
-                  {{ stream.eventsCount !== 0 ? noEventsLabel(stream.lastEvents, stream.timezone) : getResponsesLabel(stream.incidents, stream.timezone) }}
+                  {{ getEventsCount(incident) !== 0 ? getEventsLabel(getLastEvents(incident), (getStreamTimezone(incident.streamId) || 'UTC')) : getResponsesLabel(incident, (getStreamTimezone(incident.streamId) || 'UTC')) }}
                 </span>
               </dt>
             </div>
