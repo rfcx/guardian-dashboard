@@ -3,7 +3,10 @@
 ## 0.0.1 (2021-??-??)
 
 * **setup:** Setup search and scroll functionality to the Projects list ([CE-1474](https://jira.rfcx.org/browse/CE-1474))
+* **feature:** User is able to download Response assets ([CE-1489](https://jira.rfcx.org/browse/CE-1489))
 * **setup:** Fixed the player title label. Fixed the alignment of the navbar items ([CE-1480](https://jira.rfcx.org/browse/CE-1480))
+* **feature:** User is able to close the incident ([CE-1482](https://jira.rfcx.org/browse/CE-1482))
+* **bug:** Fixed the player title label. Fixed the alignment of the navbar items ([CE-1480](https://jira.rfcx.org/browse/CE-1480))
 * **setup:** Updated the logic to return the dates difference into the dates util ([CE-1475](https://jira.rfcx.org/browse/CE-1475))
 * **setup:** Interfaces are added to all responses types ([CE-1476](https://jira.rfcx.org/browse/CE-1476))
 * **setup:** Display three events in the list of incidents([CE-1448](https://jira.rfcx.org/browse/CE-1448))

@@ -2,25 +2,11 @@ import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, ResponseExtended, Stream } from '@/types'
-import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDifferent, isDefined, isNotDefined } from '@/utils'
+import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '../../components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '../../components/ranger-track-modal/ranger-track-modal.vue'
-
-type statesModelType = 'player' | 'track' | 'slider' | 'notes'
-
-interface statesModel {
-  player: boolean
-  track: boolean
-  slider: boolean
-  notes: boolean
-}
-
-interface closeDataModel {
-  key: statesModelType
-  toggle: boolean
-}
 
 @Options({
   components: {
@@ -45,34 +31,34 @@ export default class IncidentPage extends Vue {
     'large area substantially clear cut'
   ]
 
-  public compStates: statesModel = {
-    player: false,
-    track: false,
-    slider: false,
-    notes: false
-  }
-
   public streamsData: Stream[] = []
   public incident: Incident | undefined
   public stream: Stream | undefined
-  public incidentStatus = 'Mark as closed'
+  public incidentStatus = ''
   public isLoading = false
   public isAssetsLoading = false
+  private timerSub!: NodeJS.Timeout
 
   data (): Record<string, unknown> {
     return {
       incident: this.incident,
-      stream: this.stream
+      stream: this.stream,
+      timerSub: this.timerSub
     }
   }
 
   mounted (): void {
     this.isLoading = true
     void this.getData()
-  }
-
-  public toggleState (key: statesModelType): void {
-    this.compStates[key] = !this.compStates[key]
+      .then(() => {
+        void this.getStreamsData()
+          .then(() => {
+            this.stream = this.streamsData.find((s: Stream) => {
+              return s.id === this.incident?.streamId
+            })
+          })
+        void this.getAssets()
+      })
   }
 
   public toggleTrack (response: ResponseExtended, open: boolean): void {
@@ -91,13 +77,24 @@ export default class IncidentPage extends Vue {
     response.showPlayer = open
   }
 
-  public closeComponent (opt: closeDataModel): void {
-    this.compStates[opt.key] = opt.toggle
+  public async closeReport (): Promise<void> {
+    try {
+      await IncidentsService.closeIncident((this.$route.params.id as string))
+      this.isLoading = true
+      void this.getData()
+    } catch (e) {
+      this.incidentStatus = 'Error occurred'
+    }
   }
 
-  public async closeReport (): Promise<void> {
-    await IncidentsService.closeIncident((this.$route.params.id as string))
-    this.incidentStatus = `Closed on ${formatDayWithoutTime(new Date(), this.stream?.timezone ?? 'UTC')}`
+  public isError (): boolean {
+    return this.incidentStatus === 'Error occurred'
+  }
+
+  public getIncidentStatus (): void {
+    if (this.incident !== undefined) {
+      this.incidentStatus = this.incident.closedAt ? `Closed on ${(inLast24Hours(this.incident.closedAt) ? formatDayTimeLabel : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+    }
   }
 
   public getColor (n: number): string {
@@ -114,7 +111,7 @@ export default class IncidentPage extends Vue {
   }
 
   public hoursDiffFormatted (from: string, to: string): string {
-    return formatTwoDateDifferent(from, to)
+    return formatTwoDateDiff(from, to)
   }
 
   public async getStreamsData (): Promise<void> {
@@ -131,14 +128,12 @@ export default class IncidentPage extends Vue {
         IncidentsService.combineIncidentItems(incident)
         return incident
       })
+    this.getIncidentStatus()
     this.isLoading = false
+  }
+
+  public async getAssets (): Promise<void> {
     this.isAssetsLoading = true
-    void this.getStreamsData()
-      .then(() => {
-        this.stream = this.streamsData.find((s: Stream) => {
-          return s.id === this.incident?.streamId
-        })
-      })
     await this.getResponsesAssets()
     await this.getResposeDetails()
   }
@@ -156,13 +151,19 @@ export default class IncidentPage extends Vue {
           if (isDefined(a) && isNotDefined(a.mimeType)) return
           if (a.mimeType.includes('audio') === true && isDefined(asset)) {
             item.audioObject.src = asset
+            item.audioObject.assetId = a.id
+            item.audioObject.fileName = a.fileName
           }
           await new Promise((resolve, reject) => {
             const reader = new FileReader()
             reader.addEventListener('loadend', () => {
               const contents = reader.result as string
               if (a.mimeType.includes('image') === true) {
-                item.sliderData.push(contents)
+                item.sliderData.push({
+                  src: contents,
+                  assetId: a.id,
+                  fileName: a.fileName
+                })
               }
               if (a.mimeType.includes('text') === true && asset.size !== undefined) {
                 if ((contents).trim().length) {
@@ -181,7 +182,6 @@ export default class IncidentPage extends Vue {
           })
         }
       }
-      console.log(this.incident.items)
     }
   }
 
@@ -201,6 +201,33 @@ export default class IncidentPage extends Vue {
           }
         }
       }
+    }
+  }
+
+  public async downloadAssets (item: ResponseExtended): Promise<void> {
+    try {
+      item.isDownloading = true
+      let tempArray = []
+      if (item.audioObject.src !== undefined) {
+        tempArray.push(item.audioObject)
+      }
+      if (item.sliderData.length) {
+        tempArray = tempArray.concat([...new Set(item.sliderData)])
+      }
+      for (const i of tempArray) {
+        const asset = await IncidentsService.getFiles(i.assetId)
+        downloadContext(asset, i.fileName)
+      }
+      item.isDownloading = false
+    } catch (e) {
+      item.isDownloading = false
+      item.isError = true
+      if (this.timerSub !== undefined) {
+        clearTimeout(this.timerSub)
+      }
+      this.timerSub = setTimeout(() => {
+        item.isError = false
+      }, 3000)
     }
   }
 }
