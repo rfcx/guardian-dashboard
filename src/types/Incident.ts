@@ -45,11 +45,18 @@ export interface Response {
   submittedAt: string
   createdAt: string
   createdBy: User
-  loggingScale: number
-  damageScale: number
-  evidences: string[]
-  actions: string[]
+  answers: Answer[]
   incident: IncidentLite
+}
+
+export interface Answer {
+  question: AnswerItem
+  items: AnswerItem[]
+}
+
+export interface AnswerItem {
+  id: number
+  text: string
 }
 
 export interface ResponseExtended extends Response {

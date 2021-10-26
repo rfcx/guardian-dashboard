@@ -1,7 +1,7 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Incident, Project, Stream, Pagination } from '@/types'
+import { Incident, Pagination, Project, Stream } from '@/types'
 import { formatDayWithoutTime, formatDiffFromNow } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
 import PaginationComponent from '../../components/pagination/pagination.vue'
