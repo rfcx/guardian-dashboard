@@ -15,13 +15,24 @@
         <div class="inline-block align-bottom bg-steel-grey rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div class="bg-steel-grey px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <on-click-outside @trigger="closeProjectSelector">
-              <!-- TODO: implement search box -->
               <div class="text-white text-xl pb-2">
                 Select Project
               </div>
-              <div class="divide-y divide-gray-500">
+              <div
+                v-if="componentProjects !== undefined"
+                class="divide-y divide-gray-500 overflow-y-auto h-96"
+              >
+                <div>
+                  <input
+                    v-model="searchLabel"
+                    type="text"
+                    class="search px-0 flex justify-between text-white bg-steel-grey-dark md:focus:steel-grey focus:outline-none md:focus:outline-none outline-none border-none w-full"
+                    placeholder="Filter"
+                    @keyup="searchProject()"
+                  >
+                </div>
                 <div
-                  v-for="(project, idx) in projects"
+                  v-for="(project, idx) in componentProjects"
                   :key="'project-list-' + idx"
                   class="flex justify-between text-white cursor-pointer hover:bg-steel-grey-dark py-2"
                   @click="setSelectedProject(project)"
