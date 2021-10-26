@@ -3,6 +3,9 @@ import { Emit, Prop, Watch } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
 
+import { IncidentsService } from '@/services'
+import { downloadContext } from '@/utils'
+
 @Options({
   components: {
     OnClickOutside
@@ -18,11 +21,14 @@ export default class RangerPlayerComponent extends Vue {
 
   public isLoading = false
   public isPlaying = false
+  public isDownloading = false
+  public isError = false
   public audio: HTMLAudioElement | null | undefined
 
   @Watch('initialState')
   onInitialStateChange (): void {
     this.isLoading = true
+    this.isError = false
     if (this.audioProp.src !== undefined) {
       this.initializeAudio()
     }
@@ -58,5 +64,17 @@ export default class RangerPlayerComponent extends Vue {
       this.audio = null
     }
     this.closePlayer()
+  }
+
+  public async downloadAssets (): Promise<void> {
+    try {
+      this.isDownloading = true
+      const asset = await IncidentsService.getFiles(this.audioProp.assetId)
+      downloadContext(asset, this.audioProp.fileName)
+      this.isDownloading = false
+    } catch (e) {
+      this.isDownloading = false
+      this.isError = true
+    }
   }
 }

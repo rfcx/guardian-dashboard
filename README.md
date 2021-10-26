@@ -17,6 +17,10 @@ Incident Center website build with Vue 3, Typescript, Vite, Windi CSS, Vuex
 
 `npm run serve`
 
-3. Build package:
+3. Lint the code:
+
+`npm run lint`
+
+4. Build package:
 
 `npm run build`

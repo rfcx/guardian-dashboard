@@ -1,8 +1,8 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Incident, Pagination, Project, Stream } from '@/types'
-import { formatDayWithoutTime, formatDifferentFromNow } from '@/utils'
+import { Incident, Project, Stream, Pagination } from '@/types'
+import { formatDayWithoutTime, formatDiffFromNow } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
 import PaginationComponent from '../../components/pagination/pagination.vue'
 
@@ -49,8 +49,9 @@ export default class IncidentsPage extends Vue {
   mounted (): void {
     this.getSelectedProject()
     this.isLoading = true
-    void this.getStreamsData(this.$route.params.projectId)
-    void this.getIncidentsData(this.$route.params.projectId)
+    const params: string = this.$route.params.projectId as string
+    void this.getStreamsData(params)
+    void this.getIncidentsData(params)
   }
 
   public resetPaginationData (): void {
@@ -88,11 +89,13 @@ export default class IncidentsPage extends Vue {
     let status = ''
     if (timezone !== undefined) {
       if (incident.closedAt !== null && incident.closedAt !== undefined) {
-        status = `report closed ${(formatDifferentFromNow(incident.closedAt, timezone) as string)} ago`
+        status = `report closed ${(formatDiffFromNow(incident.closedAt, timezone) as string)} ago`
       } else if (incident.responses.length > 0) {
-        status = `response time ${(formatDifferentFromNow(incident.responses[0].createdAt, timezone) as string)}`
+        status = `response time ${(formatDiffFromNow(incident.responses[0].createdAt, timezone) as string)}`
+      } else if (!incident.items.length) {
+        return 'no events and responses'
       } else {
-        status = `${(formatDifferentFromNow(incident.createdAt, timezone) as string)} without responce`
+        status = `${(formatDiffFromNow(incident.createdAt, timezone) as string)} without responce`
       }
     }
     return status
@@ -117,7 +120,7 @@ export default class IncidentsPage extends Vue {
     return str
   }
 
-  public async getStreamsData (projectId: string | string[]): Promise<void> {
+  public async getStreamsData (projectId: string): Promise<void> {
     this.streamsData = await StreamService.getStreams([projectId])
     await VuexService.Projects.streams.set(this.streamsData)
   }
