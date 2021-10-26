@@ -14,7 +14,7 @@ export async function getStreams (projects?: string[]): Promise<Stream[]> {
     const resp = await ApiClient.request<Stream[]>({
       ...Endpoints.getStreams
     })
-    return resp
+    return resp.data
   } catch (e) {
     return await Promise.reject(e)
   }
