@@ -65,7 +65,8 @@ export default class IndexPage extends Vue {
   }
 
   public async getIncidentsData (): Promise<void> {
-    const incidentsData: Incident[] = await IncidentsService.getIncidents()
+    const resp = await IncidentsService.getIncidents()
+    const incidentsData: Incident[] = resp.data
     this.incidents = incidentsData
     this.isLoading = false
     for (const item of this.incidents) {
