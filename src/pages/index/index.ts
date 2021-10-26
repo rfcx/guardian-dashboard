@@ -3,7 +3,7 @@ import { Options, Vue } from 'vue-class-component'
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { IncidentsService, StreamService } from '@/services'
 import { Event, EventExtended, Incident, Project, ResponseExtended, Stream } from '@/types'
-import { formatDifferentFromNow } from '@/utils'
+import { formatDiffFromNow, getUtcTimeValueOf } from '@/utils'
 
 @Options({
   components: { NavigationBarComponent }
@@ -29,8 +29,8 @@ export default class IndexPage extends Vue {
     }
   }
 
-  public formatDifferentFromNow (date: string, timezone: string): string {
-    return formatDifferentFromNow(date, timezone)
+  public formatDiffFromNow (date: string, timezone: string): string {
+    return formatDiffFromNow(date, timezone)
   }
 
   public async getStreamsData (): Promise<void> {
@@ -74,15 +74,7 @@ export default class IndexPage extends Vue {
   }
 
   public getEventsCount (incident: Incident): number {
-    let eventsCount = 0
-    if (incident.events.length && incident.responses.length) {
-      const events = this.filterEvents(incident)
-      eventsCount += events.length
-    }
-    if (incident.events.length && !incident.responses.length) {
-      eventsCount += incident.events.length
-    }
-    return eventsCount
+    return this.getLastEvents(incident).length
   }
 
   public getLastEvents (incident: Incident): Event[] {
@@ -99,8 +91,9 @@ export default class IndexPage extends Vue {
   }
 
   public filterEvents (incident: Incident): Event[] {
-    const lastResponse = incident.responses[incident.responses.length - 1]
-    return incident.events.filter(e => e.createdAt > lastResponse.createdAt)
+    const temp: number[] = incident.responses.map(r => { return getUtcTimeValueOf(r.submittedAt) })
+    const maxTime: number = Math.max(...temp)
+    return incident.events.filter(e => getUtcTimeValueOf(e.createdAt) > maxTime)
   }
 
   public getItemDatetime (item: ResponseExtended | EventExtended | Event): string {
@@ -119,10 +112,10 @@ export default class IndexPage extends Vue {
   }
 
   public getEventsLabel (events: Event[], timezone: string): string {
-    return events.length ? `${this.formatDifferentFromNow(events[0].createdAt, timezone)} no response` : ''
+    return events.length ? `${this.formatDiffFromNow(events[0].createdAt, timezone)} no response` : ''
   }
 
   public getResponsesLabel (incident: Incident, timezone: string): string {
-    return `last response was ${this.formatDifferentFromNow(incident.items[0].createdAt, timezone)} ago`
+    return `last response was ${this.formatDiffFromNow(incident.items[0].createdAt, timezone)} ago`
   }
 }

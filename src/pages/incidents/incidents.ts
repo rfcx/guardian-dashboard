@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, Project, Stream } from '@/types'
-import { formatDayWithoutTime, formatDifferentFromNow } from '@/utils'
+import { formatDayWithoutTime, formatDiffFromNow } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
 
 @Options({
@@ -72,13 +72,13 @@ export default class IncidentsPage extends Vue {
     let status = ''
     if (timezone !== undefined) {
       if (incident.closedAt !== null && incident.closedAt !== undefined) {
-        status = `report closed ${(formatDifferentFromNow(incident.closedAt, timezone) as string)} ago`
+        status = `report closed ${(formatDiffFromNow(incident.closedAt, timezone) as string)} ago`
       } else if (incident.responses.length > 0) {
-        status = `response time ${(formatDifferentFromNow(incident.responses[0].createdAt, timezone) as string)}`
+        status = `response time ${(formatDiffFromNow(incident.responses[0].createdAt, timezone) as string)}`
       } else if (!incident.items.length) {
         return 'no events and responses'
       } else {
-        status = `${(formatDifferentFromNow(incident.createdAt, timezone) as string)} without responce`
+        status = `${(formatDiffFromNow(incident.createdAt, timezone) as string)} without responce`
       }
     }
     return status
