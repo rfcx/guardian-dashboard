@@ -21,7 +21,7 @@ export const formatDateTimeLabel = (label: string, timezone?: string): string =>
   else return dayjs(label).format('MMM DD, YYYY HH:mm')
 }
 
-export const formatDifferentFromNow = (label: string, timezone?: string): any => {
+export const formatDiffFromNow = (label: string, timezone?: string): any => {
   if (timezone !== undefined) {
     const dateDiff = dayjs.duration(dayjs().tz(timezone).diff(dayjs(label).tz(timezone)))
     return combineLabel(dateDiff)
@@ -69,4 +69,8 @@ export const formatDayWithoutTime = (date: any, timezone?: string): string => {
 export const formatTimeLabel = (label: string, timezone?: string): string => {
   if (timezone) return dayjs(label).tz(timezone).format('hh:mm')
   else return dayjs(label).format('hh:mm')
+}
+
+export const getUtcTimeValueOf = (label: string): number => {
+  return dayjs.utc(label).valueOf()
 }
