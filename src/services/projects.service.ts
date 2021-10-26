@@ -22,7 +22,7 @@ export async function getProjects (options?: ProjectRequest): Promise<Project[]>
     const resp = await ApiClient.request<Project[]>({
       ...Endpoints.getProjects
     })
-    return Array.isArray(resp) ? resp.map(d => mapProjectList(d)) : []
+    return Array.isArray(resp.data) ? resp.data.map(d => mapProjectList(d)) : []
   } catch (error) {
     return await Promise.reject(error)
   }

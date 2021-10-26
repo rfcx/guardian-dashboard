@@ -1,5 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
-import { Emit, Prop } from 'vue-property-decorator'
+import { Emit, Prop, Watch } from 'vue-property-decorator'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/solid'
 
@@ -23,11 +23,18 @@ export default class PaginationComponent extends Vue {
     return this.paginationSettings
   }
 
+  @Watch('paginationSettings')
+  onPaginationSettingsChange (): void {
+    this.initializeSettings()
+  }
+
   mounted (): void {
-    if (this.paginationSettings !== null) {
-      this.lastPage = Math.ceil(this.paginationSettings.total / this.paginationSettings.limit)
-      this.countPagesPerWindow = Math.ceil(this.lastPage / 2)
-    }
+    this.initializeSettings()
+  }
+
+  public initializeSettings (): void {
+    this.lastPage = Math.ceil(this.paginationSettings.total / this.paginationSettings.limit)
+    this.countPagesPerWindow = Math.ceil(this.lastPage / 2)
   }
 
   public pages (): number[] {

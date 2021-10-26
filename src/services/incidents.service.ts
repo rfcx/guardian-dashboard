@@ -11,7 +11,7 @@ interface paramsModel {
   offset?: number
 }
 
-export async function getIncidents (options: any): Promise<Incident[]> {
+export async function getIncidents (options: any): Promise<{ data: Incident[], headers: any }> {
   const params: paramsModel = {
     ...options.closed !== undefined && { closed: options.closed },
     ...options.sort !== undefined && { sort: options.sort },
@@ -20,10 +20,10 @@ export async function getIncidents (options: any): Promise<Incident[]> {
   }
   if (options.streams !== undefined) {
     params.streams = options.streams
-  };
+  }
   if (options.projects !== undefined) {
     params.projects = options.projects
-  };
+  }
   Endpoints.getIncidents.config = {
     params: params
   }
@@ -44,7 +44,7 @@ export async function getIncident (id: string): Promise<Incident> {
       method: 'GET',
       url: incidentDetails
     })
-    return resp
+    return resp.data
   } catch (e) {
     return await Promise.reject(e)
   }
@@ -58,7 +58,7 @@ export async function closeIncident (id: string): Promise<Incident[]> {
       url: incident,
       data: { closed: true }
     })
-    return resp
+    return resp.data
   } catch (e) {
     return await Promise.reject(e)
   }
@@ -71,7 +71,7 @@ export async function getResposesAssets (id: string): Promise<ResponseAsset[]> {
       method: 'GET',
       url: assetsUrl
     })
-    return resp
+    return resp.data
   } catch (e) {
     return await Promise.reject(e)
   }
@@ -84,7 +84,7 @@ export async function getResposeDetails (id: string): Promise<Response> {
       method: 'GET',
       url: assetsUrl
     })
-    return resp
+    return resp.data
   } catch (e) {
     return await Promise.reject(e)
   }
@@ -100,7 +100,7 @@ export async function getFiles (id: string): Promise<any> {
         responseType: 'blob'
       }
     })
-    return new Blob([resp])
+    return new Blob([resp.data])
   } catch (e) {
     return await Promise.reject(e)
   }

@@ -174,7 +174,6 @@ export default class IncidentPage extends Vue {
           })
         }
       }
-      console.log(this.incident.items)
     }
   }
 

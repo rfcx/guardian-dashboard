@@ -37,7 +37,7 @@ class ApiClient {
     }
   }
 
-  async request <T = any> ({ url, method, headers, data, config }: RequestParams): Promise<T> {
+  async request <T = any> ({ url, method, headers, data, config }: RequestParams): Promise<{ data: T, headers: object }> {
     try {
       const response = await (async (m) => {
         const reqConfig = {
@@ -56,7 +56,7 @@ class ApiClient {
           default: return await m.get(url, { ...reqConfig, data })
         }
       })(ApiConfig)
-      return response.data
+      return { data: response.data, headers: response.headers }
     } catch (e) {
       return await Promise.reject(e)
     }
