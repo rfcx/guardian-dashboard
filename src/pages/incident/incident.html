@@ -52,8 +52,11 @@
           <dd class="col-span-4 flex flex-col bg-gray px-4 py-5">
             <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
               <dd class="border border-gray-200 rounded-md p-6">
-                <div class="text-sm font-medium text-white mb-3">
-                  Response items:
+                <div v-if="!isAssetsLoading && item.messages && Object.values(item.messages).length" class="h-6 text-sm font-medium text-white mb-3">
+                  Answers:
+                </div>
+                <div v-if="!isAssetsLoading && item.messages && !Object.values(item.messages).length" class="h-6 text-sm font-medium text-white">
+                  No answers
                 </div>
                 <div
                   v-if="isAssetsLoading"
@@ -81,7 +84,6 @@
                     />
                   </svg>
                 </div>
-                <div v-if="!isAssetsLoading && item.messages && Object.values(item.messages) && !Object.values(item.messages).length" class="text-sm font-medium text-white mb-3">No messages</div>
                 <div v-if="!isAssetsLoading && item.messages && Object.values(item.messages) && Object.values(item.messages).length">
                   <div class="text-sm font-medium" v-for="(messageType, index) of Object.values(item.messages)">
                     <div class="text-sm font-medium" v-for="message of messageType">
@@ -101,17 +103,17 @@
                 </div>
                 <div v-else="!isAssetsLoading">
                   <div class="flex items-center justify-between mb-3">
-                    <div v-if="item.sliderData && item.sliderData.length || item.notesData && item.notesData.length || item.audioObject && item.audioObject.src || item.track" class="text-sm font-medium text-white">
+                    <div v-if="item.sliderData && item.sliderData.length || item.notesData && item.notesData.length || item.audioObject && item.audioObject.src || item.track" class="h-6 text-sm font-medium text-white">
                       Assets:
                     </div>
-                    <div v-else class="text-sm font-medium text-white">
+                    <div v-else class="h-6 text-sm font-medium text-white">
                       No assets
                     </div>
                     <a v-if="((item.sliderData && item.sliderData.length) || (item.audioObject && item.audioObject.src))"
                         class="cursor-pointer btn p-0 bg-transparent hover:bg-transparent ml-auto" :class="{'opacity-50 cursor-not-allowed disabled': item.isDownloading || item.isError}" @click="downloadAssets(item)"
                         title="Download Assets"
                     >
-                      <img class="h-7 w-7 inline-block" src="/src/assets/download.svg" alt="">
+                      <img class="h-6 w-6 inline-block" src="/src/assets/download.svg" alt="">
                     </a>
                   </div>
                   <a class="cursor-pointer" v-if="item.sliderData && item.sliderData.length" @click="toggleSlider(item, true)" title="Attachments">

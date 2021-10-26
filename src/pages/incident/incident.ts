@@ -1,7 +1,7 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Incident, ResponseExtended, Stream } from '@/types'
+import { Answer, Incident, ResponseExtended, Stream } from '@/types'
 import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
@@ -193,16 +193,29 @@ export default class IncidentPage extends Vue {
         if (item.type === 'response') {
           const response = await IncidentsService.getResposeDetails(item.id)
           this.isAssetsLoading = false
-          if (isDefined(response.damageScale) || isDefined(response.loggingScale) || isDefined(response.actions) || isDefined(response.evidences)) {
+          if (isDefined(response.answers)) {
             item.messages = {}
-            item.messages.actions = response.actions
-            item.messages.damageScale = [`Damage: ${this.damageScale[response.damageScale]}`]
-            item.messages.loggingScale = [`Logging scale: ${this.loggingScale[response.loggingScale]}`]
-            item.messages.evidences = response.evidences
+            if (this.combineAnswers(response.answers, 1).length) {
+              item.messages.evidences = this.combineAnswers(response.answers, 1)
+            }
+            if (this.combineAnswers(response.answers, 2).length) {
+              item.messages.actions = this.combineAnswers(response.answers, 2)
+            }
+            if (this.combineAnswers(response.answers, 3).length) {
+              item.messages.loggingScale = [`Logging scale: ${this.combineAnswers(response.answers, 3)[0]}`]
+            }
+            if (this.combineAnswers(response.answers, 4).length) {
+              item.messages.damageScale = [`Damage: ${this.combineAnswers(response.answers, 4)[0]}`]
+            }
           }
         }
       }
     }
+  }
+
+  public combineAnswers (answers: Answer[], id: number): string[] {
+    const answer = answers.find(i => i.question.id === id)
+    return answer !== undefined ? answer.items.map(a => a.text) : []
   }
 
   public async downloadAssets (item: ResponseExtended): Promise<void> {
