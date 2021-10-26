@@ -14,11 +14,24 @@ export default class ProjectSelectorComponent extends Vue {
   @VuexService.Projects.projects.bind()
   projects!: Project[]
 
+  public componentProjects: Project[] | undefined
+
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public selectedProject: any = {}
 
-  isSelectedProject (project: Project): boolean {
+  public searchLabel = ''
+
+  public isSelectedProject (project: Project): boolean {
     return project.id === this.selectedProject?.id
+  }
+
+  public searchProject (): void {
+    this.componentProjects = this.projects
+    if (this.searchLabel.length && this.componentProjects !== undefined) {
+      this.componentProjects = this.componentProjects.filter(p => {
+        return p.name.toLowerCase().includes(this.searchLabel)
+      })
+    }
   }
 
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -41,7 +54,14 @@ export default class ProjectSelectorComponent extends Vue {
     return false
   }
 
+  data (): Record<string, unknown> {
+    return {
+      componentProjects: this.componentProjects
+    }
+  }
+
   mounted (): void {
+    this.componentProjects = this.projects
     this.getSelectedProject()
   }
 }

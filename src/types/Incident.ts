@@ -64,6 +64,8 @@ export interface ResponseExtended extends Response {
   notesData: string[]
   audioObject: any
   messages: any
+  isDownloading: boolean
+  isError: boolean
 }
 
 export interface Event {

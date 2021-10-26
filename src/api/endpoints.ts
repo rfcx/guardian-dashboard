@@ -6,6 +6,7 @@ interface Endpoint {
   method: RequestMethod
   url: string
   config?: any
+  headers?: any
 }
 
 export const getStreams: Endpoint = {

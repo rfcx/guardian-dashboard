@@ -1,13 +1,15 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Incident, Project, Stream } from '@/types'
-import { formatDayWithoutTime, formatDifferentFromNow } from '@/utils'
+import { Incident, Project, Stream, Pagination } from '@/types'
+import { formatDayWithoutTime, formatDiffFromNow } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
+import PaginationComponent from '../../components/pagination/pagination.vue'
 
 @Options({
   components: {
-    IncidentsTableRows
+    IncidentsTableRows,
+    PaginationComponent
   }
 })
 export default class IncidentsPage extends Vue {
@@ -18,50 +20,65 @@ export default class IncidentsPage extends Vue {
   public isLoading = false
   public incidents: Incident[] = []
   public streamsData: Stream[] = []
-  public originalData: Incident[] = []
+
+  public isOpenedIncidents: string | string[] | undefined
   public limit = 2
   public alertsLabel = ''
+  public paginationSettings: Pagination = {
+    total: 0,
+    limit: 10,
+    offset: 0,
+    page: 1
+  }
 
   updated (): void {
     if (this.selectedProject !== undefined && this.selectedProject.id !== this.$route.params.projectId) {
       this.getSelectedProject()
       this.isLoading = true
       void this.getIncidentsData(this.$route.params.projectId)
-    } else if (this.$route.params.isOpenedIncidents !== undefined) {
-      this.incidents = this.originalData.filter(incident => {
-        if (this.$route.params.isOpenedIncidents === 'false') {
-          return incident.closedAt
-        } else return !incident.closedAt
-      })
-    } else {
-      this.incidents = this.originalData
+    }
+    const temp = this.isOpenedIncidents
+    if (this.$route.params.isOpenedIncidents !== undefined && temp !== this.$route.params.isOpenedIncidents) {
+      this.isOpenedIncidents = this.$route.params.isOpenedIncidents
+      this.isLoading = true
+      this.resetPaginationData()
+      void this.getIncidentsData(this.$route.params.projectId, this.$route.params.isOpenedIncidents === 'false')
     }
   }
 
   mounted (): void {
     this.getSelectedProject()
     this.isLoading = true
-    void this.getStreamsData(this.$route.params.projectId)
-    void this.getIncidentsData(this.$route.params.projectId)
+    const params: string = this.$route.params.projectId as string
+    void this.getStreamsData(params)
+    void this.getIncidentsData(params)
+  }
+
+  public resetPaginationData (): void {
+    this.paginationSettings = {
+      total: 0,
+      limit: 10,
+      offset: 0,
+      page: 1
+    }
   }
 
   public getSelectedProject (): void {
     this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  public getStreamById (streamId: string): any {
+  public getStreamById (streamId: string): Stream | undefined {
     const stream = this.streamsData.find(s => s.id === streamId)
     return stream
   }
 
   public getStreamName (streamId: string): string | null {
-    const stream: Stream = this.getStreamById(streamId)
+    const stream: Stream | undefined = this.getStreamById(streamId)
     return stream !== undefined ? stream.name : null
   }
 
   public getStreamTimezone (streamId: string): string | undefined {
-    const stream: Stream = this.getStreamById(streamId)
+    const stream: Stream | undefined = this.getStreamById(streamId)
     if (stream !== undefined) {
       return stream.timezone
     }
@@ -72,11 +89,13 @@ export default class IncidentsPage extends Vue {
     let status = ''
     if (timezone !== undefined) {
       if (incident.closedAt !== null && incident.closedAt !== undefined) {
-        status = `report closed ${(formatDifferentFromNow(incident.closedAt, timezone) as string)} ago`
+        status = `report closed ${(formatDiffFromNow(incident.closedAt, timezone) as string)} ago`
       } else if (incident.responses.length > 0) {
-        status = `response time ${(formatDifferentFromNow(incident.responses[0].createdAt, timezone) as string)}`
+        status = `response time ${(formatDiffFromNow(incident.responses[0].createdAt, timezone) as string)}`
+      } else if (!incident.items.length) {
+        return 'no events and responses'
       } else {
-        status = `${(formatDifferentFromNow(incident.createdAt, timezone) as string)} without responce`
+        status = `${(formatDiffFromNow(incident.createdAt, timezone) as string)} without responce`
       }
     }
     return status
@@ -101,19 +120,31 @@ export default class IncidentsPage extends Vue {
     return str
   }
 
-  public async getStreamsData (projectId: string | string[]): Promise<void> {
+  public async getStreamsData (projectId: string): Promise<void> {
     this.streamsData = await StreamService.getStreams([projectId])
     await VuexService.Projects.streams.set(this.streamsData)
   }
 
-  public async getIncidentsData (projectId: string | string[]): Promise<void> {
-    this.originalData = await IncidentsService.getIncidents({ projects: projectId })
-    this.incidents = this.formatIncidents()
+  public async getPage (): Promise<void> {
+    if (this.$route.params.isOpenedIncidents !== undefined) {
+      await this.getIncidentsData(this.$route.params.projectId, this.$route.params.isOpenedIncidents === 'false')
+    } else await this.getIncidentsData(this.$route.params.projectId)
+  }
+
+  public async getIncidentsData (projectId: string | string[], closed?: boolean): Promise<void> {
+    const data = await IncidentsService.getIncidents({
+      projects: projectId,
+      limit: this.paginationSettings.limit,
+      offset: this.paginationSettings.offset * this.paginationSettings.limit,
+      ...closed !== undefined && { closed: closed }
+    })
+    this.paginationSettings.total = data.headers['total-items']
+    this.incidents = this.formatIncidents(data.data)
     this.isLoading = false
   }
 
-  public formatIncidents (): Incident[] {
-    return this.originalData.map((incident) => {
+  public formatIncidents (incidents: Incident[]): Incident[] {
+    return incidents.map((incident) => {
       IncidentsService.combineIncidentItems(incident)
       return incident
     })
