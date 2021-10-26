@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, ResponseExtended, Stream } from '@/types'
-import { formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
+import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '../../components/ranger-slider/ranger-slider.vue'
@@ -37,11 +37,13 @@ export default class IncidentPage extends Vue {
   public incidentStatus = ''
   public isLoading = false
   public isAssetsLoading = false
+  private timerSub!: NodeJS.Timeout
 
   data (): Record<string, unknown> {
     return {
       incident: this.incident,
-      stream: this.stream
+      stream: this.stream,
+      timerSub: this.timerSub
     }
   }
 
@@ -150,13 +152,19 @@ export default class IncidentPage extends Vue {
           if (isDefined(a) && isNotDefined(a.mimeType)) return
           if (a.mimeType.includes('audio') === true && isDefined(asset)) {
             item.audioObject.src = asset
+            item.audioObject.assetId = a.id
+            item.audioObject.fileName = a.fileName
           }
           await new Promise((resolve, reject) => {
             const reader = new FileReader()
             reader.addEventListener('loadend', () => {
               const contents = reader.result as string
               if (a.mimeType.includes('image') === true) {
-                item.sliderData.push(contents)
+                item.sliderData.push({
+                  src: contents,
+                  assetId: a.id,
+                  fileName: a.fileName
+                })
               }
               if (a.mimeType.includes('text') === true && asset.size !== undefined) {
                 if ((contents).trim().length) {
@@ -175,7 +183,6 @@ export default class IncidentPage extends Vue {
           })
         }
       }
-      console.log(this.incident.items)
     }
   }
 
@@ -195,6 +202,33 @@ export default class IncidentPage extends Vue {
           }
         }
       }
+    }
+  }
+
+  public async downloadAssets (item: ResponseExtended): Promise<void> {
+    try {
+      item.isDownloading = true
+      let tempArray = []
+      if (item.audioObject.src !== undefined) {
+        tempArray.push(item.audioObject)
+      }
+      if (item.sliderData.length) {
+        tempArray = tempArray.concat([...new Set(item.sliderData)])
+      }
+      for (const i of tempArray) {
+        const asset = await IncidentsService.getFiles(i.assetId)
+        downloadContext(asset, i.fileName)
+      }
+      item.isDownloading = false
+    } catch (e) {
+      item.isDownloading = false
+      item.isError = true
+      if (this.timerSub !== undefined) {
+        clearTimeout(this.timerSub)
+      }
+      this.timerSub = setTimeout(() => {
+        item.isError = false
+      }, 3000)
     }
   }
 }

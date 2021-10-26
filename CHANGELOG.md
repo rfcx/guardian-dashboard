@@ -3,6 +3,8 @@
 ## 0.0.1 (2021-??-??)
 
 * **feature:** Homepage updates ([CE-1477](https://jira.rfcx.org/browse/CE-1477))
+* **setup:** Setup search and scroll functionality to the Projects list ([CE-1474](https://jira.rfcx.org/browse/CE-1474))
+* **feature:** User is able to download Response assets ([CE-1489](https://jira.rfcx.org/browse/CE-1489))
 * **setup:** Fixed the player title label. Fixed the alignment of the navbar items ([CE-1480](https://jira.rfcx.org/browse/CE-1480))
 * **feature:** User is able to close the incident ([CE-1482](https://jira.rfcx.org/browse/CE-1482))
 * **bug:** Fixed the player title label. Fixed the alignment of the navbar items ([CE-1480](https://jira.rfcx.org/browse/CE-1480))
