@@ -63,18 +63,30 @@ export default class IncidentPage extends Vue {
 
   public toggleTrack (response: ResponseExtended, open: boolean): void {
     response.showTrack = open
+    if (response.showTrack) {
+      void this.getAssetsDetails(response, 'geo')
+    }
   }
 
   public toggleNotes (response: ResponseExtended, open: boolean): void {
     response.showNotes = open
+    if (response.showNotes) {
+      void this.getAssetsDetails(response, 'text')
+    }
   }
 
   public toggleSlider (response: ResponseExtended, open: boolean): void {
     response.showSlider = open
+    if (response.showSlider) {
+      void this.getAssetsDetails(response, 'image')
+    }
   }
 
   public togglePlayer (response: ResponseExtended, open: boolean): void {
     response.showPlayer = open
+    if (response.showPlayer) {
+      void this.getAssetsDetails(response, 'audio')
+    }
   }
 
   public async closeReport (): Promise<void> {
@@ -137,6 +149,7 @@ export default class IncidentPage extends Vue {
     this.isAssetsLoading = true
     await this.getResponsesAssets()
     await this.getResposeDetails()
+    this.isAssetsLoading = false
   }
 
   public async getResponsesAssets (): Promise<void> {
@@ -144,45 +157,78 @@ export default class IncidentPage extends Vue {
       const items = (this.incident.items.filter(i => i.type === 'response')) as ResponseExtended[]
       for (const item of items) {
         item.assetsData = await IncidentsService.getResposesAssets(item.id)
-        item.sliderData = []
-        item.notesData = []
-        item.audioObject = {}
         for (const a of item.assetsData) {
-          const asset = await IncidentsService.getFiles(a.id)
           if (isDefined(a) && isNotDefined(a.mimeType)) return
-          if (a.mimeType.includes('audio') === true && isDefined(asset)) {
-            item.audioObject.src = asset
-            item.audioObject.assetId = a.id
-            item.audioObject.fileName = a.fileName
+          if (a.mimeType.includes('audio') === true) {
+            item.audioObject = {}
           }
-          await new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.addEventListener('loadend', () => {
-              const contents = reader.result as string
-              if (a.mimeType.includes('image') === true) {
-                item.sliderData.push({
-                  src: contents,
-                  assetId: a.id,
-                  fileName: a.fileName
-                })
-              }
-              if (a.mimeType.includes('text') === true && asset.size !== undefined) {
-                if ((contents).trim().length) {
-                  item.notesData.push(contents)
-                }
-              }
-              if (a.mimeType.includes('geo') === true) {
-                try {
-                  item.trackData = JSON.parse(contents)
-                } catch (e) {}
-              }
-              resolve(contents)
-            })
-            if ((a.mimeType.includes('geo') === true || a.mimeType.includes('text') === true) && asset.size !== undefined) reader.readAsText(asset)
-            else reader.readAsDataURL(asset)
-          })
+          if (a.mimeType.includes('text') === true) {
+            item.notesData = []
+          }
+          if (a.mimeType.includes('image') === true) {
+            item.sliderData = []
+          }
+          if (a.mimeType.includes('geo') === true) {
+            item.trackData = {}
+          }
         }
       }
+    }
+  }
+
+  public async getAssetsDetails (response: ResponseExtended, type: string): Promise<void> {
+    console.log(type)
+    this.clearAssetsDetails(response)
+    const assetsData = response.assetsData.filter(r => r.mimeType.includes(type) === true)
+    for (const a of assetsData) {
+      const asset = await IncidentsService.getFiles(a.id)
+      if (isDefined(a) && isNotDefined(a.mimeType)) return
+      if (a.mimeType.includes(type) === true && isDefined(asset)) {
+        response.audioObject.src = asset
+        response.audioObject.assetId = a.id
+        response.audioObject.fileName = a.fileName
+      }
+      await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.addEventListener('loadend', () => {
+          const contents = reader.result as string
+          if (a.mimeType.includes('image') === true) {
+            response.sliderData.push({
+              src: contents,
+              assetId: a.id,
+              fileName: a.fileName
+            })
+          }
+          if (a.mimeType.includes('text') === true && asset.size !== undefined) {
+            if ((contents).trim().length) {
+              response.notesData.push(contents)
+            }
+          }
+          if (a.mimeType.includes('geo') === true) {
+            try {
+              response.trackData = JSON.parse(contents)
+            } catch (e) {}
+          }
+          resolve(contents)
+        })
+        if ((a.mimeType.includes('geo') === true || a.mimeType.includes('text') === true) && asset.size !== undefined) reader.readAsText(asset)
+        else reader.readAsDataURL(asset)
+      })
+    }
+  }
+
+  public clearAssetsDetails (response: ResponseExtended): void {
+    if (response.audioObject !== undefined) {
+      response.audioObject = {}
+    }
+    if (response.notesData !== undefined) {
+      response.notesData = []
+    }
+    if (response.sliderData !== undefined) {
+      response.sliderData = []
+    }
+    if (response.trackData !== undefined) {
+      response.trackData = {}
     }
   }
 
@@ -192,7 +238,6 @@ export default class IncidentPage extends Vue {
       for (const item of items) {
         if (item.type === 'response') {
           const response = await IncidentsService.getResposeDetails(item.id)
-          this.isAssetsLoading = false
           if (isDefined(response.answers)) {
             item.messages = {}
             if (this.combineAnswers(response.answers, 1).length) {
@@ -224,10 +269,17 @@ export default class IncidentPage extends Vue {
       let tempArray = []
       if (item.audioObject.src !== undefined) {
         tempArray.push(item.audioObject)
+      } else {
+        await this.getAssetsDetails(item, 'audio')
+        tempArray.push(item.audioObject)
       }
       if (item.sliderData.length) {
         tempArray = tempArray.concat([...new Set(item.sliderData)])
+      } else {
+        await this.getAssetsDetails(item, 'image')
+        tempArray = tempArray.concat([...new Set(item.sliderData)])
       }
+      console.log(tempArray)
       for (const i of tempArray) {
         const asset = await IncidentsService.getFiles(i.assetId)
         downloadContext(asset, i.fileName)
