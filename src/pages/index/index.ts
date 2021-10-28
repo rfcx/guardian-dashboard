@@ -1,14 +1,17 @@
 import { Options, Vue } from 'vue-class-component'
 
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
-import { IncidentsService, StreamService } from '@/services'
-import { Event, EventExtended, Incident, Project, ResponseExtended, Stream } from '@/types'
+import { IncidentsService, StreamService, VuexService } from '@/services'
+import { Auth0Option, Event, EventExtended, Incident, Project, ResponseExtended, Stream } from '@/types'
 import { formatDiffFromNow, getUtcTimeValueOf } from '@/utils'
 
 @Options({
   components: { NavigationBarComponent }
 })
 export default class IndexPage extends Vue {
+  @VuexService.Auth.auth.bind()
+  public auth!: Auth0Option | undefined
+
   public incidents: Incident[] | undefined
   public streamsData: Stream[] = []
   public selectedProject: Project | undefined
@@ -22,8 +25,8 @@ export default class IndexPage extends Vue {
   }
 
   mounted (): void {
-    this.isLoading = true
-    if (this.$route.params.projectId === undefined) {
+    if (this.$route.params.projectId === undefined && this.auth?.isAuthenticated) {
+      this.isLoading = true
       void this.getIncidentsData()
       void this.getStreamsData()
     }

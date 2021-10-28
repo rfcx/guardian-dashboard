@@ -36,6 +36,19 @@
           >
             No incidents data
           </div>
+          <div
+            v-if="!auth?.isAuthenticated"
+            class="px-4 py-5 lg:text-center"
+          >
+            <div class="lg:text-center">
+              <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
+                Incident Center
+              </p>
+              <p class="mt-4 max-w-2xl text-xl leading-relaxed text-white lg:mx-auto">
+                A dashboard for incidents and responses monitoring
+              </p>
+            </div>
+          </div>
           <dl v-if="!isLoading && incidents !== undefined && incidents.length">
             <div
               v-for="incident of incidents"

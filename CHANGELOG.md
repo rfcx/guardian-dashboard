@@ -4,6 +4,7 @@
 
 * **bug:** Response assets are loaded only when user opens them ([CE-1515](https://jira.rfcx.org/browse/CE-1515))
 * **bug:** Fixed the datetime format on the incident page for event start/end time ([CE-1516](https://jira.rfcx.org/browse/CE-1516))
+* **feature:** The title is added to homepage for non-authenticated state ([CE-1501](https://jira.rfcx.org/browse/CE-1501))
 * **feature:** Pagination is added to the Incidents page ([CE-1499](https://jira.rfcx.org/browse/CE-1499))
 * **feature:** Homepage updates ([CE-1477](https://jira.rfcx.org/browse/CE-1477))
 * **setup:** Setup search and scroll functionality to the Projects list ([CE-1474](https://jira.rfcx.org/browse/CE-1474))
