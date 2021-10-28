@@ -177,13 +177,12 @@ export default class IncidentPage extends Vue {
   }
 
   public async getAssetsDetails (response: ResponseExtended, type: string): Promise<void> {
-    console.log(type)
     this.clearAssetsDetails(response)
     const assetsData = response.assetsData.filter(r => r.mimeType.includes(type) === true)
     for (const a of assetsData) {
       const asset = await IncidentsService.getFiles(a.id)
       if (isDefined(a) && isNotDefined(a.mimeType)) return
-      if (a.mimeType.includes(type) === true && isDefined(asset)) {
+      if (a.mimeType.includes('audio') === true && isDefined(asset)) {
         response.audioObject.src = asset
         response.audioObject.assetId = a.id
         response.audioObject.fileName = a.fileName
