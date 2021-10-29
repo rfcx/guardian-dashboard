@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: staging-incident-center-config
+  name: incident-center-config
   namespace: staging
 data:
   VITE_APP_RANGER_API_HOST: https://staging-ranger-api.rfcx.org
