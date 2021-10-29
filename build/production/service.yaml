@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: incident-center-service
-  namespace: incident-center
+  namespace: production
   labels:
     app: incident-center
 spec:
