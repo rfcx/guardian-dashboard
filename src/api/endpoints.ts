@@ -1,6 +1,5 @@
-import CORE from '../../config/rfcx.json'
+import { rangerBaseApi } from '../../config/index'
 
-console.log('MODE', import.meta.env.MODE)
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 interface Endpoint {
@@ -12,30 +11,30 @@ interface Endpoint {
 
 export const getStreams: Endpoint = {
   method: 'GET',
-  url: `${CORE.rangerBaseApi}/streams`
+  url: `${rangerBaseApi}/streams`
 }
 
 export const getProjects: Endpoint = {
   method: 'GET',
-  url: `${CORE.rangerBaseApi}/projects`
+  url: `${rangerBaseApi}/projects`
 }
 
 export const getIncidents: Endpoint = {
   method: 'GET',
-  url: `${CORE.rangerBaseApi}/incidents`
+  url: `${rangerBaseApi}/incidents`
 }
 
 export const getResponse: Endpoint = {
   method: 'GET',
-  url: `${CORE.rangerBaseApi}/responses`
+  url: `${rangerBaseApi}/responses`
 }
 
 export const getAssets: Endpoint = {
   method: 'GET',
-  url: `${CORE.rangerBaseApi}/assets`
+  url: `${rangerBaseApi}/assets`
 }
 
 export const closeIncident: Endpoint = {
   method: 'PATCH',
-  url: `${CORE.rangerBaseApi}/incidents`
+  url: `${rangerBaseApi}/incidents`
 }
