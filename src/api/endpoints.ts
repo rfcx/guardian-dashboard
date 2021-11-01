@@ -1,6 +1,6 @@
 import CORE from '../../config/rfcx.json'
 
-console.log('VITE_APP_RANGER_API_HOST', import.meta.env.VITE_APP_RANGER_API_HOST)
+console.log('MODE', import.meta.env.MODE)
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 interface Endpoint {
