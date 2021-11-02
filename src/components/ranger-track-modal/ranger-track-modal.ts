@@ -49,7 +49,7 @@ export default class RangerTrackModalComponent extends Vue {
       this.mapbox = new Mapbox.Map({
         container: 'map',
         style: MapboxSettings.MAPBOX_STYLE,
-        center: this.mapOptions.center,
+        center: this.getPathCenter(),
         zoom: this.mapOptions.zoom
       })
       this.isLoading = false
@@ -85,5 +85,10 @@ export default class RangerTrackModalComponent extends Vue {
 
   public close (): void {
     this.closeRangerTrack()
+  }
+
+  public getPathCenter (): Mapbox.LngLatLike {
+    const array = this.rawRangerTrack?.features[0].geometry.coordinates
+    return array[Math.floor(array.length / 2)]
   }
 }
