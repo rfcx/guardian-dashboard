@@ -1,7 +1,7 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Answer, Incident, ResponseExtended, Stream } from '@/types'
+import { Answer, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
 import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
@@ -110,7 +110,7 @@ export default class IncidentPage extends Vue {
   }
 
   public getColor (n: number): string {
-    const classes = ['ic-violet', 'ic-blue', 'ic-green', 'ic-orange', 'ic-pink']
+    const classes = ['ic-violet', 'ic-green', 'ic-orange', 'ic-blue', 'ic-pink']
     return classes[n]
   }
 
@@ -239,9 +239,6 @@ export default class IncidentPage extends Vue {
           const response = await IncidentsService.getResposeDetails(item.id)
           if (isDefined(response.answers)) {
             item.messages = {}
-            if (this.combineAnswers(response.answers, 1).length) {
-              item.messages.evidences = this.combineAnswers(response.answers, 1)
-            }
             if (this.combineAnswers(response.answers, 2).length) {
               item.messages.actions = this.combineAnswers(response.answers, 2)
             }
@@ -250,6 +247,9 @@ export default class IncidentPage extends Vue {
             }
             if (this.combineAnswers(response.answers, 4).length) {
               item.messages.damageScale = [`Damage: ${this.combineAnswers(response.answers, 4)[0]}`]
+            }
+            if (this.combineAnswers(response.answers, 1).length) {
+              item.messages.evidences = this.combineAnswers(response.answers, 1)
             }
           }
         }
@@ -262,23 +262,26 @@ export default class IncidentPage extends Vue {
     return answer !== undefined ? answer.items.map(a => a.text) : []
   }
 
-  public async downloadAssets (item: ResponseExtended): Promise<void> {
+  public async downloadAssets (item: ResponseExtendedWithStatus<ResponseExtended>): Promise<void> {
     try {
       item.isDownloading = true
       let tempArray = []
-      if (item.audioObject.src !== undefined) {
-        tempArray.push(item.audioObject)
-      } else {
-        await this.getAssetsDetails(item, 'audio')
-        tempArray.push(item.audioObject)
+      if (item.audioObject !== undefined) {
+        if (item.audioObject.src !== undefined) {
+          tempArray.push(item.audioObject)
+        } else {
+          await this.getAssetsDetails(item, 'audio')
+          tempArray.push(item.audioObject)
+        }
       }
-      if (item.sliderData.length) {
-        tempArray = tempArray.concat([...new Set(item.sliderData)])
-      } else {
-        await this.getAssetsDetails(item, 'image')
-        tempArray = tempArray.concat([...new Set(item.sliderData)])
+      if (item.sliderData !== undefined) {
+        if (item.sliderData.length) {
+          tempArray = tempArray.concat([...new Set(item.sliderData)])
+        } else {
+          await this.getAssetsDetails(item, 'image')
+          tempArray = tempArray.concat([...new Set(item.sliderData)])
+        }
       }
-      console.log(tempArray)
       for (const i of tempArray) {
         const asset = await IncidentsService.getFiles(i.assetId)
         downloadContext(asset, i.fileName)
