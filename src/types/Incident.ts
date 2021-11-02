@@ -71,8 +71,6 @@ export interface ResponseExtended extends Response {
   notesData: string[]
   audioObject: any
   messages: any
-  isDownloading: boolean
-  isError: boolean
 }
 
 export interface Event {
@@ -89,3 +87,10 @@ export interface Event {
 export interface EventExtended extends Event {
   type: string
 }
+
+export interface AssetsStatus {
+  isDownloading: boolean
+  isError: boolean
+}
+
+export type ResponseExtendedWithStatus<T> = T & AssetsStatus

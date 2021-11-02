@@ -31,19 +31,19 @@
             </svg>
             {{item.createdBy.firstname}} {{item.createdBy.lastname}}
           </dd>
-          <dd class="text-sm font-medium text-white" title='Investigated at'>
+          <dd class="text-sm font-medium text-white" title="Investigation time">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {{dateFormatted(item.investigatedAt) || 0}}
           </dd>
-          <dd class="text-sm font-medium text-white" title='Difference between Investigated at and Submitted at'>
+          <dd class="text-sm font-medium text-white" title="Time to submit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293h3.172a1 1 0 00.707-.293l2.414-2.414a1 1 0 01.707-.293H20" />
             </svg>
             {{ hoursDiffFormatted(item.investigatedAt, item.submittedAt) || 0 }}
           </dd>
-          <dd class="text-sm font-medium text-white" title='Difference between Submitted at and Created at'>
+          <dd class="text-sm font-medium text-white" title="Time to receive">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
             </svg>
@@ -103,7 +103,7 @@
                 </div>
                 <div v-else="!isAssetsLoading">
                   <div class="flex items-center justify-between mb-3">
-                    <div v-if="item.sliderData || item.notesData || item.audioObject || item.track" class="h-6 text-sm font-medium text-white">
+                    <div v-if="item.sliderData || item.notesData || item.audioObject || item.trackData" class="h-6 text-sm font-medium text-white">
                       Assets:
                     </div>
                     <div v-else class="h-6 text-sm font-medium text-white">
