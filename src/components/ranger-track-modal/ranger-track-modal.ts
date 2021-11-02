@@ -54,14 +54,12 @@ export default class RangerTrackModalComponent extends Vue {
       })
       this.isLoading = false
       this.mapbox.on('load', () => {
-        // console.log('mapbox loaded', rawRangerTrack)
         this.mapbox.addSource('track',
           {
             type: 'geojson',
             data: this.rawRangerTrack
           }
         )
-        // console.log('mapbox map', this.mapbox)
         this.mapbox.addLayer({
           id: 'track',
           type: 'line',

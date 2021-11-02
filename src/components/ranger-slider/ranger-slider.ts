@@ -40,9 +40,9 @@ export default class RangerSliderComponent extends Vue {
   }
 
   public getSourceFiles (): void {
-    this.isLoading = false
     this.images = this.imagesProps
     this.getImage(this.currentIndex)
+    this.isLoading = false
   }
 
   public getNextImage (): void {

@@ -41,7 +41,7 @@
               </div>
             </div>
             <div
-              v-if="isLoading"
+              v-if="isLoading || !images.length"
               class="flex flex-row bg-steel-grey h-10 w-10 min-h-lg"
               :style="{margin: '0 auto'}"
             >

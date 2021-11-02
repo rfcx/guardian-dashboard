@@ -103,31 +103,31 @@
                 </div>
                 <div v-else="!isAssetsLoading">
                   <div class="flex items-center justify-between mb-3">
-                    <div v-if="item.sliderData && item.sliderData.length || item.notesData && item.notesData.length || item.audioObject && item.audioObject.src || item.track" class="h-6 text-sm font-medium text-white">
+                    <div v-if="item.sliderData || item.notesData || item.audioObject || item.track" class="h-6 text-sm font-medium text-white">
                       Assets:
                     </div>
                     <div v-else class="h-6 text-sm font-medium text-white">
                       No assets
                     </div>
-                    <a v-if="((item.sliderData && item.sliderData.length) || (item.audioObject && item.audioObject.src))"
+                    <a v-if="(item.sliderData || item.audioObject)"
                         class="cursor-pointer btn p-0 bg-transparent hover:bg-transparent ml-auto" :class="{'opacity-50 cursor-not-allowed disabled': item.isDownloading || item.isError}" @click="downloadAssets(item)"
                         title="Download Assets"
                     >
                       <img class="h-6 w-6 inline-block" src="/src/assets/download.svg" alt="">
                     </a>
                   </div>
-                  <a class="cursor-pointer" v-if="item.sliderData && item.sliderData.length" @click="toggleSlider(item, true)" title="Attachments">
+                  <a class="cursor-pointer" v-if="item.sliderData" @click="toggleSlider(item, true)" title="Attachments">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </a>
-                  <a class="cursor-pointer" v-if="item.notesData && item.notesData.length" @click="toggleNotes(item, true)" title="Notes">
+                  <a class="cursor-pointer" v-if="item.notesData" @click="toggleNotes(item, true)" title="Notes">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </a>
-                  <a class="cursor-pointer" v-if="item.audioObject && item.audioObject.src" @click="togglePlayer(item, true)" title="Play Sound">
+                  <a class="cursor-pointer" v-if="item.audioObject" @click="togglePlayer(item, true)" title="Play Sound">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                     </svg>
@@ -145,8 +145,8 @@
               </dd>
             </div>
           </dd>
-          <ranger-track-modal-component v-if="item.showTrack !== undefined && item.showTrack === true" :raw-ranger-track="item.trackData" @close-ranger-track="toggleTrack(item, false)" />
-          <ranger-player-component v-show="item.showPlayer !== undefined && item.showPlayer === true && item.audioObject.src" :initial-state="item.showPlayer === true" :audio-prop="item.audioObject" @close-player="togglePlayer(item, false)" />
+          <ranger-track-modal-component v-if="item.showTrack !== undefined && item.showTrack === true && item.trackData.features" :raw-ranger-track="item.trackData" @close-ranger-track="toggleTrack(item, false)" />
+          <ranger-player-component v-if="item.showPlayer !== undefined && item.showPlayer === true && item.audioObject.src" :audio-prop="item.audioObject" @close-player="togglePlayer(item, false)" />
           <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
           <ranger-notes v-if="item.showNotes !== undefined && item.showNotes === true" :notes="item.notesData" @close-notes="toggleNotes(item, false)"/>
         </div>
