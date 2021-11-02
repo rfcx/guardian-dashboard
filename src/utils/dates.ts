@@ -67,8 +67,8 @@ export const formatDayWithoutTime = (date: any, timezone?: string): string => {
 }
 
 export const formatTimeLabel = (label: string, timezone?: string): string => {
-  if (timezone) return dayjs(label).tz(timezone).format('hh:mm')
-  else return dayjs(label).format('hh:mm')
+  if (timezone) return dayjs(label).tz(timezone).format('HH:mm')
+  else return dayjs(label).format('HH:mm')
 }
 
 export const getUtcTimeValueOf = (label: string): number => {

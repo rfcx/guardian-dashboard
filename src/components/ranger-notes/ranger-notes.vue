@@ -39,7 +39,7 @@
             </div>
           </div>
           <div
-            v-if="isLoading"
+            v-if="isLoading || !notes.length"
             class="flex flex-row bg-steel-grey h-10 w-10 min-h-lg"
             :style="{margin: '0 auto'}"
           >
@@ -66,12 +66,12 @@
           </div>
           <div
             v-if="!isLoading"
-            class="flex flex-row min-h-lg"
+            class="min-h-lg px-4 py-5"
           >
             <div
               v-for="message of notes"
               :key="message"
-              class="text-sm font-medium px-4 py-5"
+              class="text-sm font-medium mb-2"
             >
               {{ message }}
             </div>

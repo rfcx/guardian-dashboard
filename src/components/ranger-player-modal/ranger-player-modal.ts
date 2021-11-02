@@ -16,17 +16,14 @@ export default class RangerPlayerComponent extends Vue {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   audioProp!: any
 
-  @Prop({ default: false })
-  initialState!: boolean | false
-
   public isLoading = false
   public isPlaying = false
   public isDownloading = false
   public isError = false
   public audio: HTMLAudioElement | null | undefined
 
-  @Watch('initialState')
-  onInitialStateChange (): void {
+  @Watch('audioProp')
+  onAudioPropChange (): void {
     this.isLoading = true
     this.isError = false
     if (this.audioProp.src !== undefined) {
@@ -37,6 +34,13 @@ export default class RangerPlayerComponent extends Vue {
   @Emit('closePlayer')
   public closePlayer (): boolean {
     return true
+  }
+
+  mounted (): void {
+    this.isLoading = true
+    if (this.audioProp.src !== undefined) {
+      this.initializeAudio()
+    }
   }
 
   public initializeAudio (): void {
