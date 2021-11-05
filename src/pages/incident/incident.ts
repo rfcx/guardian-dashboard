@@ -1,5 +1,8 @@
 import { Options, Vue } from 'vue-class-component'
 
+import { ForbiddenError } from '@rfcx/http-utils'
+
+import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Answer, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
 import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
@@ -10,6 +13,7 @@ import RangerTrackModalComponent from '../../components/ranger-track-modal/range
 
 @Options({
   components: {
+    InvalidProjectComponent,
     RangerTrackModalComponent,
     RangerPlayerComponent,
     RangerSliderComponent,
@@ -136,13 +140,20 @@ export default class IncidentPage extends Vue {
   }
 
   public async getData (): Promise<void> {
-    this.incident = await IncidentsService.getIncident((this.$route.params.id as string))
-      .then((incident: Incident) => {
-        IncidentsService.combineIncidentItems(incident)
-        return incident
-      })
-    this.getIncidentStatus()
-    this.isLoading = false
+    try {
+      this.incident = await IncidentsService.getIncident((this.$route.params.id as string))
+        .then((incident: Incident) => {
+          IncidentsService.combineIncidentItems(incident)
+          return incident
+        })
+      this.isLoading = false
+      this.getIncidentStatus()
+    } catch (e) {
+      this.isLoading = false
+      if (e instanceof ForbiddenError) {
+        console.log('No permission')
+      }
+    }
   }
 
   public async getAssets (): Promise<void> {

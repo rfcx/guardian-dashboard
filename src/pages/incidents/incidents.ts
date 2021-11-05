@@ -1,5 +1,8 @@
 import { Options, Vue } from 'vue-class-component'
 
+import { ForbiddenError } from '@rfcx/http-utils'
+
+import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, Pagination, Project, Stream } from '@/types'
 import { formatDayWithoutTime, formatDiffFromNow } from '@/utils'
@@ -9,6 +12,7 @@ import PaginationComponent from '../../components/pagination/pagination.vue'
 @Options({
   components: {
     IncidentsTableRows,
+    InvalidProjectComponent,
     PaginationComponent
   }
 })
@@ -132,15 +136,22 @@ export default class IncidentsPage extends Vue {
   }
 
   public async getIncidentsData (projectId: string | string[], closed?: boolean): Promise<void> {
-    const data = await IncidentsService.getIncidents({
-      projects: projectId,
-      limit: this.paginationSettings.limit,
-      offset: this.paginationSettings.offset * this.paginationSettings.limit,
-      ...closed !== undefined && { closed: closed }
-    })
-    this.paginationSettings.total = data.headers['total-items']
-    this.incidents = this.formatIncidents(data.data)
-    this.isLoading = false
+    try {
+      const data = await IncidentsService.getIncidents({
+        projects: projectId,
+        limit: this.paginationSettings.limit,
+        offset: this.paginationSettings.offset * this.paginationSettings.limit,
+        ...closed !== undefined && { closed: closed }
+      })
+      this.paginationSettings.total = data.headers['total-items']
+      this.incidents = this.formatIncidents(data.data)
+      this.isLoading = false
+    } catch (e) {
+      this.isLoading = false
+      if (e instanceof ForbiddenError) {
+        console.log('No permission')
+      }
+    }
   }
 
   public formatIncidents (incidents: Incident[]): Incident[] {
