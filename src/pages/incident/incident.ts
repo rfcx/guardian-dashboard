@@ -1,7 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
 
-import { ForbiddenError } from '@rfcx/http-utils'
-
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Answer, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
@@ -150,9 +148,6 @@ export default class IncidentPage extends Vue {
       this.getIncidentStatus()
     } catch (e) {
       this.isLoading = false
-      if (e instanceof ForbiddenError) {
-        console.log('No permission')
-      }
     }
   }
 

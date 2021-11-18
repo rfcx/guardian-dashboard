@@ -36,6 +36,7 @@
           >
             No incidents data
           </div>
+          <invalid-project-component v-if="incidents === undefined && !isLoading" />
           <div
             v-if="!auth?.isAuthenticated"
             class="px-4 py-5 lg:text-center"
