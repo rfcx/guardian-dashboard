@@ -18,6 +18,7 @@ export default class IncidentsPage extends Vue {
 
   public selectedProject: Project | undefined
   public isLoading = false
+  public isPaginationAvailable = false
   public incidents: Incident[] = []
   public streamsData: Stream[] = []
 
@@ -139,6 +140,7 @@ export default class IncidentsPage extends Vue {
       ...closed !== undefined && { closed: closed }
     })
     this.paginationSettings.total = data.headers['total-items']
+    this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
     this.incidents = this.formatIncidents(data.data)
     this.isLoading = false
   }

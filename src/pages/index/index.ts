@@ -2,11 +2,15 @@ import { Options, Vue } from 'vue-class-component'
 
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Auth0Option, Event, EventExtended, Incident, Project, ResponseExtended, Stream } from '@/types'
+import { Auth0Option, Event, EventExtended, Incident, Pagination, Project, ResponseExtended, Stream } from '@/types'
 import { formatDiffFromNow, getUtcTimeValueOf } from '@/utils'
+import PaginationComponent from '../../components/pagination/pagination.vue'
 
 @Options({
-  components: { NavigationBarComponent }
+  components: {
+    NavigationBarComponent,
+    PaginationComponent
+  }
 })
 export default class IndexPage extends Vue {
   @VuexService.Auth.auth.bind()
@@ -16,6 +20,13 @@ export default class IndexPage extends Vue {
   public streamsData: Stream[] = []
   public selectedProject: Project | undefined
   public isLoading = false
+  public isPaginationAvailable = false
+  public paginationSettings: Pagination = {
+    total: 0,
+    limit: 10,
+    offset: 0,
+    page: 1
+  }
 
   data (): Record<string, unknown> {
     return {
@@ -68,7 +79,12 @@ export default class IndexPage extends Vue {
   }
 
   public async getIncidentsData (): Promise<void> {
-    const resp = await IncidentsService.getIncidents()
+    const resp = await IncidentsService.getIncidents({
+      limit: this.paginationSettings.limit,
+      offset: this.paginationSettings.offset * this.paginationSettings.limit
+    })
+    this.paginationSettings.total = resp.headers['total-items']
+    this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
     const incidentsData: Incident[] = resp.data
     this.incidents = incidentsData
     this.isLoading = false
