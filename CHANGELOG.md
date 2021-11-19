@@ -1,5 +1,7 @@
 # Incident Center Release Notes
 
+* **feature:** The response time calculation logic is updated ([CE-1570](https://jira.rfcx.org/browse/CE-1570))
+
 ## 0.0.1 (2021-??-??)
 
 * **bug:** Response assets are loaded only when user opens them ([CE-1515](https://jira.rfcx.org/browse/CE-1515))
