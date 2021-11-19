@@ -97,14 +97,14 @@ export default class IndexPage extends Vue {
   public filterEvents (incident: Incident): Event[] {
     const temp: number[] = incident.responses.map(r => { return getUtcTimeValueOf(r.submittedAt) })
     const maxTime: number = Math.max(...temp)
-    return incident.events.filter(e => getUtcTimeValueOf(e.createdAt) > maxTime)
+    return incident.events.filter(e => getUtcTimeValueOf(e.start) > maxTime)
   }
 
   public getItemDatetime (item: ResponseExtended | EventExtended | Event): string {
-    if ((item as Event).createdAt) {
-      return (item as Event).createdAt
+    if ((item as Event).start) {
+      return (item as Event).start
     }
-    return (item as EventExtended).type === 'event' ? (item as EventExtended).createdAt : (item as ResponseExtended).submittedAt
+    return (item as EventExtended).type === 'event' ? (item as EventExtended).start : (item as ResponseExtended).submittedAt
   }
 
   public sortItems (items: Array<ResponseExtended | EventExtended | Event>): void {
@@ -116,7 +116,8 @@ export default class IndexPage extends Vue {
   }
 
   public getEventsLabel (events: Event[], timezone: string): string {
-    return events.length ? `${this.formatDiffFromNow(events[0].createdAt, timezone)} no response` : ''
+    this.sortItems(events)
+    return events.length ? `${this.formatDiffFromNow(events[events.length - 1].start, timezone)} no response` : ''
   }
 
   public getResponsesLabel (incident: Incident, timezone: string): string {

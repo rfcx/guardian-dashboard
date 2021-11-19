@@ -117,8 +117,8 @@ export function combineIncidentItems (incident: Incident): void {
       return response
     })]
   incident.items.sort((a: any, b: any) => {
-    const dateA = new Date(a.type === 'event' ? a.createdAt : a.submittedAt).valueOf()
-    const dateB = new Date(b.type === 'event' ? b.createdAt : b.submittedAt).valueOf()
+    const dateA = new Date(a.type === 'event' ? a.start : a.submittedAt).valueOf()
+    const dateB = new Date(b.type === 'event' ? b.start : b.submittedAt).valueOf()
     return dateB - dateA
   })
 }

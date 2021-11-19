@@ -1,8 +1,8 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Incident, Pagination, Project, Stream } from '@/types'
-import { formatDayWithoutTime, formatDiffFromNow } from '@/utils'
+import { Event, Incident, Pagination, Project, Response, Stream } from '@/types'
+import { formatDayWithoutTime, formatDiffFromNow, formatTwoDateDiff } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
 import PaginationComponent from '../../components/pagination/pagination.vue'
 
@@ -91,14 +91,31 @@ export default class IncidentsPage extends Vue {
       if (incident.closedAt !== null && incident.closedAt !== undefined) {
         status = `report closed ${(formatDiffFromNow(incident.closedAt, timezone) as string)} ago`
       } else if (incident.responses.length > 0) {
-        status = `response time ${(formatDiffFromNow(incident.responses[0].createdAt, timezone) as string)}`
+        if (incident.events.length > 0) {
+          status = `response time ${(formatTwoDateDiff((this.getFirstItem(incident.events) as Event).start, (this.getFirstItem(incident.responses) as Response).submittedAt) as string)}`
+        } else {
+          status = `response time ${(formatDiffFromNow((this.getFirstItem(incident.responses) as Response).submittedAt, timezone) as string)}`
+        }
       } else if (!incident.items.length) {
         return 'no events and responses'
       } else {
-        status = `${(formatDiffFromNow(incident.createdAt, timezone) as string)} without responce`
+        status = `${(formatDiffFromNow((this.getFirstItem(incident.events) as Event).start, timezone) as string)} without response`
       }
     }
     return status
+  }
+
+  public getFirstItem (items: Response[] | Event[]): Response | Event {
+    items.sort((a: Response | Event, b: Response | Event) => {
+      const dateA = new Date(this.getItemDatetime(a)).valueOf()
+      const dateB = new Date(this.getItemDatetime(b)).valueOf()
+      return dateA - dateB
+    })
+    return items[0]
+  }
+
+  public getItemDatetime (item: Response | Event): string {
+    return (item as Event).start ? (item as Event).start : (item as Response).submittedAt
   }
 
   public itemsLabel (incident: Incident): string {
