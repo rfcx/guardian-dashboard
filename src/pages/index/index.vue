@@ -87,7 +87,7 @@
             </div>
           </dl>
           <pagination-component
-            v-if="paginationSettings && paginationSettings.total && !isLoading && incidents.length && isPaginationAvailable"
+            v-if="paginationSettings && paginationSettings.total && !isLoading && incidents && incidents.length && isPaginationAvailable"
             :pagination-settings="paginationSettings"
             @selected-page="getIncidentsData()"
           />
