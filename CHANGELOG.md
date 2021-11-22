@@ -2,6 +2,7 @@
 
 ## 0.0.1 (2021-??-??)
 
+* **bug:** Fixed the playing audio functionality in Safari ([CE-1553](https://jira.rfcx.org/browse/CE-1553))
 * **bug:** Response assets are loaded only when user opens them ([CE-1515](https://jira.rfcx.org/browse/CE-1515))
 * **bug:** Fixed the datetime format on the incident page for event start/end time ([CE-1516](https://jira.rfcx.org/browse/CE-1516))
 * **feature:** The title is added to homepage for non-authenticated state ([CE-1501](https://jira.rfcx.org/browse/CE-1501))
