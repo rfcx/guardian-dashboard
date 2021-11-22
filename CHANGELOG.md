@@ -1,5 +1,7 @@
 # Incident Center Release Notes
 
+* **feature:** Resolution time is added to closed reports ([CE-1572](https://jira.rfcx.org/browse/CE-1572))
+
 ## 0.0.1 (2021-??-??)
 
 * **bug:** Response assets are loaded only when user opens them ([CE-1515](https://jira.rfcx.org/browse/CE-1515))
