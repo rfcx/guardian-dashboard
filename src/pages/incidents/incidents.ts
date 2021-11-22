@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Event, Incident, Pagination, Project, Response, Stream } from '@/types'
-import { formatDayWithoutTime, formatDiffFromNow, formatTwoDateDiff } from '@/utils'
+import { formatDayTimeLabel, formatDayWithoutTime, formatDiffFromNow, formatTwoDateDiff } from '@/utils'
 import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
 import PaginationComponent from '../../components/pagination/pagination.vue'
 
@@ -94,7 +94,7 @@ export default class IncidentsPage extends Vue {
         if (incident.events.length > 0) {
           status = `response time ${(formatTwoDateDiff((this.getFirstItem(incident.events) as Event).start, (this.getFirstItem(incident.responses) as Response).submittedAt) as string)}`
         } else {
-          status = `response time ${(formatDiffFromNow((this.getFirstItem(incident.responses) as Response).submittedAt, timezone) as string)}`
+          status = `response was created without events at ${formatDayTimeLabel((this.getFirstItem(incident.responses) as Response).submittedAt, timezone)}`
         }
       } else if (!incident.items.length) {
         return 'no events and responses'
