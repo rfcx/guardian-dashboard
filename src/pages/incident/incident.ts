@@ -192,6 +192,7 @@ export default class IncidentPage extends Vue {
         response.audioObject.src = asset
         response.audioObject.assetId = a.id
         response.audioObject.fileName = a.fileName
+        response.audioObject.mimeType = a.mimeType
       }
       await new Promise((resolve, reject) => {
         const reader = new FileReader()

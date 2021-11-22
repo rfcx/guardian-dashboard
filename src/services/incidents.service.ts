@@ -93,7 +93,7 @@ export async function getResposeDetails (id: string): Promise<Response> {
   }
 }
 
-export async function getFiles (id: string): Promise<any> {
+export async function getFiles (id: string, type?: string): Promise<any> {
   try {
     const assetsUrl = Endpoints.getAssets.url + `/${id}`
     const resp = await ApiClient.request<any>({
@@ -103,7 +103,7 @@ export async function getFiles (id: string): Promise<any> {
         responseType: 'blob'
       }
     })
-    return new Blob([resp.data])
+    return new Blob([resp.data], { type: type })
   } catch (e) {
     return await Promise.reject(e)
   }
