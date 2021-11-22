@@ -1,3 +1,5 @@
+import { mapAxiosErrorToCustom } from '@rfcx/http-utils'
+
 import * as Endpoints from '@/api/endpoints'
 import { Incident, Response, ResponseAsset } from '@/types'
 import ApiClient from './api.service'
@@ -46,7 +48,8 @@ export async function getIncident (id: string): Promise<Incident> {
     })
     return resp.data
   } catch (e) {
-    return await Promise.reject(e)
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    throw mapAxiosErrorToCustom(e)
   }
 }
 

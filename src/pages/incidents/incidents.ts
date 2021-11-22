@@ -1,5 +1,6 @@
 import { Options, Vue } from 'vue-class-component'
 
+import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, Pagination, Project, Stream } from '@/types'
 import { formatDayWithoutTime, formatDiffFromNow } from '@/utils'
@@ -9,6 +10,7 @@ import PaginationComponent from '../../components/pagination/pagination.vue'
 @Options({
   components: {
     IncidentsTableRows,
+    InvalidProjectComponent,
     PaginationComponent
   }
 })
@@ -34,15 +36,12 @@ export default class IncidentsPage extends Vue {
   updated (): void {
     if (this.selectedProject !== undefined && this.selectedProject.id !== this.$route.params.projectId) {
       this.getSelectedProject()
-      this.isLoading = true
-      void this.getIncidentsData(this.$route.params.projectId)
+      this.getData()
     }
     const temp = this.isOpenedIncidents
     if (this.$route.params.isOpenedIncidents !== undefined && temp !== this.$route.params.isOpenedIncidents) {
       this.isOpenedIncidents = this.$route.params.isOpenedIncidents
-      this.isLoading = true
-      this.resetPaginationData()
-      void this.getIncidentsData(this.$route.params.projectId, this.$route.params.isOpenedIncidents === 'false')
+      this.getData(this.$route.params.isOpenedIncidents === 'false')
     }
   }
 
@@ -52,6 +51,13 @@ export default class IncidentsPage extends Vue {
     const params: string = this.$route.params.projectId as string
     void this.getStreamsData(params)
     void this.getIncidentsData(params)
+  }
+
+  public getData (isOpenedIncidents?: boolean): void {
+    this.isLoading = true
+    const params: string = this.$route.params.projectId as string
+    void this.getStreamsData(params)
+    void this.getIncidentsData(params, isOpenedIncidents)
   }
 
   public resetPaginationData (): void {
@@ -132,15 +138,19 @@ export default class IncidentsPage extends Vue {
   }
 
   public async getIncidentsData (projectId: string | string[], closed?: boolean): Promise<void> {
-    const data = await IncidentsService.getIncidents({
-      projects: projectId,
-      limit: this.paginationSettings.limit,
-      offset: this.paginationSettings.offset * this.paginationSettings.limit,
-      ...closed !== undefined && { closed: closed }
-    })
-    this.paginationSettings.total = data.headers['total-items']
-    this.incidents = this.formatIncidents(data.data)
-    this.isLoading = false
+    try {
+      const data = await IncidentsService.getIncidents({
+        projects: projectId,
+        limit: this.paginationSettings.limit,
+        offset: this.paginationSettings.offset * this.paginationSettings.limit,
+        ...closed !== undefined && { closed: closed }
+      })
+      this.paginationSettings.total = data.headers['total-items']
+      this.incidents = this.formatIncidents(data.data)
+      this.isLoading = false
+    } catch (e) {
+      this.isLoading = false
+    }
   }
 
   public formatIncidents (incidents: Incident[]): Incident[] {
