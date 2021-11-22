@@ -94,7 +94,7 @@ export default class IncidentsPage extends Vue {
         if (incident.events.length > 0) {
           status = `response time ${(formatTwoDateDiff((this.getFirstItem(incident.events) as Event).start, (this.getFirstItem(incident.responses) as Response).submittedAt) as string)}`
         } else {
-          status = `response was created without events at ${formatDayTimeLabel((this.getFirstItem(incident.responses) as Response).submittedAt, timezone)}`
+          status = `investigated without events at ${formatDayTimeLabel((this.getFirstItem(incident.responses) as Response).investigatedAt, timezone)}`
         }
       } else if (!incident.items.length) {
         return 'no events and responses'
