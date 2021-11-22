@@ -1,7 +1,7 @@
 import { Options, Vue } from 'vue-class-component'
 
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Answer, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
+import { Answer, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
 import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
@@ -255,6 +255,19 @@ export default class IncidentPage extends Vue {
         }
       }
     }
+  }
+
+  public getFirstItem (items: Event[]): Event {
+    items.sort((a: Event, b: Event) => {
+      const dateA = new Date(this.getItemDatetime(a)).valueOf()
+      const dateB = new Date(this.getItemDatetime(b)).valueOf()
+      return dateA - dateB
+    })
+    return items[0]
+  }
+
+  public getItemDatetime (item: Event): string {
+    return item.start
   }
 
   public combineAnswers (answers: Answer[], id: number): string[] {

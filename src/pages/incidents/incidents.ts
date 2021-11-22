@@ -34,13 +34,11 @@ export default class IncidentsPage extends Vue {
   updated (): void {
     if (this.selectedProject !== undefined && this.selectedProject.id !== this.$route.params.projectId) {
       this.getSelectedProject()
-      this.isLoading = true
       void this.getIncidentsData(this.$route.params.projectId)
     }
     const temp = this.isOpenedIncidents
     if (this.$route.params.isOpenedIncidents !== undefined && temp !== this.$route.params.isOpenedIncidents) {
       this.isOpenedIncidents = this.$route.params.isOpenedIncidents
-      this.isLoading = true
       this.resetPaginationData()
       void this.getIncidentsData(this.$route.params.projectId, this.$route.params.isOpenedIncidents === 'false')
     }
@@ -48,7 +46,6 @@ export default class IncidentsPage extends Vue {
 
   mounted (): void {
     this.getSelectedProject()
-    this.isLoading = true
     const params: string = this.$route.params.projectId as string
     void this.getStreamsData(params)
     void this.getIncidentsData(params)
@@ -132,6 +129,8 @@ export default class IncidentsPage extends Vue {
   }
 
   public async getIncidentsData (projectId: string | string[], closed?: boolean): Promise<void> {
+    if (this.isLoading) return
+    this.isLoading = true
     const data = await IncidentsService.getIncidents({
       projects: projectId,
       limit: this.paginationSettings.limit,
