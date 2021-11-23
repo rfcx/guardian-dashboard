@@ -36,6 +36,7 @@
           >
             No incidents data
           </div>
+          <invalid-project-component v-if="incidents === undefined && !isLoading && auth?.isAuthenticated" />
           <div
             v-if="!auth?.isAuthenticated"
             class="px-4 py-5 lg:text-center"
@@ -68,6 +69,27 @@
                 >
                   <span class="border-b border-gray-200 text-white mr-2">#{{ incident.ref }} {{ getStreamName(incident.streamId) }} {{ getProjectName(incident.streamId)? ', ' : '' }}</span>
                 </router-link>
+                <svg
+                  v-if="!getStreamName(incident.streamId)"
+                  class="animate-spin bg-mirage-grey text-white inline-block h-5 w-5 mx-1 align-top"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
                 <span class="text-white">{{ getProjectName(incident.streamId) }}</span>
               </dt>
               <dt class="text-sm font-medium flex items-center">
@@ -86,6 +108,11 @@
               </dt>
             </div>
           </dl>
+          <pagination-component
+            v-if="!isLoading && incidents && incidents.length && isPaginationAvailable"
+            :pagination-settings="paginationSettings"
+            @selected-page="getIncidentsData()"
+          />
         </div>
       </div>
     </div>

@@ -1,7 +1,17 @@
 # Incident Center Release Notes
 
-## 0.0.1 (2021-??-??)
+## 0.0.2 (2021-11-??)
 
+* **feature:** Pagination is added to the homepage ([CE-1569](https://jira.rfcx.org/browse/CE-1569))
+* **feature:** Resolution time is added to closed reports ([CE-1572](https://jira.rfcx.org/browse/CE-1572))
+* **feature:** The response time calculation logic is updated ([CE-1570](https://jira.rfcx.org/browse/CE-1570))
+* **bug:** The response time is calculated using the first event start time ([CE-1571](https://jira.rfcx.org/browse/CE-1571))
+* **bug:** Display message if the user has not the access to the page ([CE-1551](https://jira.rfcx.org/browse/CE-1551))
+* **bug:** Display spinner in the stream name area ([CE-1551](https://jira.rfcx.org/browse/CE-1551))
+
+## 0.0.1 (2021-10-24)
+
+* **bug:** Fixed the playing audio functionality in Safari ([CE-1553](https://jira.rfcx.org/browse/CE-1553))
 * **bug:** Response assets are loaded only when user opens them ([CE-1515](https://jira.rfcx.org/browse/CE-1515))
 * **bug:** Fixed the datetime format on the incident page for event start/end time ([CE-1516](https://jira.rfcx.org/browse/CE-1516))
 * **feature:** The title is added to homepage for non-authenticated state ([CE-1501](https://jira.rfcx.org/browse/CE-1501))

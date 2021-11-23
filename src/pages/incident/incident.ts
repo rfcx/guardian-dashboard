@@ -1,7 +1,8 @@
 import { Options, Vue } from 'vue-class-component'
 
+import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Answer, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
+import { Answer, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
 import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
@@ -10,6 +11,7 @@ import RangerTrackModalComponent from '../../components/ranger-track-modal/range
 
 @Options({
   components: {
+    InvalidProjectComponent,
     RangerTrackModalComponent,
     RangerPlayerComponent,
     RangerSliderComponent,
@@ -136,13 +138,17 @@ export default class IncidentPage extends Vue {
   }
 
   public async getData (): Promise<void> {
-    this.incident = await IncidentsService.getIncident((this.$route.params.id as string))
-      .then((incident: Incident) => {
-        IncidentsService.combineIncidentItems(incident)
-        return incident
-      })
-    this.getIncidentStatus()
-    this.isLoading = false
+    try {
+      this.incident = await IncidentsService.getIncident((this.$route.params.id as string))
+        .then((incident: Incident) => {
+          IncidentsService.combineIncidentItems(incident)
+          return incident
+        })
+      this.isLoading = false
+      this.getIncidentStatus()
+    } catch (e) {
+      this.isLoading = false
+    }
   }
 
   public async getAssets (): Promise<void> {
@@ -186,6 +192,7 @@ export default class IncidentPage extends Vue {
         response.audioObject.src = asset
         response.audioObject.assetId = a.id
         response.audioObject.fileName = a.fileName
+        response.audioObject.mimeType = a.mimeType
       }
       await new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -255,6 +262,19 @@ export default class IncidentPage extends Vue {
         }
       }
     }
+  }
+
+  public getFirstItem (items: Event[]): Event {
+    items.sort((a: Event, b: Event) => {
+      const dateA = new Date(this.getItemDatetime(a)).valueOf()
+      const dateB = new Date(this.getItemDatetime(b)).valueOf()
+      return dateA - dateB
+    })
+    return items[0]
+  }
+
+  public getItemDatetime (item: Event): string {
+    return item.start
   }
 
   public combineAnswers (answers: Answer[], id: number): string[] {
