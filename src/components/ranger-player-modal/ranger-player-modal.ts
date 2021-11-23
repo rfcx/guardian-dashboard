@@ -45,7 +45,10 @@ export default class RangerPlayerComponent extends Vue {
 
   public initializeAudio (): void {
     this.audio = new Audio()
+    const source = document.createElement('source')
+    this.audio.appendChild(source)
     this.audio.volume = 0.9
+    source.type = this.audioProp.mimeType
     this.audio.src = window.URL.createObjectURL(this.audioProp.src)
     this.isLoading = false
   }
@@ -73,7 +76,7 @@ export default class RangerPlayerComponent extends Vue {
   public async downloadAssets (): Promise<void> {
     try {
       this.isDownloading = true
-      const asset = await IncidentsService.getFiles(this.audioProp.assetId)
+      const asset = await IncidentsService.getFiles(this.audioProp.assetId, this.audioProp.mimeType)
       downloadContext(asset, this.audioProp.fileName)
       this.isDownloading = false
     } catch (e) {
