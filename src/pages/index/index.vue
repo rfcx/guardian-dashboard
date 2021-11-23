@@ -100,7 +100,13 @@
                   no events and responses
                 </span>
                 <span
-                  v-if="incident.items && incident.items.length && getEventsCount(incident) !== undefined"
+                  v-if="incident.closedAt"
+                  class="text-white"
+                >
+                  {{ getClosedLabel(incident.closedAt, getStreamTimezone(incident.streamId) || 'UTC') }}
+                </span>
+                <span
+                  v-if="incident.items && incident.items.length && getEventsCount(incident) !== undefined && !incident.closedAt"
                   :class="{'text-white': !getEventsCount(incident), 'ic-green': getEventsCount(incident) === 0, 'ic-pink': getEventsCount(incident) !== 0}"
                 >
                   {{ getEventsCount(incident) !== 0 ? getEventsLabel(getLastEvents(incident), (getStreamTimezone(incident.streamId) || 'UTC')) : getResponsesLabel(incident, (getStreamTimezone(incident.streamId) || 'UTC')) }}

@@ -95,7 +95,7 @@ export default class IncidentsPage extends Vue {
     let status = ''
     if (timezone !== undefined) {
       if (incident.closedAt !== null && incident.closedAt !== undefined) {
-        status = `report closed ${(formatDiffFromNow(incident.closedAt, timezone) as string)} ago`
+        status = `incident closed ${(formatDiffFromNow(incident.closedAt, timezone) as string)} ago`
       } else if (incident.responses.length > 0) {
         if (incident.events.length > 0) {
           status = `response time ${(formatTwoDateDiff((this.getFirstItem(incident.events) as Event).start, (this.getFirstItem(incident.responses) as Response).submittedAt) as string)}`
