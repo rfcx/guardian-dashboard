@@ -1,3 +1,5 @@
+import { mapAxiosErrorToCustom } from '@rfcx/http-utils'
+
 import * as Endpoints from '@/api/endpoints'
 import { Incident, Response, ResponseAsset } from '@/types'
 import ApiClient from './api.service'
@@ -46,7 +48,8 @@ export async function getIncident (id: string): Promise<Incident> {
     })
     return resp.data
   } catch (e) {
-    return await Promise.reject(e)
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    throw mapAxiosErrorToCustom(e)
   }
 }
 
@@ -90,7 +93,7 @@ export async function getResposeDetails (id: string): Promise<Response> {
   }
 }
 
-export async function getFiles (id: string): Promise<any> {
+export async function getFiles (id: string, type?: string): Promise<any> {
   try {
     const assetsUrl = Endpoints.getAssets.url + `/${id}`
     const resp = await ApiClient.request<any>({
@@ -100,7 +103,7 @@ export async function getFiles (id: string): Promise<any> {
         responseType: 'blob'
       }
     })
-    return new Blob([resp.data])
+    return new Blob([resp.data], { type: type })
   } catch (e) {
     return await Promise.reject(e)
   }
@@ -117,8 +120,8 @@ export function combineIncidentItems (incident: Incident): void {
       return response
     })]
   incident.items.sort((a: any, b: any) => {
-    const dateA = new Date(a.type === 'event' ? a.createdAt : a.submittedAt).valueOf()
-    const dateB = new Date(b.type === 'event' ? b.createdAt : b.submittedAt).valueOf()
+    const dateA = new Date(a.type === 'event' ? a.start : a.submittedAt).valueOf()
+    const dateB = new Date(b.type === 'event' ? b.start : b.submittedAt).valueOf()
     return dateB - dateA
   })
 }

@@ -1,5 +1,6 @@
 import { Options, Vue } from 'vue-class-component'
 
+import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Event, EventExtended, Incident, Pagination, Project, ResponseExtended, Stream } from '@/types'
@@ -8,6 +9,7 @@ import PaginationComponent from '../../components/pagination/pagination.vue'
 
 @Options({
   components: {
+    InvalidProjectComponent,
     NavigationBarComponent,
     PaginationComponent
   }
@@ -17,6 +19,7 @@ export default class IndexPage extends Vue {
   public auth!: Auth0Option | undefined
 
   public incidents: Incident[] | undefined
+  public errorMessage: string | undefined
   public streamsData: Stream[] = []
   public selectedProject: Project | undefined
   public isLoading = false
@@ -79,17 +82,22 @@ export default class IndexPage extends Vue {
   }
 
   public async getIncidentsData (): Promise<void> {
-    const resp = await IncidentsService.getIncidents({
-      limit: this.paginationSettings.limit,
-      offset: this.paginationSettings.offset * this.paginationSettings.limit
-    })
-    this.paginationSettings.total = resp.headers['total-items']
-    this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
-    const incidentsData: Incident[] = resp.data
-    this.incidents = incidentsData
-    this.isLoading = false
-    for (const item of this.incidents) {
-      void IncidentsService.combineIncidentItems(item)
+    this.errorMessage = ''
+    try {
+      const resp = await IncidentsService.getIncidents({
+        limit: this.paginationSettings.limit,
+        offset: this.paginationSettings.offset * this.paginationSettings.limit
+      })
+      this.paginationSettings.total = resp.headers['total-items']
+      this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
+      const incidentsData: Incident[] = resp.data
+      this.incidents = incidentsData
+      this.isLoading = false
+      for (const item of this.incidents) {
+        void IncidentsService.combineIncidentItems(item)
+      }
+    } catch (e) {
+      this.isLoading = false
     }
   }
 
@@ -113,14 +121,14 @@ export default class IndexPage extends Vue {
   public filterEvents (incident: Incident): Event[] {
     const temp: number[] = incident.responses.map(r => { return getUtcTimeValueOf(r.submittedAt) })
     const maxTime: number = Math.max(...temp)
-    return incident.events.filter(e => getUtcTimeValueOf(e.createdAt) > maxTime)
+    return incident.events.filter(e => getUtcTimeValueOf(e.start) > maxTime)
   }
 
   public getItemDatetime (item: ResponseExtended | EventExtended | Event): string {
-    if ((item as Event).createdAt) {
-      return (item as Event).createdAt
+    if ((item as Event).start) {
+      return (item as Event).start
     }
-    return (item as EventExtended).type === 'event' ? (item as EventExtended).createdAt : (item as ResponseExtended).submittedAt
+    return (item as EventExtended).type === 'event' ? (item as EventExtended).start : (item as ResponseExtended).submittedAt
   }
 
   public sortItems (items: Array<ResponseExtended | EventExtended | Event>): void {
@@ -132,7 +140,8 @@ export default class IndexPage extends Vue {
   }
 
   public getEventsLabel (events: Event[], timezone: string): string {
-    return events.length ? `${this.formatDiffFromNow(events[0].createdAt, timezone)} no response` : ''
+    this.sortItems(events)
+    return events.length ? `${this.formatDiffFromNow(events[events.length - 1].start, timezone)} no response` : ''
   }
 
   public getResponsesLabel (incident: Incident, timezone: string): string {

@@ -1,8 +1,12 @@
 <template>
   <div id="error-page-not-found">
     <nav-bar />
-    <div class="text-secondary">
-      Page not found
+    <div class="pt-10 px-20">
+      <div class="bg-gray shadow overflow-hidden">
+        <div class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
+          Page not found
+        </div>
+      </div>
     </div>
   </div>
 </template>

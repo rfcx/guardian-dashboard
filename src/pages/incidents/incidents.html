@@ -7,15 +7,19 @@
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <div v-if="!incidents.length && !isLoading" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
+      <div v-if="!incidents.length && !isLoading && selectedProject" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
         No incidents data
       </div>
-      <dl v-if="incidents !== undefined && incidents.length">
+      <dl v-if="incidents !== undefined && incidents.length && !isLoading">
         <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 border-b border-gray-500" v-for="incident of incidents">
           <dt class="text-sm font-medium">
             <router-link :to="{ path: '/project/' + selectedProject.id + '/incidents/'+ incident.id}">
               <span class="border-b border-gray-200 text-white mr-4">#{{incident.ref}} {{getStreamName(incident.streamId)}}</span>
             </router-link>
+            <svg v-if="!getStreamName(incident.streamId)" class="animate-spin bg-mirage-grey text-white inline-block h-5 w-5 ml-1 align-top" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
             <span class="text-secondary italic" v-bind:class="{'ic-pink': !incident.closedAt && !incident.responses.length}">{{getIncidentStatus(incident)}}</span>
           </dt>
           <div class="col-span-3 flex flex-col">
@@ -47,5 +51,6 @@
       </dl>
       <pagination-component v-if="!isLoading && incidents.length && isPaginationAvailable" :pagination-settings="paginationSettings" @selected-page="getPage()" />
     </div>
+    <invalid-project-component v-if="!selectedProject && !isLoading" />
   </div>
 </div>
