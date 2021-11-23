@@ -147,4 +147,8 @@ export default class IndexPage extends Vue {
   public getResponsesLabel (incident: Incident, timezone: string): string {
     return `last response was ${this.formatDiffFromNow(incident.items[0].createdAt, timezone)} ago`
   }
+
+  public getClosedLabel (closedAt: string, timezone: string): string {
+    return `report closed ${this.formatDiffFromNow(closedAt, timezone)} ago`
+  }
 }
