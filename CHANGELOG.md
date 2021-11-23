@@ -2,6 +2,7 @@
 
 ## 0.0.2 (2021-11-??)
 
+* **feature:** Resolution time is added to closed reports ([CE-1572](https://jira.rfcx.org/browse/CE-1572))
 * **feature:** The response time calculation logic is updated ([CE-1570](https://jira.rfcx.org/browse/CE-1570))
 * **bug:** The response time is calculated using the first event start time ([CE-1571](https://jira.rfcx.org/browse/CE-1571))
 * **bug:** Display message if the user has not the access to the page ([CE-1551](https://jira.rfcx.org/browse/CE-1551))

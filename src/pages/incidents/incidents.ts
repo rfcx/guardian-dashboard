@@ -41,13 +41,13 @@ export default class IncidentsPage extends Vue {
     const temp = this.isOpenedIncidents
     if (this.$route.params.isOpenedIncidents !== undefined && temp !== this.$route.params.isOpenedIncidents) {
       this.isOpenedIncidents = this.$route.params.isOpenedIncidents
+      this.resetPaginationData()
       this.getData(this.$route.params.isOpenedIncidents === 'false')
     }
   }
 
   mounted (): void {
     this.getSelectedProject()
-    this.isLoading = true
     const params: string = this.$route.params.projectId as string
     void this.getStreamsData(params)
     void this.getIncidentsData(params)
@@ -155,6 +155,8 @@ export default class IncidentsPage extends Vue {
   }
 
   public async getIncidentsData (projectId: string | string[], closed?: boolean): Promise<void> {
+    if (this.isLoading) return
+    this.isLoading = true
     try {
       const data = await IncidentsService.getIncidents({
         projects: projectId,
