@@ -7,7 +7,7 @@
       </svg>
     </div>
     <dl v-if="!isLoading && incident !== undefined">
-      <div class="bg-gray px-4 py-5 sm:grid sm:gap-4 sm:px-6 border-b border-gray-500" :class="{'sm:grid-cols-2': !incident.closedAt, 'sm:grid-cols-3': incident.closedAt && incident.events.length}">
+      <div class="bg-gray px-4 py-5 sm:grid sm:gap-4 sm:px-6 border-b border-gray-500" :class="{'sm:grid-cols-2': !incident.closedAt || !incident.events.length, 'sm:grid-cols-3': incident.closedAt && incident.events.length}">
         <dt class="text-sm font-medium text-white">
           #{{incident.ref}} {{stream? stream.name : ''}}
           <svg v-if="!stream" class="animate-spin bg-mirage-grey text-white inline-block h-5 w-5 ml-1 align-top" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
