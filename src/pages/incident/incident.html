@@ -10,6 +10,10 @@
       <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6 border-b border-gray-500">
         <dt class="text-sm font-medium text-white">
           #{{incident.ref}} {{stream? stream.name : ''}}
+          <svg v-if="!stream" class="animate-spin bg-mirage-grey text-white inline-block h-5 w-5 ml-1 align-top" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
         </dt>
         <dt class="mt-1 text-sm text-gray-500 sm:mt-0 text-white">
           <div class="flex rounded-md shadow justify-end">
@@ -167,5 +171,6 @@
         </div>
       </div>
     </dl>
+    <invalid-project-component v-if="!incident && !isLoading" />
   </div>
 </div>
