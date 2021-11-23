@@ -103,7 +103,7 @@
                   v-if="incident.closedAt"
                   class="text-white"
                 >
-                  {{ getClosedLabel(incident.closedAt, (getStreamTimezone(incident.streamId || 'UTC'))) }}
+                  {{ getClosedLabel(incident.closedAt, getStreamTimezone(incident.streamId) || 'UTC') }}
                 </span>
                 <span
                   v-if="incident.items && incident.items.length && getEventsCount(incident) !== undefined && !incident.closedAt"
