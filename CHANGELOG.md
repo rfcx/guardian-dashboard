@@ -1,11 +1,12 @@
 # Incident Center Release Notes
 
-## 0.0.2 (2021-??-??)
+## 0.0.2 (2021-11-??)
 
+* **bug:** The response time is calculated using the first event start time ([CE-1571](https://jira.rfcx.org/browse/CE-1571))
 * **bug:** Display message if the user has not the access to the page ([CE-1551](https://jira.rfcx.org/browse/CE-1551))
 * **bug:** Display spinner in the stream name area ([CE-1551](https://jira.rfcx.org/browse/CE-1551))
 
-## 0.0.1 (2021-??-??)
+## 0.0.1 (2021-10-24)
 
 * **bug:** Fixed the playing audio functionality in Safari ([CE-1553](https://jira.rfcx.org/browse/CE-1553))
 * **bug:** Response assets are loaded only when user opens them ([CE-1515](https://jira.rfcx.org/browse/CE-1515))
