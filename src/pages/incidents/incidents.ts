@@ -55,7 +55,6 @@ export default class IncidentsPage extends Vue {
   }
 
   public getData (isOpenedIncidents?: boolean): void {
-    this.isLoading = true
     const params: string = this.$route.params.projectId as string
     void this.getStreamsData(params)
     void this.getIncidentsData(params, isOpenedIncidents)
