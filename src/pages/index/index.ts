@@ -149,6 +149,6 @@ export default class IndexPage extends Vue {
   }
 
   public getClosedLabel (closedAt: string, timezone: string): string {
-    return `report closed ${this.formatDiffFromNow(closedAt, timezone)} ago`
+    return `incident closed ${this.formatDiffFromNow(closedAt, timezone)} ago`
   }
 }
