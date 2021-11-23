@@ -2,6 +2,7 @@
 
 ## 0.0.2 (2021-11-??)
 
+* **feature:** Pagination is added to the homepage ([CE-1569](https://jira.rfcx.org/browse/CE-1569))
 * **feature:** Resolution time is added to closed reports ([CE-1572](https://jira.rfcx.org/browse/CE-1572))
 * **feature:** The response time calculation logic is updated ([CE-1570](https://jira.rfcx.org/browse/CE-1570))
 * **bug:** The response time is calculated using the first event start time ([CE-1571](https://jira.rfcx.org/browse/CE-1571))

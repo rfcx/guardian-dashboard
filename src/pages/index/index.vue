@@ -108,6 +108,11 @@
               </dt>
             </div>
           </dl>
+          <pagination-component
+            v-if="!isLoading && incidents && incidents.length && isPaginationAvailable"
+            :pagination-settings="paginationSettings"
+            @selected-page="getIncidentsData()"
+          />
         </div>
       </div>
     </div>

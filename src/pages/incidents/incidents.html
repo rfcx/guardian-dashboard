@@ -49,7 +49,7 @@
           </div>
         </div>
       </dl>
-      <pagination-component v-if="paginationSettings && paginationSettings.total && !isLoading && incidents.length" :pagination-settings="paginationSettings" @selected-page="getPage()" />
+      <pagination-component v-if="!isLoading && incidents.length && isPaginationAvailable" :pagination-settings="paginationSettings" @selected-page="getPage()" />
     </div>
     <invalid-project-component v-if="!selectedProject && !isLoading" />
   </div>

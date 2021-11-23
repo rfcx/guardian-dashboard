@@ -24,7 +24,7 @@
         <p class="text-sm text-white">
           Showing
           {{ ' ' }}
-          <span class="font-medium">1</span>
+          <span class="font-medium">{{ paginationSettings.page }}</span>
           {{ ' ' }}
           to
           {{ ' ' }}
