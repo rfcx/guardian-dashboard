@@ -13,7 +13,7 @@ metadata:
     app: incident-center
 spec:
   rules:
-    - host: staging-ic.rfcx.org
+    - host: staging-guardian.rfcx.org
       http:
         paths:
           - backend:

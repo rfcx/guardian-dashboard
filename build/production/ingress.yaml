@@ -13,7 +13,7 @@ metadata:
     app: incident-center
 spec:
   rules:
-    - host: ic.rfcx.org
+    - host: guardian.rfcx.org
       http:
         paths:
           - backend:

@@ -43,7 +43,7 @@
           >
             <div class="lg:text-center">
               <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
-                Incident Center
+                Guardian Dashboard
               </p>
               <p class="mt-4 max-w-2xl text-xl leading-relaxed text-white lg:mx-auto">
                 A dashboard for incidents and responses monitoring
