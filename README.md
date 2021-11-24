@@ -1,6 +1,6 @@
-# Incident Center
+# Guardian Dashboard
 
-Incident Center website build with Vue 3, Typescript, Vite, Windi CSS, Vuex
+Guardian Dashboard website build with Vue 3, Typescript, Vite, Windi CSS, Vuex
 
 ## Requirements
 
