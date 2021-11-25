@@ -42,11 +42,11 @@ export default class NavigationBarComponent extends Vue {
     return selectedProjectId !== undefined
       ? [
           {
-            label: 'Open',
+            label: 'Open Incidents',
             destination: { name: ROUTES_NAME.incidents, params: { isOpenedIncidents: 'true' } }
           },
           {
-            label: 'Closed',
+            label: 'Closed Incidents',
             destination: { name: ROUTES_NAME.incidents, params: { isOpenedIncidents: 'false' } }
           }
         ]

@@ -1,7 +1,7 @@
 {
   "name": "incident-center",
   "version": "0.0.0",
-  "description": "The Incident Center website is to monitor, communicate and respond to incidents",
+  "description": "The Guardian Dashboard website is to monitor, communicate and respond to incidents",
   "license": "UNLICENSED",
   "scripts": {
     "build": "vue-tsc --project tsconfig.build.json --noEmit && vite build",

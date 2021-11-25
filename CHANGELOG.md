@@ -1,4 +1,4 @@
-# Incident Center Release Notes
+# Guardian Dashboard Release Notes
 
 ## 0.0.2 (2021-11-??)
 
