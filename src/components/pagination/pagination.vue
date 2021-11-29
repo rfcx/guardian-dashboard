@@ -22,15 +22,13 @@
     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
       <div>
         <p class="text-sm text-white">
-          Showing
+          Page
           {{ ' ' }}
           <span class="font-medium">{{ paginationSettings.page }}</span>
           {{ ' ' }}
-          to
+          of
           {{ ' ' }}
           <span class="font-medium">{{ lastPage }}</span>
-          {{ ' ' }}
-          pages
         </p>
       </div>
       <div>
