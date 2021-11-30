@@ -4,7 +4,11 @@ Known issues:
 
 * **bug:** Fixed the playing audio functionality in Safari ([CE-1553](https://jira.rfcx.org/browse/CE-1553))
 
-## 0.0.2 (2021-11-??)
+## 0.0.3 (2021-12-??)
+
+* **feature:** #25 Display the `immediate` label if the difference of calculation time to receive less than 60s ([#25](https://github.com/rfcx/incident-center/issues/25))
+
+## 0.0.2 (2021-11-30)
 
 * **feature:** Pagination is added to the homepage ([CE-1569](https://jira.rfcx.org/browse/CE-1569))
 * **feature:** Resolution time is added to closed reports ([CE-1572](https://jira.rfcx.org/browse/CE-1572))
