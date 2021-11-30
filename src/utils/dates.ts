@@ -34,6 +34,12 @@ export const inLast24Hours = (label: string): boolean => {
   return data.days < 1
 }
 
+export const inLast1Minute = (labelFrom: string, labelTo: string): boolean => {
+  const dateDiff = dayjs.duration(dayjs(labelTo).diff(dayjs(labelFrom)))
+  const data: any = Object.values(dateDiff)[0]
+  return data.minutes < 1
+}
+
 export const formatTwoDateDiff = (labelFrom: string, labelTo: string): any => {
   const dateDiff = dayjs.duration(dayjs(labelTo).diff(dayjs(labelFrom)))
   return combineLabel(dateDiff)

@@ -57,7 +57,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
             </svg>
-            {{ hoursDiffFormatted(item.submittedAt, item.createdAt) || 0 }}
+            {{ checkTimeToReceive ? 'immediate' : hoursDiffFormatted(item.submittedAt, item.createdAt) || 0 }}
           </dd>
           <dd class="col-span-4 flex flex-col bg-gray px-4 py-5">
             <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">

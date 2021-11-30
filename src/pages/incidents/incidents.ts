@@ -1,11 +1,11 @@
 import { Options, Vue } from 'vue-class-component'
 
+import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
+import PaginationComponent from '@/components/pagination/pagination.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Event, Incident, Pagination, Project, Response, Stream } from '@/types'
 import { formatDayTimeLabel, formatDayWithoutTime, formatDiffFromNow, formatTwoDateDiff } from '@/utils'
-import IncidentsTableRows from '../../components/incidents-table/incidents-table.vue'
-import PaginationComponent from '../../components/pagination/pagination.vue'
 
 @Options({
   components: {
