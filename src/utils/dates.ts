@@ -31,13 +31,11 @@ export const formatDiffFromNow = (label: string, timezone?: string): any => {
 export const inLast24Hours = (label: string): boolean => {
   const dateDiff = dayjs.duration(dayjs().diff(dayjs(label)))
   const data: any = Object.values(dateDiff)[0]
-  return data.days < 1
+  return data.days < 1 && data.months === 0
 }
 
 export const inLast1Minute = (labelFrom: string, labelTo: string): boolean => {
-  const dateDiff = dayjs.duration(dayjs(labelTo).diff(dayjs(labelFrom)))
-  const data: any = Object.values(dateDiff)[0]
-  return data.minutes < 1
+  return dayjs(labelFrom).valueOf() - dayjs(labelTo).valueOf() < 60000
 }
 
 export const formatTwoDateDiff = (labelFrom: string, labelTo: string): any => {
