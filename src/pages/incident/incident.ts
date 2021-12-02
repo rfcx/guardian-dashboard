@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Answer, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
+import { Answer, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
 import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
@@ -262,6 +262,12 @@ export default class IncidentPage extends Vue {
         }
       }
     }
+  }
+
+  public getCreatedByLabel (user: User): string {
+    if (user.firstname || user.lastname) {
+      return `${user.firstname} ${user.lastname}`
+    } else return user.email
   }
 
   public getFirstItem (items: Event[]): Event {

@@ -94,7 +94,7 @@
               </dt>
               <dt class="text-sm font-medium flex items-center">
                 <span
-                  v-if="incident.items && !incident.items.length"
+                  v-if="incident.items && !incident.items.length && !incident.closedAt"
                   class="text-white"
                 >
                   no events and responses

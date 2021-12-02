@@ -1,6 +1,10 @@
 # Guardian Dashboard Release Notes
 
-## 0.0.2 (2021-11-??)
+## 0.0.3 (2021-12-??)
+
+* **bug:** Show email when firstname and lastname are not defined ([#28](https://github.com/rfcx/incident-center/issues/28))
+
+## 0.0.2 (2021-11-30)
 
 * **feature:** Pagination is added to the homepage ([CE-1569](https://jira.rfcx.org/browse/CE-1569))
 * **feature:** Resolution time is added to closed reports ([CE-1572](https://jira.rfcx.org/browse/CE-1572))
