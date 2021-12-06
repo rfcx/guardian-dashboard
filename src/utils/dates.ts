@@ -29,7 +29,7 @@ export const formatDiffFromNow = (label: string, timezone?: string): any => {
 }
 
 export const inLast24Hours = (label: string): boolean => {
-  return dayjs().valueOf() - dayjs(label).valueOf() < 86400000
+  return Date.now().valueOf() - new Date(label).valueOf() < 86400000
 }
 
 export const inLast1Minute = (labelFrom: string, labelTo: string): boolean => {
