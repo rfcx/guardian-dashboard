@@ -15,7 +15,7 @@
     <div
       id="avatar-button"
       type="button"
-      class="hover:cursor-pointer focus:cursor-pointer group"
+      class="hover:cursor-pointer focus:cursor-pointer group appearance-none"
     >
       <img
         class="h-8 w-8 rounded-full"

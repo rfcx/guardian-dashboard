@@ -3,12 +3,11 @@ import { Stream } from '@/types'
 import ApiClient from './api.service'
 
 export async function getStreams (projects?: string[]): Promise<Stream[]> {
-  if (projects !== undefined) {
-    Endpoints.getStreams.config = {
-      params: { projects: projects }
+  Endpoints.getStreams.config = {
+    params: {
+      ...projects !== undefined && { projects: projects },
+      limit: 10000
     }
-  } else {
-    delete Endpoints.getStreams.config
   }
   try {
     const resp = await ApiClient.request<Stream[]>({
