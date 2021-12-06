@@ -33,7 +33,7 @@ export const inLast24Hours = (label: string): boolean => {
 }
 
 export const inLast1Minute = (labelFrom: string, labelTo: string): boolean => {
-  return dayjs(labelFrom).valueOf() - dayjs(labelTo).valueOf() < 60000
+  return new Date(labelFrom).valueOf() - new Date(labelTo).valueOf() < 60000
 }
 
 export const formatTwoDateDiff = (labelFrom: string, labelTo: string): any => {
