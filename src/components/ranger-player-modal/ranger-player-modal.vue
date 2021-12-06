@@ -73,10 +73,10 @@
               class="absolute w-full h-full left-0 right-0 z-0 opacity-40"
               style="background: no-repeat url('/src/assets/microphone.svg'); background-size: 60%; background-position: 118% 82%;"
             />
-            <a
-              class="cursor-pointer relative z-1"
+            <button
+              class="cursor-pointer relative z-1 focus:outline-none"
               :title="isPlaying? 'Stop' : 'Play'"
-              @click.prevent="toggleSound()"
+              @click="toggleSound()"
             >
               <svg
                 v-if="!isPlaying"
@@ -114,7 +114,7 @@
                   d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-            </a>
+            </button>
           </div>
           <div class="flex justify-end px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <button

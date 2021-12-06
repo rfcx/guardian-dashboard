@@ -39,7 +39,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 ic-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            {{item.createdBy.firstname}} {{item.createdBy.lastname}}
+            {{ getCreatedByLabel(item.createdBy) }}
           </dd>
           <dd class="text-sm font-medium text-white" title="Investigation time">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,7 +57,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
             </svg>
-            {{ hoursDiffFormatted(item.submittedAt, item.createdAt) || 0 }}
+            {{ checkTimeToReceive(item.submittedAt, item.createdAt) ? 'immediate' : hoursDiffFormatted(item.submittedAt, item.createdAt) || 0 }}
           </dd>
           <dd class="col-span-4 flex flex-col bg-gray px-4 py-5">
             <div class="sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">

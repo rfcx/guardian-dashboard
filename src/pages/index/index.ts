@@ -2,10 +2,10 @@ import { Options, Vue } from 'vue-class-component'
 
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
+import PaginationComponent from '@/components/pagination/pagination.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Event, EventExtended, Incident, Pagination, Project, ResponseExtended, Stream } from '@/types'
 import { formatDiffFromNow, getUtcTimeValueOf } from '@/utils'
-import PaginationComponent from '../../components/pagination/pagination.vue'
 
 @Options({
   components: {

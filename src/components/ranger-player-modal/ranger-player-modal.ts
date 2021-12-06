@@ -49,7 +49,8 @@ export default class RangerPlayerComponent extends Vue {
     this.audio.appendChild(source)
     this.audio.volume = 0.9
     source.type = this.audioProp.mimeType
-    this.audio.src = window.URL.createObjectURL(this.audioProp.src)
+    source.src = window.URL.createObjectURL(this.audioProp.src)
+    this.audio.load()
     this.isLoading = false
   }
 

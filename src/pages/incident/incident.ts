@@ -1,9 +1,13 @@
 import { Options, Vue } from 'vue-class-component'
 
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
+import RangerNotes from '@/components/ranger-notes/ranger-notes.vue'
+import RangerPlayerComponent from '@/components/ranger-player-modal/ranger-player-modal.vue'
+import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
+import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Answer, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream } from '@/types'
-import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast24Hours, isDefined, isNotDefined } from '@/utils'
+import { Answer, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
+import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast1Minute, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '../../components/ranger-slider/ranger-slider.vue'
@@ -103,6 +107,10 @@ export default class IncidentPage extends Vue {
 
   public isError (): boolean {
     return this.incidentStatus === 'Error occurred'
+  }
+
+  public checkTimeToReceive (from: string, to: string): boolean {
+    return inLast1Minute(from, to)
   }
 
   public getIncidentStatus (): void {
@@ -262,6 +270,12 @@ export default class IncidentPage extends Vue {
         }
       }
     }
+  }
+
+  public getCreatedByLabel (user: User): string {
+    if (user.firstname || user.lastname) {
+      return `${user.firstname} ${user.lastname}`
+    } else return user.email
   }
 
   public getFirstItem (items: Event[]): Event {
