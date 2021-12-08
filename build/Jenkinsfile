@@ -33,7 +33,6 @@ pipeline {
   stages {
     stage("Build") {
       steps {
-        slackSend (channel: "#${env.SLACK_CHANNEL}", color: '#FF9800', message: "*Incident Center*: Build started <${env.BUILD_URL}|#${env.BUILD_NUMBER}> commit ${env.GIT_COMMIT[0..6]} branch ${env.BRANCH_NAME}")
         container(name: 'kaniko') {
           sh """
           /kaniko/executor --snapshotMode=redo --use-new-run=true --cache=true --cache-repo=${ECR_HOST}/${ECR_REPO} --dockerfile `pwd`/build/Dockerfile --context `pwd` --destination=${ECR_HOST}/${ECR_REPO}:latest --destination=${ECR_HOST}/${ECR_REPO}:$BUILD_NUMBER
@@ -41,12 +40,8 @@ pipeline {
         }
       }
       post {
-        success {
-          slackSend (channel: "#${env.SLACK_CHANNEL}", color: '#3380C7', message: "*Incident Center*: Image built on <${env.BUILD_URL}|#${env.BUILD_NUMBER}> branch ${env.BRANCH_NAME}")
-          echo 'Compile Stage Successful'
-        }
         failure {
-          slackSend (channel: "#${env.SLACK_CHANNEL}", color: '#F44336', message: "*Incident Center*: Image build failed <${env.BUILD_URL}|#${env.BUILD_NUMBER}> branch ${env.BRANCH_NAME}")
+          slackSend (channel: "#${env.SLACK_CHANNEL}", color: '#F44336', message: "*Guardian Dashboard*: Image build failed <${env.BUILD_URL}|#${env.BUILD_NUMBER}> branch ${env.BRANCH_NAME}")
           echo 'Compile Stage Failed'
         }
       }
@@ -69,7 +64,7 @@ pipeline {
       }
       steps {
         sh "kubectl rollout status deployment ${APP} --namespace ${K8S_NAMESPACE}"
-        slackSend (channel: "#${env.SLACK_CHANNEL}", color: "#4CAF50", message: "*Incident Center*: Deployment completed <${env.BUILD_URL}|#${env.BUILD_NUMBER}> branch ${env.BRANCH_NAME}")
+        slackSend (channel: "#${env.SLACK_CHANNEL}", color: "#4CAF50", message: "*Guardian Dashboard*: Deployment completed <${env.BUILD_URL}|#${env.BUILD_NUMBER}> branch ${env.BRANCH_NAME}")
       }
     }
   }
