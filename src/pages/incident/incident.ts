@@ -8,10 +8,6 @@ import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-tr
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Answer, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
 import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast1Minute, inLast24Hours, isDefined, isNotDefined } from '@/utils'
-import RangerNotes from '../../components/ranger-notes/ranger-notes.vue'
-import RangerPlayerComponent from '../../components/ranger-player-modal/ranger-player-modal.vue'
-import RangerSliderComponent from '../../components/ranger-slider/ranger-slider.vue'
-import RangerTrackModalComponent from '../../components/ranger-track-modal/ranger-track-modal.vue'
 
 @Options({
   components: {
@@ -59,9 +55,15 @@ export default class IncidentPage extends Vue {
       .then(() => {
         void this.getStreamsData()
           .then(() => {
-            this.stream = this.streamsData.find((s: Stream) => {
-              return s.id === this.incident?.streamId
-            })
+            // Check stream in Vuex store.
+            void this.initializeStream()
+            if (!this.stream) {
+              // Get a new streams list.
+              void this.getStreamsDataFromDB()
+                .then(() => {
+                  void this.initializeStream()
+                })
+            }
           })
         void this.getAssets()
       })
@@ -143,6 +145,18 @@ export default class IncidentPage extends Vue {
       this.streamsData = await StreamService.getStreams([params])
       await VuexService.Projects.streams.set(this.streamsData)
     }
+  }
+
+  public async getStreamsDataFromDB (): Promise<void> {
+    const params: string = this.$route.params.projectId as string
+    this.streamsData = await StreamService.getStreams([params])
+    await VuexService.Projects.streams.set(this.streamsData)
+  }
+
+  public async initializeStream (): Promise<void> {
+    this.stream = this.streamsData.find((s: Stream) => {
+      return s.id === this.incident?.streamId
+    })
   }
 
   public async getData (): Promise<void> {
