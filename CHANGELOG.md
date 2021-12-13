@@ -1,9 +1,13 @@
 # Guardian Dashboard Release Notes
 
-## 0.0.3 (2021-12-??)
+## 0.0.4 (2021-12-?)
+
+* **feature:** Labels are added to response time ([#32](https://github.com/rfcx/incident-center/issues/32))
+
+## 0.0.3 (2021-12-09)
 
 * **bug:** Fixed the playing audio functionality in Safari ([CE-1553](https://jira.rfcx.org/browse/CE-1553))
-* **feature:** #25 Display the `immediate` label if the difference of calculation time to receive less than 60s ([#25](https://github.com/rfcx/incident-center/issues/25))
+* **feature:** Display the `immediate` label if the difference of calculation time to receive less than 60s ([#25](https://github.com/rfcx/incident-center/issues/25))
 * **bug:** Show email when firstname and lastname are not defined ([#28](https://github.com/rfcx/incident-center/issues/28))
 
 ## 0.0.2 (2021-11-30)
