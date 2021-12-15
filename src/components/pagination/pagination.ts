@@ -34,7 +34,7 @@ export default class PaginationComponent extends Vue {
 
   public initializeSettings (): void {
     this.lastPage = Math.ceil(this.paginationSettings.total / this.paginationSettings.limit)
-    this.countPagesPerWindow = this.lastPage > 5 ? Math.ceil(this.lastPage / 2) : Math.ceil(this.lastPage)
+    this.countPagesPerWindow = Math.ceil(this.lastPage / 2) > 10 ? 10 : Math.ceil(this.lastPage / 2)
   }
 
   public pages (): number[] {
