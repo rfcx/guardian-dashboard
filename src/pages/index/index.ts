@@ -101,6 +101,7 @@ export default class IndexPage extends Vue {
     }
   }
 
+  // The function returns a count of last events without response.
   public getEventsCount (incident: Incident): number {
     return this.getLastEvents(incident).length
   }
@@ -118,6 +119,7 @@ export default class IndexPage extends Vue {
     return lastEvents
   }
 
+  // The function compares a response submission time with the event start time.
   public filterEvents (incident: Incident): Event[] {
     const temp: number[] = incident.responses.map(r => { return getUtcTimeValueOf(r.submittedAt) })
     const maxTime: number = Math.max(...temp)
