@@ -1,5 +1,7 @@
 # Guardian Dashboard Release Notes
 
+* **bug:** Pagination shows all pages while there are 5 pages ([#37](https://github.com/rfcx/incident-center/issues/37))
+
 ## 0.0.3 (2021-12-??)
 
 * **bug:** Fixed the playing audio functionality in Safari ([CE-1553](https://jira.rfcx.org/browse/CE-1553))
