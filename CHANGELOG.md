@@ -1,9 +1,14 @@
 # Guardian Dashboard Release Notes
 
+## 0.0.4 (2021-12-?)
+
+* **feature:** Labels are added to response time ([#32](https://github.com/rfcx/incident-center/issues/32))
+* **bug:** Pagination shows all pages while there are 5 pages ([#37](https://github.com/rfcx/incident-center/issues/37))
+
 ## 0.0.3 (2021-12-??)
 
 * **bug:** Fixed the playing audio functionality in Safari ([CE-1553](https://jira.rfcx.org/browse/CE-1553))
-* **feature:** #25 Display the `immediate` label if the difference of calculation time to receive less than 60s ([#25](https://github.com/rfcx/incident-center/issues/25))
+* **feature:** Display the `immediate` label if the difference of calculation time to receive less than 60s ([#25](https://github.com/rfcx/incident-center/issues/25))
 * **bug:** Show email when firstname and lastname are not defined ([#28](https://github.com/rfcx/incident-center/issues/28))
 
 ## 0.0.2 (2021-11-30)
@@ -33,4 +38,3 @@
 * **setup:** The Ranger Track modal window is created ([CE-1446](https://jira.rfcx.org/browse/CE-1446))
 * **setup:** Implement UI for incidents and incident detail pages ([CE-1429](https://jira.rfcx.org/browse/CE-1429))
 * **setup:** Create mockup of Incident Center homepage in HTML/WindiCSS ([CE-1363](https://jira.rfcx.org/browse/CE-1261))
-
