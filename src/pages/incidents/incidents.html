@@ -1,45 +1,98 @@
-<div id="incidents-page" class="pt-10 px-20">
-  <div class="bg-gray shadow overflow-hidden">
+<div id="incidents-page">
+  <div class="bg-gray overflow-hidden">
     <div>
-      <div v-if="isLoading" class="bg-mirage-grey h-10 w-10" v-bind:style="{margin: '0 auto'}">
+      <div class="mt-1 flex flex-row items-center space-x-4">
+        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60">
+          <input
+            v-model="searchLabel"
+            type="text"
+            class="search px-1 py-0 text-white text-sm font-medium bg-steel-grey focus:steel-grey focus:outline-none outline-none border-none w-full focus:ring-transparent"
+            placeholder="Filter by keyword"
+            @keyup="searchStream()"
+          >
+        </div>
+        <div class="relative">
+          <button
+            v-if="incidentsStatus"
+            type="button"
+            class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm w-40 flex items-center"
+            aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
+            @click="toggleStatusFilter()"
+          >
+            <span class="block truncate">
+              Status:
+            </span>
+            <span class="ml-3 block truncate">
+              {{ getSelectedStatus() }}
+            </span>
+            <span class="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </button>
+          <ul v-if="incidentsStatus !== undefined && statusSelected === true" class="absolute z-10 mt-1 bg-steel-grey w-40 shadow-lg max-h-56 rounded-md pl-3 overflow-y focus:outline-none" tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
+            <li
+              v-for="(status, i) in incidentsStatus"
+              class="text-gray-900 cursor-pointer select-none relative py-1"
+              :id="'listbox-option-' + i"
+              role="option"
+              @click="toggleStatus(status)"
+            >
+              <div class="flex items-center">
+                <span class="font-normal block truncate text-white sm:text-sm w-30">
+                  {{ status.label }}
+                </span>
+                <span v-if="status.checked" class="text-white flex items-center px-2">
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div v-if="isLoading" class="bg-mirage-grey mt-50 h-10 w-10" v-bind:style="{margin: '0 auto'}">
         <svg class="animate-spin bg-mirage-grey text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <div v-if="!incidents.length && !isLoading && selectedProject" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
-        No incidents data
+      <div v-if="!streamsData.length && !isLoading && selectedProject" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
+        No streams data
       </div>
-      <dl v-if="incidents !== undefined && incidents.length && !isLoading">
-        <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 border-b border-gray-500" v-for="incident of incidents">
-          <dt class="text-sm font-medium">
-            <router-link :to="{ path: '/project/' + selectedProject.id + '/incidents/'+ incident.id}">
-              <span class="border-b border-gray-200 text-white mr-4">#{{incident.ref}} {{getStreamName(incident.streamId)}}</span>
-            </router-link>
-            <svg v-if="!getStreamName(incident.streamId)" class="animate-spin bg-mirage-grey text-white inline-block h-5 w-5 ml-1 align-top" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span class="text-secondary italic" v-bind:class="{'ic-pink': !incident.closedAt && !incident.responses.length}">{{getIncidentStatus(incident)}}</span>
+      <dl
+      v-if="streamsData.length && !isLoading"
+      class="mt-5"
+      >
+        <div class="bg-steel-grey px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
+          <dt title="Stream">
+            <span class="text-secondary text-xl mr-4">{{getStreamName(stream.id)}}</span>
+          </dt>
+          <dt class="justify-self-end">
+            <span class="text-secondary text-sm font-medium">Response time</span>
           </dt>
           <div class="col-span-3 flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <div class="shadow overflow-hidden">
+                <div class="overflow-hidden">
                   <table class="min-w-full">
-                    <tbody class="bg-gray">
-                      <incidents-table-rows v-if="incident.items.length && getStreamTimezone(incident.streamId) !== undefined" :timezone="getStreamTimezone(incident.streamId)" :items-data="incident.items.slice(0, 4)" />
-                      <tr v-if="incident.items.length > 4" class="flex-row">
-                        <td class="px-6 py-2 whitespace-nowrap w-1/8"></td>
-                        <td class="px-5 py-2 whitespace-nowrap text-sm text-white italic w-1/5">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-flex" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                          </svg>
-                          {{itemsLabel(incident)}}
-                        </td>
-                        <td class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"></td>
-                        <td class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"></td>
-                        <td class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"></td>
+                    <tbody>
+                      <incidents-table-rows v-if="stream.incidents !== undefined && stream.incidents.length && getStreamTimezone(stream.id) !== undefined" :timezone="getStreamTimezone(stream.id)" :items-data="stream.incidents"/>
+                      <tr v-if="stream.loading || stream.incidents === undefined" class="flex justify-start items-center">
+                        <div class="flex flex-row bg-grey h-10 w-10" :style="{margin: '0 auto'}">
+                          <svg class="animate-spin bg-grey text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                         </svg>
+                        </div>
+                      </tr>
+                      <tr v-if="stream.incidents !== undefined && !stream.incidents.length" class="flex justify-start items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ic-gray-lighter inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-xl text-secondary">None</span>
                       </tr>
                     </tbody>
                   </table>
@@ -51,6 +104,6 @@
       </dl>
       <pagination-component v-if="!isLoading && incidents.length && isPaginationAvailable" :pagination-settings="paginationSettings" @selected-page="getPage()" />
     </div>
-    <invalid-project-component v-if="!selectedProject && !isLoading" />
+    <invalid-project-component v-if="!isProjectAccessed && !isLoading" />
   </div>
 </div>

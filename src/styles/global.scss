@@ -10,6 +10,9 @@ body {
 
 // Colors
 
+.ic-red {
+  color: #7e3e3e;
+}
 .ic-violet {
   color: #9100E6;
 }
@@ -20,8 +23,42 @@ body {
   color: #187F36;
 }
 .ic-orange {
-  color: #E6B400;
+  color: #997b02;
 }
 .ic-pink {
   color: #FF8F8F;
 }
+.ic-gray-lighter {
+  color: #d2d4db
+}
+.ic-gray {
+  color: #7b818f
+}
+.ic-gray-darker {
+  color: #1f2a38
+}
+
+// Tags
+
+.ic-btn-orange {
+  background-color: #997b02;
+}
+
+.ic-btn-red {
+  background-color: #7e3e3e;
+}
+
+.ic-btn-green {
+  background-color: #107a5d;
+}
+
+.ic-btn-gray-lighter {
+  background-color: #7a808e
+}
+
+.ic-btn-tags {
+  border-radius: 0.5rem;
+  color: #dcdee2;
+  height: 22px;
+}
+

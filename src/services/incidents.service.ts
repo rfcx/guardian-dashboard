@@ -15,7 +15,7 @@ interface paramsModel {
 
 export async function getIncidents (options: any = {}): Promise<{ data: Incident[], headers: any }> {
   const params: paramsModel = {
-    ...options.closed !== undefined && { closed: options.closed },
+    ...options.status !== undefined && { status: options.status },
     ...options.sort !== undefined && { sort: options.sort },
     ...options.limit !== undefined && { limit: options.limit },
     ...options.offset !== undefined && { offset: options.offset }

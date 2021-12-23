@@ -1,6 +1,12 @@
 # Guardian Dashboard Release Notes
 
-## 0.0.4 (2021-12-?)
+## 0.0.5 (2021-12-?)
+
+* **feature:** Display a list grouped by guardian on the Incidents page ([#47](https://github.com/rfcx/incident-center/issues/47))
+* **feature:** There are new filters on the Icidents page ([#39](https://github.com/rfcx/incident-center/issues/39))
+* **bug:** Fixed favicon issue on the Guardian Dashboard ([#44](https://github.com/rfcx/incident-center/issues/44))
+
+## 0.0.4 (2021-12-23)
 
 * **feature:** Labels are added to response time ([#32](https://github.com/rfcx/incident-center/issues/32))
 * **bug:** Pagination shows all pages while there are 5 pages ([#37](https://github.com/rfcx/incident-center/issues/37))

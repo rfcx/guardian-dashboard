@@ -28,8 +28,25 @@ export const formatDiffFromNow = (label: string, timezone?: string): any => {
   } else return combineLabel(dayjs.duration(dayjs().diff(dayjs(label))))
 }
 
+export const inLast6Hours = (label: string): boolean => {
+  return Date.now().valueOf() - new Date(label).valueOf() < 21600000
+}
+
 export const inLast24Hours = (label: string): boolean => {
   return Date.now().valueOf() - new Date(label).valueOf() < 86400000
+}
+
+export const isToday = (label: string, timezone?: string): boolean => {
+  return dayjs(label).tz(timezone).isSame(dayjs().tz(timezone))
+}
+
+export const isYesterday = (label: string, timezone?: string): boolean => {
+  return dayjs(label).tz(timezone).isSame(dayjs().tz(timezone).subtract(1, 'day'))
+}
+
+export const getDay = (date: any, timezone?: string): string => {
+  if (timezone) return dayjs(date).tz(timezone).format('DD MMM')
+  else return dayjs(date).format('DD MMM')
 }
 
 export const inLast1Minute = (labelFrom: string, labelTo: string): boolean => {
@@ -41,13 +58,20 @@ export const formatTwoDateDiff = (labelFrom: string, labelTo: string): any => {
   return combineLabel(dateDiff)
 }
 
-function combineLabel (dateDiff: duration.Duration): string {
+export const twoDateDiffExcludeHours = (labelFrom: string, labelTo: string, excludeHours?: boolean): any => {
+  const dateDiff = dayjs.duration(dayjs(labelTo).diff(dayjs(labelFrom)))
+  return combineLabel(dateDiff, excludeHours)
+}
+
+function combineLabel (dateDiff: duration.Duration, excludeHours?: boolean): string {
   let string = ''
   const data: any = Object.values(dateDiff)[0]
   dataArray.forEach((item: string) => {
     if (data[item] !== 0) {
-      if (item === 'seconds' && (data.minutes !== 0 && data.hours !== 0)) return string
-      else string += ` ${(data[item] as string)} ${getEndLabel(data[item], item)}`
+      if (item === 'seconds' && (data.minutes !== 0 && data.hours !== 0) && excludeHours === undefined) return string
+      if (excludeHours !== undefined && (data.days !== 0 || data.months !== 0 || data.years !== 0) && (item === 'minutes' || item === 'seconds' || item === 'hours')) {
+        // do nothing
+      } else string += ` ${(data[item] as string)} ${getEndLabel(data[item], item)}`
     }
   })
   return string
