@@ -10,6 +10,8 @@ export default class AuthNavbarItemComponent extends Vue {
   @VuexService.Auth.user.bind()
   public user!: Auth0User | undefined
 
+  public isMenuOpen = false
+
   public get userImage (): string {
     return this.user?.picture ?? ''
   }
@@ -20,5 +22,9 @@ export default class AuthNavbarItemComponent extends Vue {
 
   public async logout (): Promise<void> {
     await this.auth?.logout({ returnTo: window.location.origin })
+  }
+
+  public toggleMenu (): void {
+    this.isMenuOpen = !this.isMenuOpen
   }
 }
