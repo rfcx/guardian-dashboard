@@ -51,7 +51,7 @@ export default class IncidentsTableRows extends Vue {
       const start = (this.getFirstOrLastItem(events, true) as Event).start
       const end = (this.getFirstOrLastItem(events, false) as Event).end
       // today - today => Today, X-Y
-      if (isToday(start, this.timezone) && isToday(end, this.timezone)) {
+      if ((Boolean(isToday(start, this.timezone))) && isToday(end, this.timezone)) {
         return `Today, ${formatTimeLabel(start)} - ${formatTimeLabel(end)}`
       }
       // yesterday - today => Yesterday X - Today Y

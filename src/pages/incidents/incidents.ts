@@ -5,6 +5,7 @@ import InvalidProjectComponent from '@/components/invalid-project/invalid-projec
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, IncidentStatus, Pagination, Project, Stream } from '@/types'
+import { getLast6HoursLabel } from '@/utils'
 
 @Options({
   components: {
@@ -161,7 +162,10 @@ export default class IncidentsPage extends Vue {
         const data = await IncidentsService.getIncidents({
           projects: [projectId],
           streams: [stream.id],
-          ...status !== undefined && { status: status },
+          ...status !== undefined && status === 'closed' && { closed: true },
+          ...status !== undefined && status === 'open' && { closed: false },
+          ...status !== undefined && status === 'hot' && { min_events: 11 },
+          ...status !== undefined && status === 'new' && { first_event_start: getLast6HoursLabel() },
           limit: this.paginationSettings.limit,
           offset: this.paginationSettings.offset * this.paginationSettings.limit
         })

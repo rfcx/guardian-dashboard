@@ -32,6 +32,11 @@ export const inLast6Hours = (label: string): boolean => {
   return Date.now().valueOf() - new Date(label).valueOf() < 21600000
 }
 
+export const getLast6HoursLabel = (): string => {
+  const now = Date.now().valueOf()
+  return dayjs(now - 21600000).toISOString()
+}
+
 export const inLast24Hours = (label: string): boolean => {
   return Date.now().valueOf() - new Date(label).valueOf() < 86400000
 }
