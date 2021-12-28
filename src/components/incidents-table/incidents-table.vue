@@ -5,30 +5,32 @@
     class="table-row"
     :class="{ 'border-b border-gray-700': itemsData.length > 1 && i !== itemsData.length - 1 }"
   >
-    <td class="pr-6 py-2 whitespace-nowrap w-1/4 flex justify-start items-center">
-      <router-link
-        :to="{ path: '/project/' + incident.projectId + '/incidents/'+ incident.id}"
-        class="cursor-pointer"
-      >
-        <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
-      </router-link>
-      <div
-        :class="{ 'ic-btn-gray-lighter': incident.closedAt, 'ic-btn-green': !incident.closedAt }"
-        class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-tags leading-none cursor-pointer"
-      >
-        {{ getFirstTagLabel(incident) }}
-      </div>
-      <div
-        v-if="!incident.closedAt && incident.events.length && checkRecentLabel(incident.events)"
-        class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-orange ic-btn-tags leading-none cursor-pointer"
-      >
-        Recent
-      </div>
-      <div
-        v-if="!incident.closedAt && incident.events.length && incident.events.length > 10"
-        class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-red ic-btn-tags leading-none cursor-pointer"
-      >
-        Hot
+    <td class="pr-6 py-2 w-1/4">
+      <div class="flex justify-start items-center whitespace-nowrap">
+        <router-link
+          :to="{ path: '/project/' + incident.projectId + '/incidents/'+ incident.id}"
+          class="cursor-pointer"
+        >
+          <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
+        </router-link>
+        <div
+          :class="{ 'ic-btn-gray-lighter': incident.closedAt, 'ic-btn-green': !incident.closedAt }"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-tags leading-none cursor-pointer"
+        >
+          {{ getFirstTagLabel(incident) }}
+        </div>
+        <div
+          v-if="!incident.closedAt && incident.events.length && checkRecentLabel(incident.events)"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-orange ic-btn-tags leading-none cursor-pointer"
+        >
+          Recent
+        </div>
+        <div
+          v-if="!incident.closedAt && incident.events.length && incident.events.length > 10"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-red ic-btn-tags leading-none cursor-pointer"
+        >
+          Hot
+        </div>
       </div>
     </td>
     <td
