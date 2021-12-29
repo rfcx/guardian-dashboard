@@ -4,10 +4,10 @@
     :key="i"
     :to="{ path: '/project/' + incident.projectId + '/incidents/'+ incident.id}"
     tag="tr"
-    class="table-row cursor-pointer hover:bg-gray-300 hover:bg-opacity-5"
+    class="flex flex-row cursor-pointer hover:bg-gray-300 hover:bg-opacity-5 <sm:flex-col"
     :class="{ 'border-b border-gray-700': itemsData.length > 1 && i !== itemsData.length - 1 }"
   >
-    <td class="pr-6 py-2 w-1/4">
+    <div class="pr-6 py-2 flex-nowrap flex-1 <sm:py-1">
       <div class="flex justify-start items-center whitespace-nowrap">
         <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
         <div
@@ -29,10 +29,8 @@
           Hot
         </div>
       </div>
-    </td>
-    <td
-      class="px-6 py-2 text-secondary whitespace-nowrap w-1/4"
-    >
+    </div>
+    <div class="pr-6 py-2 flex-wrap flex-1 text-secondary whitespace-nowrap <sm:py-1">
       <svg
         v-if="incident.events.length"
         xmlns="http://www.w3.org/2000/svg"
@@ -73,8 +71,8 @@
           </span>
         </div>
       </div>
-    </td>
-    <td class="px-6 py-2 whitespace-nowrap text-secondary text-center w-1/4">
+    </div>
+    <div class="pr-6 py-2 flex-nowrap flex-1 whitespace-nowrap text-secondary <sm:justify-start <sm:py-1">
       <svg
         v-if="incident.responses.length"
         xmlns="http://www.w3.org/2000/svg"
@@ -95,13 +93,13 @@
       >
         {{ incident.responses.length ? getResponseLabel(incident.responses) : '' }}
       </div>
-    </td>
-    <td
-      class="px-6 py-2 whitespace-nowrap flex justify-end"
+    </div>
+    <div
+      class="pr-6 py-2 whitespace-wrap flex-1 flex justify-end <sm:justify-start <sm:py-1"
       title="Difference between a first event start time and a first response was submitted in the Guardian App"
     >
       <span class="text-base"> {{ getResponseTime(incident) }} </span>
-    </td>
+    </div>
   </router-link>
 </template>
 
