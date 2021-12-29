@@ -62,16 +62,15 @@
           v-for="event in getEventsCount(incident.events)"
           :key="event.value"
           class="text-sm text-secondary inline-block mr-3"
+          :title="`${event.count} ${event.value} events`"
         >
           <img
             class="h-5 w-5 inline-block ic-gray-lighter align-top mr-1"
-            :src="'/src/assets/rfcx-alert-icons/ic_' + event.value + '.svg'"
-            :title="`${event.count} ${event.value} events`"
-            alt=""
+            :src="'/src/assets/alert-icons/ic_' + event.value + '.svg'"
+            :alt="event.value"
           >
           <span
             class="text-sm text-center inline-block"
-            :title="`${event.count} ${event.value} events`"
           >
             {{ event.count }}
           </span>
