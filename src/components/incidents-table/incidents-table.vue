@@ -31,18 +31,13 @@
       </div>
     </div>
     <div class="pr-6 py-2 flex-wrap flex-1 text-secondary whitespace-nowrap <sm:py-1">
-      <svg
+      <img
         v-if="incident.events.length"
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 inline-block ic-gray-lighter mr-2"
         title="Events"
-        viewBox="0 0 20 20"
-        fill="currentColor"
+        class="h-5 w-5 inline-block mr-2"
+        src="/src/assets/event.svg"
+        alt=""
       >
-        <path
-          d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"
-        />
-      </svg>
       <div
         class="text-sm text-secondary inline-block"
         :title="incident.events.length ? getEventsTitle(incident.events) : ''"
@@ -73,20 +68,13 @@
       </div>
     </div>
     <div class="pr-6 py-2 flex-nowrap flex-1 whitespace-nowrap text-secondary <sm:justify-start <sm:py-1">
-      <svg
+      <img
         v-if="incident.responses.length"
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 ic-gray-lighter inline-block mr-2"
-        viewBox="0 0 20 20"
-        fill="currentColor"
+        title="Response"
+        class="h-5 w-5 inline-block mr-2"
+        src="/src/assets/response.svg"
+        alt=""
       >
-        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-        <path
-          fill-rule="evenodd"
-          d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-          clip-rule="evenodd"
-        />
-      </svg>
       <div
         class="text-sm text-secondary inline-block"
         :title="incident.responses.length ? getResponseTitle(incident.responses) : ''"
