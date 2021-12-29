@@ -1,33 +1,30 @@
 <template>
-  <tr
+  <router-link
     v-for="(incident, i) in itemsData"
     :key="i"
-    class="table-row"
+    :to="{ path: '/project/' + incident.projectId + '/incidents/'+ incident.id}"
+    tag="tr"
+    class="table-row cursor-pointer hover:bg-gray-300 hover:bg-opacity-5"
     :class="{ 'border-b border-gray-700': itemsData.length > 1 && i !== itemsData.length - 1 }"
   >
     <td class="pr-6 py-2 w-1/4">
       <div class="flex justify-start items-center whitespace-nowrap">
-        <router-link
-          :to="{ path: '/project/' + incident.projectId + '/incidents/'+ incident.id}"
-          class="cursor-pointer"
-        >
-          <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
-        </router-link>
+        <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
         <div
           :class="{ 'ic-btn-gray-lighter': incident.closedAt, 'ic-btn-green': !incident.closedAt }"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-tags leading-none cursor-pointer"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-tags leading-none"
         >
           {{ getFirstTagLabel(incident) }}
         </div>
         <div
           v-if="!incident.closedAt && incident.events.length && checkRecentLabel(incident.events)"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-orange ic-btn-tags leading-none cursor-pointer"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-orange ic-btn-tags leading-none"
         >
           Recent
         </div>
         <div
           v-if="!incident.closedAt && incident.events.length && incident.events.length > 10"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-red ic-btn-tags leading-none cursor-pointer"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-red ic-btn-tags leading-none"
         >
           Hot
         </div>
@@ -105,7 +102,7 @@
     >
       <span class="text-base"> {{ getResponseTime(incident) }} </span>
     </td>
-  </tr>
+  </router-link>
 </template>
 
 <script src="./incidents-table.ts" lang="ts" />
