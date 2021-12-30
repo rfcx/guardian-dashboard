@@ -122,7 +122,7 @@ export default class IncidentPage extends Vue {
   }
 
   public getColor (n: number): string {
-    const classes = ['ic-violet', 'ic-green', 'ic-orange', 'ic-blue', 'ic-pink']
+    const classes = ['text-violet-500', 'text-green-500', 'text-yellow-500', 'text-blue-500', 'text-red-300']
     return classes[n]
   }
 

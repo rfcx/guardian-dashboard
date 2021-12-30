@@ -11,20 +11,20 @@
       <div class="flex justify-start items-center whitespace-nowrap">
         <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
         <div
-          :class="{ 'ic-btn-gray-lighter': incident.closedAt, 'ic-btn-green': !incident.closedAt }"
+          :class="{ 'bg-gray-500': incident.closedAt, 'bg-green-500': !incident.closedAt }"
           class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-tags leading-none"
         >
           {{ getFirstTagLabel(incident) }}
         </div>
         <div
           v-if="!incident.closedAt && incident.events.length && checkRecentLabel(incident.events)"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-orange ic-btn-tags leading-none"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-yellow-500 ic-btn-tags leading-none"
         >
           Recent
         </div>
         <div
           v-if="!incident.closedAt && incident.events.length && incident.events.length > 10"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-red ic-btn-tags leading-none"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-red-400 ic-btn-tags leading-none"
         >
           Hot
         </div>
@@ -55,7 +55,7 @@
           :title="`${event.count} ${event.value} events`"
         >
           <img
-            class="h-5 w-5 inline-block ic-gray-lighter align-top mr-1"
+            class="h-5 w-5 inline-block text-gray-500 align-top mr-1"
             :src="'/src/assets/alert-icons/ic_' + event.value + '.svg'"
             :alt="event.value"
           >

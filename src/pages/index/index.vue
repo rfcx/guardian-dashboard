@@ -58,7 +58,7 @@
             >
               <dt class="text-sm font-medium flex items-center">
                 <div
-                  :class="{'bg-red-500': getEventsCount(incident) !== 0, 'bg-green-500': getEventsCount(incident) === 0 || !getEventsCount(incident)}"
+                  :class="{'bg-red-400': getEventsCount(incident) !== 0, 'bg-green-500': getEventsCount(incident) === 0 || !getEventsCount(incident)}"
                   class="h-10 w-10 rounded-full inline-block mr-2 flex justify-center items-center"
                 >
                   {{ getEventsCount(incident) || ' ' }}
@@ -107,7 +107,7 @@
                 </span>
                 <span
                   v-if="incident.items && incident.items.length && getEventsCount(incident) !== undefined && !incident.closedAt"
-                  :class="{'text-white': !getEventsCount(incident), 'ic-green': getEventsCount(incident) === 0, 'ic-pink': getEventsCount(incident) !== 0}"
+                  :class="{'text-white': !getEventsCount(incident), 'text-green-500': getEventsCount(incident) === 0, 'text-red-300': getEventsCount(incident) !== 0}"
                 >
                   {{ getEventsCount(incident) !== 0 ? getEventsLabel(getLastEvents(incident), (getStreamTimezone(incident.streamId) || 'UTC')) : getResponsesLabel(incident, (getStreamTimezone(incident.streamId) || 'UTC')) }}
                 </span>

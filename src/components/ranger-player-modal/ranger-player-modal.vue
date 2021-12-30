@@ -134,7 +134,7 @@
             <span
               v-else
               class="text-sm font-medium text-white px-3 py-2.5"
-              :class="{'ic-pink': isError}"
+              :class="{'text-red-300': isError}"
             >
               Error occurred
             </span>
