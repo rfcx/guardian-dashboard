@@ -7,6 +7,12 @@ import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, IncidentStatus, Pagination, Project, Stream } from '@/types'
 import { getLast6HoursLabel } from '@/utils'
 
+interface statusOptions {
+  closed?: boolean
+  min_events?: number
+  first_event_start?: string
+}
+
 @Options({
   components: {
     IncidentsTableRows,
@@ -42,7 +48,7 @@ export default class IncidentsPage extends Vue {
     page: 1
   }
 
-  private timerSub!: NodeJS.Timeout
+  private timerSub!: ReturnType<typeof setTimeout>
 
   data (): Record<string, unknown> {
     return {
@@ -162,17 +168,21 @@ export default class IncidentsPage extends Vue {
         const data = await IncidentsService.getIncidents({
           projects: [projectId],
           streams: [stream.id],
-          ...status !== undefined && status === 'closed' && { closed: true },
-          ...status !== undefined && status === 'open' && { closed: false },
-          ...status !== undefined && status === 'hot' && { min_events: 11 },
-          ...status !== undefined && status === 'new' && { first_event_start: getLast6HoursLabel() },
           limit: this.paginationSettings.limit,
-          offset: this.paginationSettings.offset * this.paginationSettings.limit
+          offset: this.paginationSettings.offset * this.paginationSettings.limit,
+          ...status !== undefined && this.optionsForStatus(status)
         })
         stream.incidents = this.formatIncidents(data.data)
         stream.loading = false
       }
     } catch (e) {}
+  }
+
+  public optionsForStatus (status: string): statusOptions | undefined {
+    if (status === 'closed') return { closed: true }
+    else if (status === 'open') return { closed: false }
+    else if (status === 'hot') return { min_events: 11 }
+    else if (status === 'new') return { first_event_start: getLast6HoursLabel() }
   }
 
   public formatIncidents (incidents: Incident[]): Incident[] {
