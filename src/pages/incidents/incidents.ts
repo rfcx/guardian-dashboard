@@ -70,13 +70,17 @@ export default class IncidentsPage extends Vue {
     return this.selectedProject !== undefined
   }
 
+  public getProjectIdFromRouterParams (): string {
+    const projectId: string = this.$route.params.projectId as string
+    return projectId
+  }
+
   public getData (): void {
     this.isLoading = true
-    const params: string = this.$route.params.projectId as string
-    this.selectedProject = this.projects.find(p => p.id === params)
-    void this.getStreamsData(params)
+    this.selectedProject = this.projects.find(p => p.id === this.getProjectIdFromRouterParams())
+    void this.getStreamsData(this.getProjectIdFromRouterParams())
       .then(() => {
-        void this.getIncidentsData(params, this.getSelectedValue())
+        void this.getIncidentsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
       })
   }
 
@@ -140,8 +144,7 @@ export default class IncidentsPage extends Vue {
   public toggleStatus (status: IncidentStatus): void {
     this.incidentsStatus.forEach((s: IncidentStatus) => { s.checked = false })
     status.checked = true
-    const params: string = this.$route.params.projectId as string
-    void this.getIncidentsData(params, this.getSelectedValue())
+    void this.getIncidentsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
   public async getStreamsData (projectId: string): Promise<void> {
@@ -158,10 +161,10 @@ export default class IncidentsPage extends Vue {
   }
 
   public async getPage (): Promise<void> {
-    await this.getIncidentsData(this.$route.params.projectId, this.getSelectedValue())
+    await this.getIncidentsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
-  public async getIncidentsData (projectId: string | string[], status?: string): Promise<void> {
+  public async getIncidentsData (projectId: string, status?: string): Promise<void> {
     try {
       for (const stream of this.streamsData) {
         stream.loading = true
