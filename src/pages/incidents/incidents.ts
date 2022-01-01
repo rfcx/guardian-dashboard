@@ -171,7 +171,7 @@ export default class IncidentsPage extends Vue {
         const data = await IncidentsService.getIncidents({
           projects: [projectId],
           streams: [stream.id],
-          limit: this.paginationSettings.limit,
+          limit: 3,
           offset: this.paginationSettings.offset * this.paginationSettings.limit,
           ...status !== undefined && this.optionsForStatus(status)
         })
