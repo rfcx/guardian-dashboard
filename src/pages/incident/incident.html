@@ -1,4 +1,4 @@
-<div id="report-page" class="pt-10 px-20">
+<div id="report-page" class="pt-10 px-20 <sm:(px-0 pt-0)">
   <div class="bg-gray shadow overflow-hidden">
     <div v-if="isLoading" class="bg-mirage-grey h-10 w-10" v-bind:style="{margin: '0 auto'}">
       <svg class="animate-spin bg-mirage-grey text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -35,19 +35,19 @@
       </div>
       <div v-for="item in incident.items">
         <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 border-b border-gray-500" v-if="item.type === 'response'">
-          <dd class="flex justify-center items-center text-sm font-medium text-white">
+          <dd class="flex justify-center items-center text-sm font-medium text-white <sm:(justify-start py-2)">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 ic-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             {{ getCreatedByLabel(item.createdBy) }}
           </dd>
-          <dd class="flex justify-center items-center text-sm font-medium text-white middle" title="Investigation time">
+          <dd class="flex justify-center items-center text-sm font-medium text-white middle <sm:(justify-start py-2)" title="Investigation time">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {{dateFormatted(item.investigatedAt) || 0}}
           </dd>
-          <dd class="text-sm font-medium text-white middle" title="Difference between investigation and submission times of response">
+          <dd class="text-sm font-medium text-white middle <sm:(py-2)" title="Difference between investigation and submission times of response">
             <div class="h-6 text-sm font-medium text-white ml-0.5">
               Time to submit
             </div>
@@ -56,7 +56,7 @@
             </svg>
             {{ hoursDiffFormatted(item.investigatedAt, item.submittedAt) || 0 }}
           </dd>
-          <dd class="text-sm font-medium text-white middle" title="Difference between time when response was submitted in the Guardian App and time when it was received on the server">
+          <dd class="text-sm font-medium text-white middle <sm:(py-2)" title="Difference between time when response was submitted in the Guardian App and time when it was received on the server">
             <div class="h-6 text-sm font-medium text-white ml-0.5">
               Time to receive
             </div>
@@ -113,7 +113,7 @@
                   </div>
                 </div>
               </dd>
-              <dd class="border border-gray-200 rounded-md p-6">
+              <dd class="border border-gray-200 rounded-md p-6 <sm:(mt-2)">
                 <div v-if="isAssetsLoading" class="text-sm font-medium text-white mb-3">
                   Loading assets
                 </div>

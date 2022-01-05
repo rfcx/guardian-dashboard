@@ -1,7 +1,7 @@
 <template>
   <div id="index-page">
     <navigation-bar-component />
-    <div class="pt-10 px-20">
+    <div class="pt-10 px-20 <sm:(px-3 pt-3)">
       <div class="bg-gray shadow overflow-hidden">
         <div>
           <div
@@ -54,20 +54,20 @@
             <div
               v-for="incident of incidents"
               :key="incident.id"
-              class="bg-gray px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-500"
+              class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 border-b border-gray-500"
             >
               <dt class="text-sm font-medium flex items-center">
                 <div
                   :class="{'bg-red-500': getEventsCount(incident) !== 0, 'bg-green-500': getEventsCount(incident) === 0 || !getEventsCount(incident)}"
-                  class="h-10 w-10 rounded-full inline-block mr-2 flex justify-center items-center"
+                  class="h-10 w-10 rounded-full rounded-full inline-block flex justify-center items-center min-w-10 truncate"
                 >
-                  {{ getEventsCount(incident) || ' ' }}
+                  <span> {{ getEventsCount(incident) || ' ' }} </span>
                 </div>
                 <router-link
                   v-if="incident !== undefined"
                   :to="{ path: '/project/' + getProjectId(incident.streamId) + '/incidents/'+ incident.id}"
                 >
-                  <span class="border-b border-gray-200 text-white mr-2">#{{ incident.ref }} {{ getStreamName(incident.streamId) }} {{ getProjectName(incident.streamId)? ', ' : '' }}</span>
+                  <span class="border-b border-gray-200 whitespace-nowrap text-white mx-2">#{{ incident.ref }} {{ getStreamName(incident.streamId) }} {{ getProjectName(incident.streamId)? ', ' : '' }}</span>
                 </router-link>
                 <svg
                   v-if="!getStreamName(incident.streamId)"
@@ -92,7 +92,7 @@
                 </svg>
                 <span class="text-white">{{ getProjectName(incident.streamId) }}</span>
               </dt>
-              <dt class="text-sm font-medium flex items-center">
+              <dt class="text-sm font-medium flex items-center justify-start <sm:(pl-12)">
                 <span
                   v-if="incident.items && !incident.items.length && !incident.closedAt"
                   class="text-white"

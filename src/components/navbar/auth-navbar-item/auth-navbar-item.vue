@@ -16,12 +16,17 @@
       id="avatar-button"
       type="button"
       class="hover:cursor-pointer focus:cursor-pointer group appearance-none"
+      aria-expanded="false"
+      aria-haspopup="true"
+      @click="toggleMenu()"
+      @mouseover="isMenuOpen = true"
     >
       <img
         class="h-8 w-8 rounded-full"
         :src="userImage"
       >
       <ul
+        v-if="isMenuOpen"
         class="logout-dropdown absolute top-13 right-1 z-50 min-w-40 border-t-box-grey border-t-1 bg-steel-grey rounded-b-md text-primary invisible group-hover:visible focus:outline-none transition-all"
         role="menu"
         aria-orientation="vertical"
