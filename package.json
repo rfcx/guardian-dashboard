@@ -9,7 +9,7 @@
     "lint-fix": "eslint . --fix && prettier --loglevel warn --write . && stylelint . --fix",
     "preview": "vite preview",
     "serve": "vite",
-    "test": "jest src"
+    "test": "npx vitest"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.17.0",
@@ -66,6 +66,7 @@
     "vite": "^2.4.4",
     "vite-plugin-style-import": "^1.1.1",
     "vite-plugin-windicss": "^1.5.4",
+    "vitest": "0.0.125",
     "vue-jest": "^5.0.0-alpha.10",
     "vue-tsc": "^0.2.2",
     "windicss": "^3.2.1"
