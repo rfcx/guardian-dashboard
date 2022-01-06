@@ -15,17 +15,7 @@ interface IncidentQueryParams {
   first_event_start?: string
 }
 
-export async function getIncidents (options: IncidentQueryParams = {}): Promise<{ data: Incident[], headers: any }> {
-  const params: IncidentQueryParams = {
-    closed: options.closed,
-    min_events: options.min_events,
-    first_event_start: options.first_event_start,
-    sort: options.sort,
-    limit: options.limit,
-    offset: options.offset,
-    streams: options.streams,
-    projects: options.projects
-  }
+export async function getIncidents (params: IncidentQueryParams = {}): Promise<{ data: Incident[], headers: any }> {
   Endpoints.getIncidents.config = {
     params: params
   }
