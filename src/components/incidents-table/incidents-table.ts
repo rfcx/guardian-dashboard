@@ -2,7 +2,7 @@ import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 
 import { Event, EventExtended, Incident, Response, ResponseExtended } from '@/types'
-import { formatDateTimeLabel, formatDayTimeLabel, formatTimeLabel, getDay, inLast6Hours, isToday, isYesterday, twoDateDiffExcludeHours } from '@/utils'
+import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, inLast6Hours, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
 
 interface IncidentItem extends Event, Incident, Response {}
 interface EventItem {
@@ -47,34 +47,12 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public getEventsLabel (events: Event[]): string | undefined {
-    if (this.timezone !== undefined) {
-      const start = (this.getFirstOrLastItem(events, true) as Event).start
-      const end = (this.getFirstOrLastItem(events, false) as Event).end
-      // today - today => Today, X-Y
-      if ((Boolean(isToday(start, this.timezone))) && isToday(end, this.timezone)) {
-        return `Today, ${formatTimeLabel(start)} - ${formatTimeLabel(end)}`
-      }
-      // yesterday - today => Yesterday X - Today Y
-      if (isYesterday(start, this.timezone) && isToday(end, this.timezone)) {
-        return `Yesterday ${formatTimeLabel(start)} - Today ${formatTimeLabel(end)}`
-      }
-      // yesterday - yesterday => Yesterday X-Y
-      if (isYesterday(start, this.timezone) && isYesterday(end, this.timezone)) {
-        return `Yesterday, ${formatTimeLabel(start)} - ${formatTimeLabel(end)}`
-      }
-      // other - today => 10 Dec - Today, Y
-      if (isToday(end, this.timezone)) {
-        return `${getDay(start, this.timezone)} - Today, ${formatTimeLabel(end)}`
-      }
-      // other - yesterday => 10 Dec - Yesterday, Y
-      if (isYesterday(end, this.timezone)) {
-        return `${getDay(start, this.timezone)} - Yesterday, ${formatTimeLabel(end)}`
-      }
-      // other
-      if (getDay(start, this.timezone) === getDay(end, this.timezone)) {
-        return `${getDay(start, this.timezone)}`
-      } else return `${getDay(start, this.timezone)} - ${getDay(end, this.timezone)}`
+    if (!this.timezone) {
+      return
     }
+    const start = (this.getFirstOrLastItem(events, true) as Event).start
+    const end = (this.getFirstOrLastItem(events, false) as Event).end
+    return formatDateTimeRange(start, end, this.timezone)
   }
 
   public getResponseTitle (responses: Response[]): string | undefined {
@@ -88,12 +66,12 @@ export default class IncidentsTableRows extends Vue {
     if (this.timezone !== undefined) {
       const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
       // today => Today, X
-      if (isToday(firstResponse, this.timezone)) {
-        return `Today, ${formatTimeLabel(firstResponse)}}`
+      if (isDateToday(firstResponse, this.timezone)) {
+        return `Today, ${formatTimeLabel(firstResponse, this.timezone)}}`
       }
       // yesterday => Yesterday, X
-      if (isYesterday(firstResponse, this.timezone)) {
-        return `Yesterday, ${formatTimeLabel(firstResponse)}}`
+      if (isDateYesterday(firstResponse, this.timezone)) {
+        return `Yesterday, ${formatTimeLabel(firstResponse, this.timezone)}}`
       } else return `${getDay(firstResponse, this.timezone)}`
     }
   }
