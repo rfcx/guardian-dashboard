@@ -17,18 +17,14 @@ interface IncidentQueryParams {
 
 export async function getIncidents (options: IncidentQueryParams = {}): Promise<{ data: Incident[], headers: any }> {
   const params: IncidentQueryParams = {
-    ...options.closed !== undefined && { closed: options.closed },
-    ...options.min_events !== undefined && { min_events: options.min_events },
-    ...options.first_event_start !== undefined && { first_event_start: options.first_event_start },
-    ...options.sort !== undefined && { sort: options.sort },
-    ...options.limit !== undefined && { limit: options.limit },
-    ...options.offset !== undefined && { offset: options.offset }
-  }
-  if (options.streams !== undefined) {
-    params.streams = options.streams
-  }
-  if (options.projects !== undefined) {
-    params.projects = options.projects
+    closed: options.closed,
+    min_events: options.min_events,
+    first_event_start: options.first_event_start,
+    sort: options.sort,
+    limit: options.limit,
+    offset: options.offset,
+    streams: options.streams,
+    projects: options.projects
   }
   Endpoints.getIncidents.config = {
     params: params

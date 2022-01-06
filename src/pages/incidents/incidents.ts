@@ -154,7 +154,6 @@ export default class IncidentsPage extends Vue {
     const streamsData = await StreamService.getStreams([projectId], this.searchLabel)
     this.streamsData = streamsData.data
     await VuexService.Projects.streams.set(this.streamsData)
-    console.log(streamsData)
     this.paginationSettings.total = streamsData.headers['total-items']
     this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
     this.isLoading = false
