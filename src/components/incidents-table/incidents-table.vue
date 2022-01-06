@@ -14,7 +14,7 @@
           :class="{ 'bg-gray-500': incident.closedAt, 'bg-green-500': !incident.closedAt }"
           class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-tags leading-none"
         >
-          {{ getFirstTagLabel(incident) }}
+          {{ incident.closedAt ? 'Closed' : 'Open' }}
         </div>
         <div
           v-if="!incident.closedAt && incident.events.length && checkRecentLabel(incident.events)"
