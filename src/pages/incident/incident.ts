@@ -122,7 +122,7 @@ export default class IncidentPage extends Vue {
   }
 
   public getColor (n: number): string {
-    const classes = ['ic-violet', 'ic-green', 'ic-orange', 'ic-blue', 'ic-pink']
+    const classes = ['text-violet-500', 'text-green-500', 'text-yellow-500', 'text-blue-500', 'text-red-300']
     return classes[n]
   }
 
@@ -141,15 +141,14 @@ export default class IncidentPage extends Vue {
   public async getStreamsData (): Promise<void> {
     this.streamsData = VuexService.Projects.streams.get()
     if (!this.streamsData.length) {
-      const params: string = this.$route.params.projectId as string
-      this.streamsData = await StreamService.getStreams([params])
-      await VuexService.Projects.streams.set(this.streamsData)
+      void this.getStreamsDataFromDB()
     }
   }
 
   public async getStreamsDataFromDB (): Promise<void> {
     const params: string = this.$route.params.projectId as string
-    this.streamsData = await StreamService.getStreams([params])
+    const streamsData = await StreamService.getStreams([params])
+    this.streamsData = streamsData.data
     await VuexService.Projects.streams.set(this.streamsData)
   }
 

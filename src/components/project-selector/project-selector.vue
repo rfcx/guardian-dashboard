@@ -27,7 +27,7 @@
                     v-model="searchLabel"
                     type="text"
                     class="search px-0 flex justify-between text-white bg-steel-grey-dark md:focus:steel-grey focus:outline-none md:focus:outline-none outline-none border-none w-full"
-                    placeholder="Filter"
+                    placeholder="Filter by keyword"
                     @keyup="searchProject()"
                   >
                 </div>

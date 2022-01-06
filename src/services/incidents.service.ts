@@ -4,28 +4,18 @@ import * as Endpoints from '@/api/endpoints'
 import { Incident, Response, ResponseAsset } from '@/types'
 import ApiClient from './api.service'
 
-interface paramsModel {
-  streams?: any[]
-  projects?: any[]
-  closed?: string
+interface IncidentQueryParams {
+  streams?: string[]
+  projects?: string[]
+  closed?: boolean
   sort?: string
   limit?: number
   offset?: number
+  min_events?: number
+  first_event_start?: string
 }
 
-export async function getIncidents (options: any = {}): Promise<{ data: Incident[], headers: any }> {
-  const params: paramsModel = {
-    ...options.closed !== undefined && { closed: options.closed },
-    ...options.sort !== undefined && { sort: options.sort },
-    ...options.limit !== undefined && { limit: options.limit },
-    ...options.offset !== undefined && { offset: options.offset }
-  }
-  if (options.streams !== undefined) {
-    params.streams = options.streams
-  }
-  if (options.projects !== undefined) {
-    params.projects = options.projects
-  }
+export async function getIncidents (params: IncidentQueryParams = {}): Promise<{ data: Incident[], headers: any }> {
   Endpoints.getIncidents.config = {
     params: params
   }

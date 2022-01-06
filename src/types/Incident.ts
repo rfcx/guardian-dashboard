@@ -59,6 +59,12 @@ export interface AnswerItem {
   text: string
 }
 
+export interface IncidentStatus {
+  value: string
+  label: string
+  checked: boolean
+}
+
 export interface ResponseExtended extends Response {
   type: string
   showNotes: boolean
