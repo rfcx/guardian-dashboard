@@ -8,6 +8,12 @@
 
 ## 0.0.4 (2021-12-23)
 
+* **bug:** Fixed the issue with the mobile menu ([#43](https://github.com/rfcx/incident-center/issues/43))
+* **bug:** Do not display the navbar menu icon on the left for not logged in users ([#43](https://github.com/rfcx/incident-center/issues/43))
+* **bug:** Pages' margins are updated for the mobile/tablet sizes ([#43](https://github.com/rfcx/incident-center/issues/43))
+
+## 0.0.4 (2021-12-?)
+
 * **feature:** Labels are added to response time ([#32](https://github.com/rfcx/incident-center/issues/32))
 * **bug:** Pagination shows all pages while there are 5 pages ([#37](https://github.com/rfcx/incident-center/issues/37))
 

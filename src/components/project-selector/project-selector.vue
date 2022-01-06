@@ -12,7 +12,7 @@
           class="hidden sm:inline-block sm:align-middle sm:h-screen"
           aria-hidden="true"
         />
-        <div class="inline-block align-bottom bg-steel-grey rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="inline-block align-middle bg-steel-grey rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full h-125">
           <div class="bg-steel-grey px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <on-click-outside @trigger="closeProjectSelector">
               <div class="text-white text-xl pb-2">
@@ -37,7 +37,7 @@
                   class="flex justify-between text-white cursor-pointer hover:bg-steel-grey-dark py-2"
                   @click="setSelectedProject(project)"
                 >
-                  {{ project.name }}
+                  <span class="truncate w-11/12">{{ project.name }}</span>
                   <i
                     v-show="isSelectedProject(project)"
                     class="icon-check"
