@@ -86,6 +86,12 @@ export default defineConfig({
     // nav;
     'navbar-container': 'box-content text-primary flex items-center justify-center h-13',
     'navbar-item': 'box-content text-primary flex items-center justify-center h-13',
-    'navbar-menu-item': 'px-2'
+    'navbar-menu-item': 'px-2',
+    // tag
+    'btn-tag': {
+      'border-radius': '0.5rem',
+      color: '#dcdee2',
+      height: '22px'
+    }
   }
 })

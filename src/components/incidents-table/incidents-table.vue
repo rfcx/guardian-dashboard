@@ -12,19 +12,19 @@
         <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
         <div
           :class="{ 'bg-gray-500': incident.closedAt, 'bg-green-500': !incident.closedAt }"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide ic-btn-tags leading-none"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none"
         >
           {{ incident.closedAt ? 'Closed' : 'Open' }}
         </div>
         <div
           v-if="!incident.closedAt && incident.events.length && checkRecentLabel(incident.events)"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-yellow-500 ic-btn-tags leading-none"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-yellow-500 btn-tag leading-none"
         >
           Recent
         </div>
         <div
           v-if="!incident.closedAt && incident.events.length && incident.events.length > 10"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-red-400 ic-btn-tags leading-none"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-red-400 btn-tag leading-none"
         >
           Hot
         </div>
