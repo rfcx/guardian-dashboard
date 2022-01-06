@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { describe, expect, test } from 'vitest'
 
-import { formatDateRange, formatDateTimeLabel, formatDateTimeRange, formatTimeLabel, getDay, twoDateDiffExcludeHours } from './dates'
+import { formatDateRange, formatDateTimeLabel, formatDateTimeRange, formatTimeLabel, formatTwoDateDiff, getDay, twoDateDiffExcludeHours } from './dates'
 
 // Date Range
 
@@ -116,6 +116,21 @@ describe('twoDateDiffExcludeHours: get the difference between two days excluding
   test('Test different days, months, years, time', () => {
     examples.forEach(([start, end, expected]) => {
       expect(twoDateDiffExcludeHours(start, end, true)).toEqual(expected)
+    })
+  })
+})
+
+describe('formatTwoDateDiff: response times difference', () => {
+  const examples = [
+    ['2021-12-26T16:15:13.820Z', '2021-12-27T04:18:34.239Z', ' 12 hours 3 minutes'],
+    ['2021-12-24T16:15:13.820Z', '2021-12-27T04:18:34.239Z', ' 2 days 12 hours 3 minutes'],
+    ['2021-12-27T04:15:15.514Z', '2021-12-27T04:17:00.250Z', ' 1 minute 44 seconds'],
+    ['2020-12-27T04:15:15.514Z', '2021-12-27T04:17:00.250Z', ' 1 year 1 minute 44 seconds']
+  ]
+
+  test('Test different days, months, years, time', () => {
+    examples.forEach(([start, end, expected]) => {
+      expect(formatTwoDateDiff(start, end)).toEqual(expected)
     })
   })
 })
