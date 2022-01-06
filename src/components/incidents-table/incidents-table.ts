@@ -39,16 +39,17 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public getEventsTitle (events: Event[]): string | undefined {
-    if (this.timezone !== undefined) {
-      const start = (this.getFirstOrLastItem(events, true) as Event).start
-      const end = (this.getFirstOrLastItem(events, false) as Event).end
-      return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
+    if (this.timezone === undefined) {
+      return undefined
     }
+    const start = (this.getFirstOrLastItem(events, true) as Event).start
+    const end = (this.getFirstOrLastItem(events, false) as Event).end
+    return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
   }
 
   public getEventsLabel (events: Event[]): string | undefined {
-    if (!this.timezone) {
-      return
+    if (this.timezone === undefined) {
+      return undefined
     }
     const start = (this.getFirstOrLastItem(events, true) as Event).start
     const end = (this.getFirstOrLastItem(events, false) as Event).end
@@ -56,33 +57,36 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public getResponseTitle (responses: Response[]): string | undefined {
-    if (this.timezone !== undefined) {
-      const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
-      return formatDateTimeLabel(firstResponse)
+    if (this.timezone === undefined) {
+      return undefined
     }
+    const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
+    return formatDateTimeLabel(firstResponse)
   }
 
   public getResponseLabel (responses: Response[]): string | undefined {
-    if (this.timezone !== undefined) {
-      const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
-      // today => Today, X
-      if (isDateToday(firstResponse, this.timezone)) {
-        return `Today, ${formatTimeLabel(firstResponse, this.timezone)}}`
-      }
-      // yesterday => Yesterday, X
-      if (isDateYesterday(firstResponse, this.timezone)) {
-        return `Yesterday, ${formatTimeLabel(firstResponse, this.timezone)}}`
-      } else return `${getDay(firstResponse, this.timezone)}`
+    if (this.timezone === undefined) {
+      return undefined
     }
+    const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
+    // today => Today, X
+    if (isDateToday(firstResponse, this.timezone)) {
+      return `Today, ${formatTimeLabel(firstResponse, this.timezone)}}`
+    }
+    // yesterday => Yesterday, X
+    if (isDateYesterday(firstResponse, this.timezone)) {
+      return `Yesterday, ${formatTimeLabel(firstResponse, this.timezone)}}`
+    } else return `${getDay(firstResponse, this.timezone)}`
   }
 
   public getResponseTime (incident: IncidentItem): string | undefined {
-    if (this.timezone !== undefined) {
-      if (incident.responses.length > 0 && incident.events.length > 0) {
-        return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem((incident.events as EventExtended[]), true) as Event).start, (this.getFirstOrLastItem((incident.responses as ResponseExtended[]), true) as Response).submittedAt, true) as string)}`
-      }
+    if (this.timezone === undefined) {
+      return undefined
+    }
+    if (incident.responses.length === 0 || incident.events.length === 0) {
       return '-'
     }
+    return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem((incident.events as EventExtended[]), true) as Event).start, (this.getFirstOrLastItem((incident.responses as ResponseExtended[]), true) as Response).submittedAt, true) as string)}`
   }
 
   public getEventsCount (events: Event[]): EventItem[] {

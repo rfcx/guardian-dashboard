@@ -50,11 +50,9 @@ export const formatDateTimeLabel = (label: string, timezone: string = 'UTC'): st
   return dayjs(label).tz(timezone).format('MMM DD, YYYY HH:mm')
 }
 
-export const formatDiffFromNow = (label: string, timezone?: string): any => {
-  if (timezone !== undefined) {
-    const dateDiff = dayjs.duration(dayjs().tz(timezone).diff(dayjs(label).tz(timezone)))
-    return combineLabel(dateDiff)
-  } else return combineLabel(dayjs.duration(dayjs().diff(dayjs(label))))
+export const formatDiffFromNow = (label: string, timezone: string = 'UTC'): any => {
+  const dateDiff = dayjs.duration(dayjs().tz(timezone).diff(dayjs(label).tz(timezone)))
+  return combineLabel(dateDiff)
 }
 
 export const inLast6Hours = (label: string): boolean => {
@@ -78,9 +76,8 @@ export const isDateYesterday = (label: string, timezone: string = 'UTC'): boolea
   return dayjs(label).tz(timezone).isYesterday()
 }
 
-export const getDay = (date: any, timezone?: string): string => {
-  if (timezone) return dayjs(date).tz(timezone).format('DD MMM')
-  else return dayjs(date).format('DD MMM')
+export const getDay = (date: any, timezone: string = 'UTC'): string => {
+  return dayjs(date).tz(timezone).format('DD MMM')
 }
 
 export const inLast1Minute = (labelFrom: string, labelTo: string): boolean => {
@@ -116,14 +113,12 @@ function getEndLabel (count: number, item: string): string {
   return item
 }
 
-export const formatDayTimeLabel = (label: string | any, timezone?: string): string => {
-  if (timezone) return dayjs(label).tz(timezone).format('MMM DD, HH:mm')
-  else return dayjs(label).format('MMM DD, HH:mm')
+export const formatDayTimeLabel = (label: string | any, timezone: string = 'UTC'): string => {
+  return dayjs(label).tz(timezone).format('MMM DD, HH:mm')
 }
 
-export const formatDayWithoutTime = (date: any, timezone?: string): string => {
-  if (timezone) return dayjs(date).tz(timezone).format('DD MMM YYYY')
-  else return dayjs(date).format('DD MMM YYYY')
+export const formatDayWithoutTime = (date: any, timezone: string = 'UTC'): string => {
+  return dayjs(date).tz(timezone).format('DD MMM YYYY')
 }
 
 export const formatTimeLabel = (label: string, timezone: string = 'UTC'): string => {
