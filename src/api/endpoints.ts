@@ -1,4 +1,4 @@
-import { rangerBaseApi } from '../../config/index'
+import rangerBaseApi from '../../config/index'
 
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
