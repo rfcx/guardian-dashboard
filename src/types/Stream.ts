@@ -9,7 +9,6 @@ export interface Stream {
   longitude?: number
   project?: Project
   incidents?: IncidentsObject
-  loading?: boolean
 }
 
 export interface IncidentsObject {
