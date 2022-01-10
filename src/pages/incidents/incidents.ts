@@ -90,12 +90,6 @@ export default class IncidentsPage extends Vue {
     }
   }
 
-  public getSelectedProject (): void {
-    this.isLoading = true
-    this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
-    this.isLoading = false
-  }
-
   public getStreamById (streamId: string): Stream | undefined {
     const stream = this.streamsData.find(s => s.id === streamId)
     return stream
@@ -155,7 +149,6 @@ export default class IncidentsPage extends Vue {
       limit_incidents: 3
     })
     this.streamsData = streamsData.data
-    await VuexService.Projects.streams.set(this.streamsData)
     this.paginationSettings.total = streamsData.headers['total-items']
     this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
     this.isLoading = false
