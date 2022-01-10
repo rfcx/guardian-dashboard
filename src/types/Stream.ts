@@ -8,8 +8,12 @@ export interface Stream {
   latitude?: number
   longitude?: number
   project?: Project
-  incidents?: Incident[]
-  loading?: boolean
+  incidents?: IncidentsObject
+}
+
+export interface IncidentsObject {
+  items: Incident[]
+  total: number
 }
 
 export interface StreamsWithIncidentsParams {
