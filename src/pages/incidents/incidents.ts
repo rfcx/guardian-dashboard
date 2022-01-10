@@ -5,12 +5,12 @@ import InvalidProjectComponent from '@/components/invalid-project/invalid-projec
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, IncidentStatus, Pagination, Project, Stream } from '@/types'
-import { getLast6HoursLabel } from '@/utils'
+// import { getLast6HoursLabel } from '@/utils'
 
 interface statusOptions {
-  closed?: boolean
-  min_events?: number
-  first_event_start?: string
+  incidents_closed?: boolean
+  incidents_min_events?: number
+  // first_event_start?: string
 }
 
 @Options({
@@ -33,7 +33,7 @@ export default class IncidentsPage extends Vue {
     { value: 'any', label: 'Any', checked: true },
     { value: 'open', label: 'Open', checked: false },
     { value: 'closed', label: 'Closed', checked: false },
-    { value: 'new', label: 'New', checked: false },
+    // { value: 'recent', label: 'Recent', checked: false },
     { value: 'hot', label: 'Hot', checked: false }
   ]
 
@@ -58,6 +58,7 @@ export default class IncidentsPage extends Vue {
 
   updated (): void {
     if (this.selectedProject !== undefined && this.selectedProject.id !== this.$route.params.projectId) {
+      this.resetPaginationData()
       this.getData()
     }
   }
@@ -76,12 +77,8 @@ export default class IncidentsPage extends Vue {
   }
 
   public getData (): void {
-    this.isLoading = true
     this.selectedProject = this.projects.find(p => p.id === this.getProjectIdFromRouterParams())
-    void this.getStreamsData(this.getProjectIdFromRouterParams())
-      .then(() => {
-        void this.getIncidentsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
-      })
+    void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
   public resetPaginationData (): void {
@@ -144,14 +141,19 @@ export default class IncidentsPage extends Vue {
   public toggleStatus (status: IncidentStatus): void {
     this.incidentsStatus.forEach((s: IncidentStatus) => { s.checked = false })
     status.checked = true
-    void this.getIncidentsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+    void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
-  public async getStreamsData (projectId: string): Promise<void> {
-    // TODO: Fix pagination total-items data.
-    // limit: this.paginationSettings.limit,
-    // offset: this.paginationSettings.offset * this.paginationSettings.limit,
-    const streamsData = await StreamService.getStreams([projectId], this.searchLabel)
+  public async getStreamsData (projectId: string, status?: string): Promise<void> {
+    this.isLoading = true
+    const streamsData = await StreamService.getStreamsWithIncidents({
+      projects: [projectId],
+      ...status !== undefined && this.optionsForStatus(status),
+      limit: this.paginationSettings.limit,
+      offset: this.paginationSettings.offset * this.paginationSettings.limit,
+      keyword: this.searchLabel,
+      limit_incidents: 3
+    })
     this.streamsData = streamsData.data
     await VuexService.Projects.streams.set(this.streamsData)
     this.paginationSettings.total = streamsData.headers['total-items']
@@ -181,10 +183,11 @@ export default class IncidentsPage extends Vue {
   }
 
   public optionsForStatus (status: string): statusOptions | undefined {
-    if (status === 'closed') return { closed: true }
-    else if (status === 'open') return { closed: false }
-    else if (status === 'hot') return { min_events: 11 }
-    else if (status === 'new') return { first_event_start: getLast6HoursLabel() }
+    if (status === 'closed') return { incidents_closed: true }
+    else if (status === 'open') return { incidents_closed: false }
+    else if (status === 'hot') return { incidents_min_events: 11 }
+    // TODO: Add first_event_start parameter to the endpoint
+    // else if (status === 'recent') return { first_event_start: getLast6HoursLabel() }
   }
 
   public formatIncidents (incidents: Incident[]): Incident[] {

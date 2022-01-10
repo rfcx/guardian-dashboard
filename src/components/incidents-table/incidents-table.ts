@@ -71,11 +71,11 @@ export default class IncidentsTableRows extends Vue {
     const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
     // today => Today, X
     if (isDateToday(firstResponse, this.timezone)) {
-      return `Today, ${formatTimeLabel(firstResponse, this.timezone)}}`
+      return `Today, ${formatTimeLabel(firstResponse, this.timezone)}`
     }
     // yesterday => Yesterday, X
     if (isDateYesterday(firstResponse, this.timezone)) {
-      return `Yesterday, ${formatTimeLabel(firstResponse, this.timezone)}}`
+      return `Yesterday, ${formatTimeLabel(firstResponse, this.timezone)}`
     } else return `${getDay(firstResponse, this.timezone)}`
   }
 
