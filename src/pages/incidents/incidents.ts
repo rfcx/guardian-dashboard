@@ -162,24 +162,7 @@ export default class IncidentsPage extends Vue {
   }
 
   public async getPage (): Promise<void> {
-    await this.getIncidentsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
-  }
-
-  public async getIncidentsData (projectId: string, status?: string): Promise<void> {
-    try {
-      for (const stream of this.streamsData) {
-        stream.loading = true
-        const data = await IncidentsService.getIncidents({
-          projects: [projectId],
-          streams: [stream.id],
-          limit: 3,
-          offset: this.paginationSettings.offset * this.paginationSettings.limit,
-          ...status !== undefined && this.optionsForStatus(status)
-        })
-        stream.incidents = this.formatIncidents(data.data)
-        stream.loading = false
-      }
-    } catch (e) {}
+    await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
   public optionsForStatus (status: string): statusOptions | undefined {
