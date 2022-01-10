@@ -20,9 +20,6 @@ afterAll(() => {
 describe('Test getIncidents endpoint: Compare query parameters with api arguments', () => {
   test('Test closed incidents', async () => {
     const queryParams = {
-      min_events: undefined,
-      sort: undefined,
-      first_event_start: undefined,
       streams: ['e1or3yxzqu4p'],
       projects: ['zw6iggfxfqz6'],
       closed: true,
@@ -47,9 +44,6 @@ describe('Test getIncidents endpoint: Compare query parameters with api argument
   })
   test('Test open incidents', async () => {
     const queryParams = {
-      min_events: undefined,
-      sort: undefined,
-      first_event_start: undefined,
       streams: ['e1or3yxzqu4p'],
       projects: ['zw6iggfxfqz6'],
       closed: false,
@@ -74,9 +68,6 @@ describe('Test getIncidents endpoint: Compare query parameters with api argument
   })
   test('Test hot incidents', async () => {
     const queryParams = {
-      closed: undefined,
-      first_event_start: undefined,
-      sort: undefined,
       streams: ['e1or3yxzqu4p'],
       projects: ['zw6iggfxfqz6'],
       min_events: 11,
@@ -101,9 +92,6 @@ describe('Test getIncidents endpoint: Compare query parameters with api argument
   })
   test('Test recent incidents', async () => {
     const queryParams = {
-      closed: undefined,
-      min_events: undefined,
-      sort: undefined,
       streams: ['e1or3yxzqu4p'],
       projects: ['zw6iggfxfqz6'],
       first_event_start: '2022-01-01T00:00:00.000Z',
