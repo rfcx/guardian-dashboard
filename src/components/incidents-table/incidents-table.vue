@@ -1,89 +1,94 @@
 <template>
-  <tr
-    v-for="item in itemsData"
-    :key="item.id"
-    class="table-row"
+  <router-link
+    v-for="(incident, i) in itemsData"
+    :key="i"
+    :to="{ path: '/project/' + incident.projectId + '/incidents/'+ incident.id}"
+    tag="tr"
+    class="flex flex-row cursor-pointer hover:bg-gray-300 hover:bg-opacity-5 <sm:flex-col"
+    :class="{ 'border-b border-gray-700': itemsData.length > 1 && i !== itemsData.length - 1 }"
   >
-    <td
-      v-if="!isEvent(item)"
-      class="px-6 py-2 whitespace-nowrap w-1/8"
-      title="Report"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 ic-green"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+    <div class="pr-6 py-2 flex-nowrap flex-1 <sm:py-1">
+      <div class="flex justify-start items-center whitespace-nowrap">
+        <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
+        <div
+          :class="{ 'bg-gray-500': incident.closedAt, 'bg-green-500': !incident.closedAt }"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none"
+        >
+          {{ incident.closedAt ? 'Closed' : 'Open' }}
+        </div>
+        <div
+          v-if="!incident.closedAt && incident.events.length && checkRecentLabel(incident.events)"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-yellow-500 btn-tag leading-none"
+        >
+          Recent
+        </div>
+        <div
+          v-if="!incident.closedAt && incident.events.length && incident.events.length > 10"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-red-400 btn-tag leading-none"
+        >
+          Hot
+        </div>
+      </div>
+    </div>
+    <div class="pr-6 py-2 flex-wrap flex-1 text-secondary whitespace-nowrap <sm:py-1">
+      <img
+        v-if="incident.events.length"
+        title="Events"
+        class="h-5 w-5 inline-block mr-2"
+        src="/src/assets/event.svg"
+        alt=""
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-    </td>
-    <td
-      v-if="isEvent(item)"
-      class="px-6 py-2 whitespace-nowrap w-1/8"
-      title="Alert"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 ic-pink"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+      <div
+        class="text-sm text-secondary inline-block"
+        :title="incident.events.length ? getEventsTitle(incident.events) : ''"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-        />
-      </svg>
-    </td>
-    <td class="px-6 py-2 whitespace-nowrap w-1/5">
-      <div class="text-sm font-medium text-white">
-        {{ dateFormatted(item.createdAt) }}
+        {{ incident.events.length ? getEventsLabel(incident.events) : '' }}
       </div>
-    </td>
-    <td
-      v-if="isEvent(item)"
-      class="px-6 py-2 whitespace-nowrap w-1/5"
-    >
-      <div class="text-sm text-white">
-        {{ timeFormatted(item.start) }}-{{ timeFormatted(item.end) }}
+      <div
+        v-if="incident.events.length"
+        class="inline-block ml-3"
+      >
+        <div
+          v-for="event in getEventsCount(incident.events)"
+          :key="event.value"
+          class="text-sm text-secondary inline-block mr-3"
+          :title="`${event.count} ${event.value} events`"
+        >
+          <img
+            class="h-5 w-5 inline-block text-gray-500 align-top mr-1"
+            :src="'/src/assets/alert-icons/ic_' + event.value + '.svg'"
+            :alt="event.value"
+          >
+          <span
+            class="text-sm text-center inline-block"
+          >
+            {{ event.count }}
+          </span>
+        </div>
       </div>
-    </td>
-    <td
-      v-if="!isEvent(item)"
-      class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"
-    />
-    <td
-      v-if="isEvent(item)"
-      class="px-6 py-2 whitespace-nowrap w-1/5"
-    >
-      <div class="text-sm text-white">
-        {{ item.classification && item.classification.title }}
+    </div>
+    <div class="pr-6 py-2 flex-nowrap flex-1 whitespace-nowrap text-secondary <sm:justify-start <sm:py-1">
+      <img
+        v-if="incident.responses.length"
+        title="Response"
+        class="h-5 w-5 inline-block mr-2"
+        src="/src/assets/response.svg"
+        alt=""
+      >
+      <div
+        class="text-sm text-secondary inline-block"
+        :title="incident.responses.length ? getResponseTitle(incident.responses) : ''"
+      >
+        {{ incident.responses.length ? getResponseLabel(incident.responses) : '' }}
       </div>
-    </td>
-    <td
-      v-if="!isEvent(item)"
-      class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"
+    </div>
+    <div
+      class="pr-6 py-2 whitespace-wrap flex-1 flex justify-end <sm:justify-start <sm:py-1"
+      title="Difference between a first event start time and a first response was submitted in the Guardian App"
     >
-      Response by {{ item.createdBy.firstname }} {{ item.createdBy.lastname }}
-    </td>
-    <td
-      v-if="!isEvent(item)"
-      class="px-6 py-2 whitespace-nowrap text-sm w-1/5"
-    />
-    <td
-      v-if="isEvent(item)"
-      class="px-6 py-2 whitespace-nowrap text-sm text-white w-1/5"
-    />
-  </tr>
+      <span class="text-base"> {{ getResponseTime(incident) }} </span>
+    </div>
+  </router-link>
 </template>
 
 <script src="./incidents-table.ts" lang="ts" />

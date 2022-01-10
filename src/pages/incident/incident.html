@@ -1,4 +1,4 @@
-<div id="report-page" class="pt-10 px-20">
+<div id="report-page" class="pt-10 px-20 <sm:(px-0 pt-0)">
   <div class="bg-gray shadow overflow-hidden">
     <div v-if="isLoading" class="bg-mirage-grey h-10 w-10" v-bind:style="{margin: '0 auto'}">
       <svg class="animate-spin bg-mirage-grey text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -26,7 +26,7 @@
             <a v-if="!incident.closedAt && !isError()" @click="closeReport()" class="inline-flex items-center justify-center px-3 py-0.5 border border-transparent text-white font-small rounded-md bg-gray-600 hover:bg-gray-800 cursor-pointer">
               Mark as closed
             </a>
-            <span v-else class="text-sm font-medium text-white px-3 py-0.7" :class="{'ic-pink': isError()}">{{incidentStatus}}</span>
+            <span v-else class="text-sm font-medium text-white px-3 py-0.7" :class="{'text-danger': isError()}">{{incidentStatus}}</span>
           </div>
         </dt>
       </div>
@@ -36,18 +36,18 @@
       <div v-for="item in incident.items">
         <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 border-b border-gray-500" v-if="item.type === 'response'">
           <dd class="flex justify-center items-center text-sm font-medium text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 ic-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             {{ getCreatedByLabel(item.createdBy) }}
           </dd>
-          <dd class="flex justify-center items-center text-sm font-medium text-white middle" title="Investigation time">
+          <dd class="flex justify-center items-center text-sm font-medium text-white middle <sm:(justify-start py-2)" title="Investigation time">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {{dateFormatted(item.investigatedAt) || 0}}
           </dd>
-          <dd class="text-sm font-medium text-white middle" title="Difference between investigation and submission times of response">
+          <dd class="text-sm font-medium text-white middle <sm:(py-2)" title="Difference between investigation and submission times of response">
             <div class="h-6 text-sm font-medium text-white ml-0.5">
               Time to submit
             </div>
@@ -56,7 +56,7 @@
             </svg>
             {{ hoursDiffFormatted(item.investigatedAt, item.submittedAt) || 0 }}
           </dd>
-          <dd class="text-sm font-medium text-white middle" title="Difference between time when response was submitted in the Guardian App and time when it was received on the server">
+          <dd class="text-sm font-medium text-white middle <sm:(py-2)" title="Difference between time when response was submitted in the Guardian App and time when it was received on the server">
             <div class="h-6 text-sm font-medium text-white ml-0.5">
               Time to receive
             </div>
@@ -113,7 +113,7 @@
                   </div>
                 </div>
               </dd>
-              <dd class="border border-gray-200 rounded-md p-6">
+              <dd class="border border-gray-200 rounded-md p-6 <sm:(mt-2)">
                 <div v-if="isAssetsLoading" class="text-sm font-medium text-white mb-3">
                   Loading assets
                 </div>
@@ -154,7 +154,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </a>
-                  <p v-if='item.isError' class="text-sm font-medium ic-pink pt-2">
+                  <p v-if='item.isError' class="text-sm font-medium text-danger pt-2">
                     Error occurred
                   </p>
                 </div>
@@ -168,7 +168,7 @@
         </div>
         <div class="bg-gray px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 border-b border-gray-500" v-if="item.type === 'event'">
           <dd class="text-sm font-medium text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 ic-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             {{dateFormatted(item.createdAt)}}

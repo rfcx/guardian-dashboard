@@ -51,7 +51,8 @@ export default class IndexPage extends Vue {
   }
 
   public async getStreamsData (): Promise<void> {
-    this.streamsData = await StreamService.getStreams()
+    const streamsData = await StreamService.getStreams()
+    this.streamsData = streamsData.data
   }
 
   public getStreamName (streamId: string): string | null {
