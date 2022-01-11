@@ -67,7 +67,7 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public getIconTitle (count: number, value: string): string {
-    return `${count} ${value} events`
+    return `${count} ${value} ${count > 1 ? 'events' : 'event'}`
   }
 
   public getEventsLabel (events: Event[]): string {

@@ -57,7 +57,7 @@
           <img
             class="h-5 w-5 inline-block text-gray-500 align-top mr-1"
             :src="'/src/assets/alert-icons/ic_' + event.value + '.svg'"
-            alt="event.value"
+            :alt="event.value"
           >
           <span
             class="text-sm text-center inline-block"
