@@ -21,10 +21,8 @@ export async function getStreamsWithIncidents (params: StreamsWithIncidentsParam
       url: `${Endpoints.getStreams.url}/incidents`,
       config: { params: params }
     })
-    console.log(resp)
     return resp
   } catch (e) {
-    console.log(e)
     return await Promise.reject(e)
   }
 }
