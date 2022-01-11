@@ -25,6 +25,7 @@ export default class IncidentsPage extends Vue {
   projects!: Project[]
 
   public selectedProject: Project | undefined
+
   public isLoading = false
   public isPaginationAvailable = false
   public incidents: Incident[] = []
@@ -59,12 +60,14 @@ export default class IncidentsPage extends Vue {
   updated (): void {
     if (this.selectedProject !== undefined && this.selectedProject.id !== this.$route.params.projectId) {
       this.resetPaginationData()
-      void this.getData()
+      void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+      this.getSelectedProject()
     }
   }
 
   async created (): Promise<void> {
-    await this.getData()
+    await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+    this.getSelectedProject()
   }
 
   public isProjectAccessed (): boolean {
@@ -76,10 +79,13 @@ export default class IncidentsPage extends Vue {
     return projectId
   }
 
-  public async getData (): Promise<void> {
-    this.selectedProject = this.projects.find(p => p.id === this.getProjectIdFromRouterParams())
-    console.error('selectedProject', this.selectedProject)
-    await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+  getSelectedProject (): void {
+    this.isLoading = true
+    const projects = VuexService.Projects.projects.get()
+    console.log('projects', projects)
+    this.selectedProject = projects.find(p => p.id === this.$route.params.projectId)
+    console.log('selectedProject', this.selectedProject)
+    this.isLoading = false
   }
 
   public resetPaginationData (): void {
@@ -114,7 +120,7 @@ export default class IncidentsPage extends Vue {
     }
     this.timerSub = setTimeout(() => {
       if (!this.searchLabel.length || (this.searchLabel.length && this.searchLabel.length >= 3 && this.streamsData !== undefined)) {
-        void this.getData()
+        void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
       }
     }, 1500)
   }
@@ -149,16 +155,14 @@ export default class IncidentsPage extends Vue {
       keyword: this.searchLabel,
       limit_incidents: 3
     }).then(res => {
-      console.log('res', res.data)
+      console.log('res', res)
       this.streamsData = res.data
-      console.log(this.streamsData)
       this.paginationSettings.total = res.headers['total-items']
-      console.log('paginationSettings', this.paginationSettings.total, res.headers['total-items'])
       this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
-      console.log('isPaginationAvailable', this.isPaginationAvailable)
     }).catch(e => {
       console.error('Error loading streams with incidents', e)
     }).finally(() => {
+      console.log('finally')
       this.isLoading = false
     })
   }
