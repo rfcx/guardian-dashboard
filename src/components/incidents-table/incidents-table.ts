@@ -2,9 +2,14 @@ import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 
 import { Event, EventExtended, Incident, Response, ResponseExtended } from '@/types'
-import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, inLast6Hours, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
+import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
 
-interface IncidentItem extends Event, Incident, Response {}
+interface IncidentItem extends Event, Incident, Response {
+  eventsTitle: string
+  eventsLabel: string
+  responseTitle: string
+  responseLabel: string
+}
 interface EventItem {
   value: string
   count: number
@@ -15,7 +20,23 @@ export default class IncidentsTableRows extends Vue {
   timezone!: string
 
   @Prop({ default: [] })
-  itemsData!: IncidentItem[]
+  items!: IncidentItem[]
+
+  public itemsData: IncidentItem[] = []
+
+  mounted (): void {
+    this.combineItemsTitles(this.items)
+  }
+
+  public combineItemsTitles (items: IncidentItem[]): void {
+    items.forEach((incident: IncidentItem) => {
+      incident.eventsTitle = incident.events.length ? this.getEventsTitle(incident.events) : ''
+      incident.eventsLabel = incident.events.length ? this.getEventsLabel(incident.events) : ''
+      incident.responseTitle = incident.responses.length ? this.getResponseTitle(incident.responses) : ''
+      incident.responseLabel = incident.responses.length ? this.getResponseLabel(incident.responses) : ''
+    })
+    this.itemsData = this.items
+  }
 
   public dateFormatted (date: string): string {
     return formatDayTimeLabel(date, this.timezone)
@@ -25,7 +46,7 @@ export default class IncidentsTableRows extends Vue {
     return formatTimeLabel(date, this.timezone)
   }
 
-  public getFirstOrLastItem (items: Event[] | Response[], firstItem: boolean): Response | Event {
+  public getFirstOrLastItem (items: Response[] | Event[], firstItem: boolean): Response | Event {
     items.sort((a: Response | Event, b: Response | Event) => {
       const dateA = new Date(this.getItemDatetime(a, firstItem)).valueOf()
       const dateB = new Date(this.getItemDatetime(b, firstItem)).valueOf()
@@ -35,39 +56,32 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public getItemDatetime (item: Response | Event, first: boolean): string {
-    return (item as Event).start ? (first ? (item as Event).start : (item as Event).end) : (item as Response).submittedAt
+    const itemIsEvent = (item as Event).start !== undefined
+    return itemIsEvent ? (first ? (item as Event).start : (item as Event).end) : (item as Response).submittedAt
   }
 
-  public getEventsTitle (events: Event[]): string | undefined {
-    if (this.timezone === undefined) {
-      return undefined
-    }
+  public getEventsTitle (events: Event[]): string {
     const start = (this.getFirstOrLastItem(events, true) as Event).start
     const end = (this.getFirstOrLastItem(events, false) as Event).end
     return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
   }
 
-  public getEventsLabel (events: Event[]): string | undefined {
-    if (this.timezone === undefined) {
-      return undefined
-    }
+  public getIconTitle (count: number, value: string): string {
+    return `${count} ${value} events`
+  }
+
+  public getEventsLabel (events: Event[]): string {
     const start = (this.getFirstOrLastItem(events, true) as Event).start
     const end = (this.getFirstOrLastItem(events, false) as Event).end
     return formatDateTimeRange(start, end, this.timezone)
   }
 
-  public getResponseTitle (responses: Response[]): string | undefined {
-    if (this.timezone === undefined) {
-      return undefined
-    }
+  public getResponseTitle (responses: Response[]): string {
     const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
     return formatDateTimeLabel(firstResponse)
   }
 
-  public getResponseLabel (responses: Response[]): string | undefined {
-    if (this.timezone === undefined) {
-      return undefined
-    }
+  public getResponseLabel (responses: Response[]): string {
     const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
     // today => Today, X
     if (isDateToday(firstResponse, this.timezone)) {
@@ -106,6 +120,7 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public checkRecentLabel (events: Event[]): boolean {
-    return inLast6Hours((this.getFirstOrLastItem(events, false) as Event).start)
+    return false
+    // inLast6Hours((this.getFirstOrLastItem(events, false) as Event).start)
   }
 }

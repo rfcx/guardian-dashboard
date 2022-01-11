@@ -12,12 +12,12 @@ Requires Docker.
 
 1.  Build the image
     ```
-    docker build . -t incident-center -f build\Dockerfile
+    docker build . -t guardian-dashboard -f build/Dockerfile
     ```
 
 2.  Run the app
     ```
-    docker run --rm -it -p 8080:8080 incident-center/staging
+    docker run --rm -it -p 8080:8080 guardian-dashboard
     ```
 
 *If your port 8080 is in use, then you can change the port to other e.g. `-p 7373:8080` to open http://localhost:7373/*

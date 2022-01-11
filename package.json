@@ -10,7 +10,9 @@
     "lint-fix": "eslint . --fix && prettier --loglevel warn --write . && stylelint . --fix",
     "preview": "vite preview",
     "serve": "vite",
-    "test": "npx vitest"
+    "test": "npx vitest",
+    "docker.build": "docker build . -t guardian-dashboard -f build/Dockerfile",
+    "docker.run": "docker run --rm -it -p 8080:8080 guardian-dashboard"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.17.0",

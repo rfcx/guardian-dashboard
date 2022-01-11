@@ -40,9 +40,9 @@
       >
       <div
         class="text-sm text-secondary inline-block"
-        :title="incident.events.length ? getEventsTitle(incident.events) : ''"
+        :title="incident.eventsTitle"
       >
-        {{ incident.events.length ? getEventsLabel(incident.events) : '' }}
+        {{ incident.eventsLabel }}
       </div>
       <div
         v-if="incident.events.length"
@@ -52,17 +52,17 @@
           v-for="event in getEventsCount(incident.events)"
           :key="event.value"
           class="text-sm text-secondary inline-block mr-3"
-          :title="`${event.count} ${event.value} events`"
+          :title="getIconTitle(event.count, event.value)"
         >
           <img
             class="h-5 w-5 inline-block text-gray-500 align-top mr-1"
             :src="'/src/assets/alert-icons/ic_' + event.value + '.svg'"
-            :alt="event.value"
+            alt="event.value"
           >
           <span
             class="text-sm text-center inline-block"
           >
-            {{ event.count }}
+            {{ event.count || '' }}
           </span>
         </div>
       </div>
@@ -77,9 +77,9 @@
       >
       <div
         class="text-sm text-secondary inline-block"
-        :title="incident.responses.length ? getResponseTitle(incident.responses) : ''"
+        :title="incident.responseTitle"
       >
-        {{ incident.responses.length ? getResponseLabel(incident.responses) : '' }}
+        {{ incident.responseLabel }}
       </div>
     </div>
     <div
