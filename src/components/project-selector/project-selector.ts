@@ -34,8 +34,7 @@ export default class ProjectSelectorComponent extends Vue {
     }
   }
 
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  getSelectedProject (): any {
+  getSelectedProject (): void {
     this.selectedProject = this.projects.find(p => p.id === this.$route.params.projectId)
   }
 
