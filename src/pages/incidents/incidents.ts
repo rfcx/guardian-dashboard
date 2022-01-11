@@ -78,6 +78,7 @@ export default class IncidentsPage extends Vue {
 
   public async getData (): Promise<void> {
     this.selectedProject = this.projects.find(p => p.id === this.getProjectIdFromRouterParams())
+    console.error('selectedProject', this.selectedProject)
     await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
@@ -148,10 +149,13 @@ export default class IncidentsPage extends Vue {
       keyword: this.searchLabel,
       limit_incidents: 3
     }).then(res => {
-      console.log(res.data)
+      console.log('res', res.data)
       this.streamsData = res.data
+      console.log(this.streamsData)
       this.paginationSettings.total = res.headers['total-items']
+      console.log('paginationSettings', this.paginationSettings.total, res.headers['total-items'])
       this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
+      console.log('isPaginationAvailable', this.isPaginationAvailable)
     }).catch(e => {
       console.error('Error loading streams with incidents', e)
     }).finally(() => {
