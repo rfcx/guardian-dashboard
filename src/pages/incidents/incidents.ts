@@ -25,7 +25,7 @@ export default class IncidentsPage extends Vue {
   projects!: Project[]
 
   public selectedProject: Project | undefined
-  public isLoading = true
+  public isLoading = false
   public isPaginationAvailable = false
   public incidents: Incident[] = []
   public streamsData: Stream[] = []
@@ -63,8 +63,8 @@ export default class IncidentsPage extends Vue {
     }
   }
 
-  mounted (): void {
-    void this.getData()
+  async created (): Promise<void> {
+    await this.getData()
   }
 
   public isProjectAccessed (): boolean {
@@ -140,19 +140,23 @@ export default class IncidentsPage extends Vue {
 
   public async getStreamsData (projectId: string, status?: string): Promise<void> {
     this.isLoading = true
-    const streamsData = await StreamService.getStreamsWithIncidents({
+    return await StreamService.getStreamsWithIncidents({
       projects: [projectId],
       ...status !== undefined && this.optionsForStatus(status),
       limit: this.paginationSettings.limit,
       offset: this.paginationSettings.offset * this.paginationSettings.limit,
       keyword: this.searchLabel,
       limit_incidents: 3
+    }).then(res => {
+      console.log(res.data)
+      this.streamsData = res.data
+      this.paginationSettings.total = res.headers['total-items']
+      this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
+    }).catch(e => {
+      console.error('Error loading streams with incidents', e)
+    }).finally(() => {
+      this.isLoading = false
     })
-    console.log(streamsData)
-    this.streamsData = streamsData.data
-    this.paginationSettings.total = streamsData.headers['total-items']
-    this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
-    this.isLoading = false
   }
 
   public async getPage (): Promise<void> {
