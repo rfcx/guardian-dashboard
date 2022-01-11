@@ -59,11 +59,11 @@
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <div v-if="!streamsData.length && !isLoading && selectedProject" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
+      <div v-if="streamsData && !streamsData.length && !isLoading && selectedProject" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
         No streams data
       </div>
       <dl
-      v-if="streamsData.length && !isLoading"
+      v-if="streamsData && streamsData.length && !isLoading"
       class="mt-5"
       >
         <div class="bg-steel-grey px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
@@ -94,7 +94,7 @@
           </div>
         </div>
       </dl>
-      <pagination-component v-if="!isLoading && streamsData.length && isPaginationAvailable" :pagination-settings="paginationSettings" @selected-page="getPage()" />
+      <pagination-component v-if="!isLoading && streamsData && streamsData.length && isPaginationAvailable" :pagination-settings="paginationSettings" @selected-page="getPage()" />
     </div>
     <invalid-project-component v-if="!isProjectAccessed && !isLoading" />
   </div>
