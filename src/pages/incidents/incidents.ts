@@ -59,12 +59,12 @@ export default class IncidentsPage extends Vue {
   updated (): void {
     if (this.selectedProject !== undefined && this.selectedProject.id !== this.$route.params.projectId) {
       this.resetPaginationData()
-      this.getData()
+      void this.getData()
     }
   }
 
   mounted (): void {
-    this.getData()
+    void this.getData()
   }
 
   public isProjectAccessed (): boolean {
@@ -76,9 +76,9 @@ export default class IncidentsPage extends Vue {
     return projectId
   }
 
-  public getData (): void {
+  public async getData (): Promise<void> {
     this.selectedProject = this.projects.find(p => p.id === this.getProjectIdFromRouterParams())
-    void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+    await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
   public resetPaginationData (): void {
@@ -113,7 +113,7 @@ export default class IncidentsPage extends Vue {
     }
     this.timerSub = setTimeout(() => {
       if (!this.searchLabel.length || (this.searchLabel.length && this.searchLabel.length >= 3 && this.streamsData !== undefined)) {
-        this.getData()
+        void this.getData()
       }
     }, 1500)
   }
@@ -148,6 +148,7 @@ export default class IncidentsPage extends Vue {
       keyword: this.searchLabel,
       limit_incidents: 3
     })
+    console.log(streamsData)
     this.streamsData = streamsData.data
     this.paginationSettings.total = streamsData.headers['total-items']
     this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
