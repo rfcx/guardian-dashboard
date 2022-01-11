@@ -26,10 +26,9 @@ export default class IncidentsPage extends Vue {
 
   public selectedProject: Project | undefined
 
-  public isLoading = false
+  public isLoading = true
   public isPaginationAvailable = false
-  public incidents: Incident[] = []
-  public streamsData: Stream[] = []
+  public streamsData: Stream[] | undefined
   public incidentsStatus: IncidentStatus[] = [
     { value: 'any', label: 'Any', checked: true },
     { value: 'open', label: 'Open', checked: false },
@@ -53,7 +52,8 @@ export default class IncidentsPage extends Vue {
 
   data (): Record<string, unknown> {
     return {
-      incidentsStatus: this.incidentsStatus
+      incidentsStatus: this.incidentsStatus,
+      streamsData: this.streamsData
     }
   }
 
@@ -65,9 +65,12 @@ export default class IncidentsPage extends Vue {
     }
   }
 
+  mounted (): void {
+    this.getSelectedProject()
+  }
+
   async created (): Promise<void> {
     await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
-    this.getSelectedProject()
   }
 
   public isProjectAccessed (): boolean {
@@ -79,13 +82,9 @@ export default class IncidentsPage extends Vue {
     return projectId
   }
 
-  getSelectedProject (): void {
-    this.isLoading = true
-    const projects = VuexService.Projects.projects.get()
-    console.log('projects', projects)
-    this.selectedProject = projects.find(p => p.id === this.$route.params.projectId)
+  public getSelectedProject (): void {
+    this.selectedProject = this.projects?.find(p => p.id === this.$route.params.projectId)
     console.log('selectedProject', this.selectedProject)
-    this.isLoading = false
   }
 
   public resetPaginationData (): void {
@@ -98,7 +97,7 @@ export default class IncidentsPage extends Vue {
   }
 
   public getStreamById (streamId: string): Stream | undefined {
-    const stream = this.streamsData.find(s => s.id === streamId)
+    const stream = this.streamsData?.find(s => s.id === streamId)
     return stream
   }
 
