@@ -56,8 +56,8 @@
         >
           <img
             class="h-5 w-5 inline-block text-gray-500 align-top mr-1"
-            :src="'/src/assets/alert-icons/ic_' + event.value + '.svg'"
-            :alt="event.value"
+            :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`"
+            alt=""
           >
           <span
             class="text-sm text-center inline-block"
