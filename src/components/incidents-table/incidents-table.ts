@@ -3,7 +3,6 @@ import { Prop } from 'vue-property-decorator'
 
 import { Event, EventExtended, Incident, Response, ResponseExtended } from '@/types'
 import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
-import icons from '../../assets/alert-icons/index'
 
 interface IncidentItem extends Event, Incident, Response {
   eventsTitle: string
@@ -25,17 +24,7 @@ export default class IncidentsTableRows extends Vue {
 
   public itemsData: IncidentItem[] = []
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public alertImages!: any
-
-  data (): Record<string, unknown> {
-    return {
-      alertImages: this.alertImages
-    }
-  }
-
   mounted (): void {
-    this.alertImages = icons
     this.combineItemsTitles(this.items)
   }
 
@@ -85,10 +74,6 @@ export default class IncidentsTableRows extends Vue {
     const start = (this.getFirstOrLastItem(events, true) as Event).start
     const end = (this.getFirstOrLastItem(events, false) as Event).end
     return formatDateTimeRange(start, end, this.timezone)
-  }
-
-  public getEventIcon (value: string): string | undefined {
-    return this.alertImages[value]
   }
 
   public getResponseTitle (responses: Response[]): string {

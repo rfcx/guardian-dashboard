@@ -55,9 +55,8 @@
           :title="getIconTitle(event.count, event.value)"
         >
           <img
-            v-if="alertImages !== undefined"
             class="h-5 w-5 inline-block text-gray-500 align-top mr-1"
-            :src="getEventIcon(event.value)"
+            :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`"
             alt=""
           >
           <span

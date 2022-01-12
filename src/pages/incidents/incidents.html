@@ -96,6 +96,6 @@
       </dl>
       <pagination-component v-if="!isLoading && streamsData && streamsData.length && isPaginationAvailable" :pagination-settings="paginationSettings" @selected-page="getPage()" />
     </div>
-    <invalid-project-component v-if="!isProjectAccessed && !isLoading" />
+    <invalid-project-component v-if="!isProjectAccessed() && !isLoading" />
   </div>
 </div>
