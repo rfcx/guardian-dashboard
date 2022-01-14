@@ -7,4 +7,5 @@ dist-ssr
 # Environment
 .env
 
+npm-debug.log
 npm-debug.log.*
