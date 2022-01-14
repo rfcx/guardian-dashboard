@@ -1,8 +1,8 @@
 <div id="incidents-page" class="pt-10 px-20 <sm:(px-0 pt-0)">
   <div class="bg-gray shadow overflow-hidden">
     <div>
-      <div class="mt-1 flex flex-row items-center space-x-4">
-        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60">
+      <div class="mt-1 flex flex-row items-center <sm:(flex-wrap flex-col items-start)">
+        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 mr-2 <sm:mb-2">
           <input
             v-model="searchLabel"
             type="text"
@@ -15,9 +15,9 @@
           <button
             v-if="incidentsStatus"
             type="button"
-            class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm w-40 flex items-center"
-            aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
-            @click="toggleStatusFilter()"
+            class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm w-40 flex items-center mr-2 <sm:mb-2"
+            aria-expanded="false" aria-labelledby="listbox-label" aria-haspopup="true" id="status-button"
+            @click="toggleStatusFilter()" @mouseover="statusSelected = true"
           >
             <span class="block truncate">
               Status:
@@ -31,7 +31,8 @@
               </svg>
             </span>
           </button>
-          <ul v-if="incidentsStatus !== undefined && statusSelected === true" class="absolute z-10 mt-1 bg-steel-grey w-40 shadow-lg max-h-56 rounded-md overflow-y focus:outline-none" tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
+          <ul v-if="incidentsStatus !== undefined && statusSelected === true" class="absolute z-10 mt-1 bg-steel-grey w-40 shadow-lg max-h-56 rounded-md overflow-y focus:outline-none"
+            role="menu" aria-labelledby="status-button" @mouseleave="statusSelected = false">
             <li
               v-for="(status, i) in incidentsStatus"
               class="text-gray-900 cursor-pointer select-none relative pl-3 py-1 hover:bg-box-grey"
@@ -52,6 +53,12 @@
             </li>
           </ul>
         </div>
+        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 <sm:mb-2">
+          <input id="closedIncidents" name="closedIncidents" value="incidentsClosed.value" v-model="incidentsClosed.checked" type="checkbox" class="h-3 w-3 rounded bg-gray text-gray-500 focus:ring-transparent" @change="getPage($event)" />
+          <label for="closedIncidents" class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap">
+            {{ incidentsClosed.label }}
+          </label>
+        </div>
       </div>
       <div v-if="isLoading" class="bg-mirage-grey mt-50 h-10 w-10 mx-auto">
         <svg class="animate-spin bg-mirage-grey text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -59,7 +66,7 @@
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <div v-if="streamsData && !streamsData.length && !isLoading && selectedProject" class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white">
+      <div v-if="streamsData && !streamsData.length && !isLoading && selectedProject" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-white">
         No streams data
       </div>
       <dl
@@ -67,10 +74,16 @@
       class="mt-5"
       >
         <div class="bg-steel-grey px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
-          <dt title="Stream">
+          <dt title="Stream" class="flex justify-start items-center whitespace-nowrap">
             <span class="text-secondary text-xl mr-4">{{getStreamName(stream.id)}}</span>
+            <div
+              v-if="incidentsStatus && incidentsStatus[2].checked || incidentsStatus[1].checked"
+              class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-yellow-500 btn-tag leading-none"
+            >
+              {{ incidentsStatus[2].checked ? 'Hot' : incidentsStatus[1].checked ? 'Recent' : '' }}
+            </div>
           </dt>
-          <dt class="justify-self-end <sm:mb-2 sm:mb-2">
+          <dt class="justify-self-end <sm:hidden">
             <span class="text-secondary text-sm font-medium">Response time</span>
           </dt>
           <div class="col-span-3 flex flex-col">

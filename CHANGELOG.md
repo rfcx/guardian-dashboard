@@ -2,6 +2,7 @@
 
 ## 0.0.5 (2021-12-?)
 
+* **feature:** Include closed incidents logic is separated ([#47](https://github.com/rfcx/incident-center/issues/47))
 * **feature:** Display a list grouped by guardian on the Incidents page ([#47](https://github.com/rfcx/incident-center/issues/47))
 * **feature:** There are new filters on the Icidents page ([#39](https://github.com/rfcx/incident-center/issues/39))
 * **bug:** Fixed favicon issue on the Guardian Dashboard ([#44](https://github.com/rfcx/incident-center/issues/44))
