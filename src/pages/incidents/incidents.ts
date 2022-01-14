@@ -3,8 +3,8 @@ import { Options, Vue } from 'vue-class-component'
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
-import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Incident, IncidentStatus, Pagination, Project, Stream } from '@/types'
+import { StreamService, VuexService } from '@/services'
+import { IncidentStatus, Pagination, Project, Stream } from '@/types'
 
 interface statusOptions {
   include_closed_incidents?: boolean
@@ -132,7 +132,7 @@ export default class IncidentsPage extends Vue {
     return s?.value
   }
 
-  public toggleStatusFilter (): void {
+  public toggleStatusMenu (): void {
     this.statusSelected = !this.statusSelected
   }
 
@@ -170,12 +170,5 @@ export default class IncidentsPage extends Vue {
   public optionsForStatus (status: string): statusOptions | undefined {
     if (status === 'hot') return { has_hot_incident: true }
     else if (status === 'recent') return { has_new_events: true }
-  }
-
-  public formatIncidents (incidents: Incident[]): Incident[] {
-    return incidents.map((incident) => {
-      IncidentsService.combineIncidentItems(incident)
-      return incident
-    })
   }
 }
