@@ -2,7 +2,7 @@ import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 
 import { Event, EventExtended, Incident, Response, ResponseExtended } from '@/types'
-import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
+import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, inLast6Hours, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
 
 interface IncidentItem extends Event, Incident, Response {
   eventsTitle: string
@@ -120,7 +120,6 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public checkRecentLabel (events: Event[]): boolean {
-    return false
-    // inLast6Hours((this.getFirstOrLastItem(events, false) as Event).start)
+    return inLast6Hours((this.getFirstOrLastItem(events, false) as Event).start)
   }
 }
