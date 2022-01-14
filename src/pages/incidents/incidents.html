@@ -76,13 +76,13 @@
         <div class="bg-steel-grey px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
           <dt title="Stream" class="flex justify-start items-center whitespace-nowrap">
             <span class="text-secondary text-xl mr-4">{{getStreamName(stream.id)}}</span>
-            <div v-if="stream.tags.length">
+            <div v-if="stream.tags && stream.tags.length">
               <div
                 v-for="tag of stream.tags"
-                class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none"
+                class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
                 :class="{'bg-yellow-500': tag === 'new', 'bg-red-400': tag === 'hot'}"
               >
-                {{ tag === 'new' ? 'New' : 'Hot' }}
+                {{ tag }}
               </div>
             </div>
           </dt>
