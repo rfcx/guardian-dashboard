@@ -18,12 +18,12 @@ export interface IncidentsObject {
 
 export interface StreamsWithIncidentsParams {
   projects?: string[]
-  incidents_closed?: boolean
-  sort?: string
   limit?: number
   offset?: number
-  incidents_min_events?: number
   keyword?: string
   limit_incidents?: number
   fields?: string
+  include_closed_incidents?: boolean
+  has_new_events?: boolean
+  has_hot_incident?: boolean
 }
