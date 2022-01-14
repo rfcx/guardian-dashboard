@@ -145,7 +145,7 @@ export default class IncidentsPage extends Vue {
 
   public async getStreamsData (projectId: string, status?: string): Promise<void> {
     this.isLoading = true
-    return await StreamService.getStreamsWithIncidents({
+    return await StreamService.getStreams({
       projects: [projectId],
       ...status !== undefined && this.optionsForStatus(status),
       limit: this.paginationSettings.limit,
