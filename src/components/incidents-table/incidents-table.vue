@@ -16,18 +16,6 @@
         >
           {{ incident.closedAt ? 'Closed' : 'Open' }}
         </div>
-        <div
-          v-if="!incident.closedAt && incident.events.length && checkRecentLabel(incident.events)"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-yellow-500 btn-tag leading-none"
-        >
-          Recent
-        </div>
-        <div
-          v-if="!incident.closedAt && incident.events.length && incident.events.length > 10"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide bg-red-400 btn-tag leading-none"
-        >
-          Hot
-        </div>
       </div>
     </div>
     <div class="pr-6 py-2 flex-wrap flex-1 text-secondary whitespace-nowrap <sm:py-1">
@@ -83,9 +71,10 @@
       </div>
     </div>
     <div
-      class="pr-6 py-2 whitespace-wrap flex-1 flex justify-end <sm:justify-start <sm:py-1"
+      class="pr-6 py-2 whitespace-wrap flex-1 flex justify-end  items-center <sm:justify-start <sm:py-1"
       title="Difference between a first event start time and a first response was submitted in the Guardian App"
     >
+      <span class="text-secondary text-sm font-medium mr-3 sm:hidden">Response time</span>
       <span class="text-base"> {{ getResponseTime(incident) }} </span>
     </div>
   </router-link>

@@ -3,8 +3,8 @@ import { Options, Vue } from 'vue-class-component'
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
-import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Incident, IncidentStatus, Pagination, Project, Stream } from '@/types'
+import { StreamService, VuexService } from '@/services'
+import { IncidentStatus, Pagination, Project, Stream } from '@/types'
 
 interface statusOptions {
   include_closed_incidents?: boolean
@@ -30,11 +30,11 @@ export default class IncidentsPage extends Vue {
   public streamsData: Stream[] | undefined
   public incidentsStatus: IncidentStatus[] = [
     { value: 'any', label: 'Any', checked: true },
-    { value: 'open', label: 'Open', checked: false },
-    { value: 'closed', label: 'Closed', checked: false },
-    // { value: 'recent', label: 'Recent', checked: false },
+    { value: 'recent', label: 'Recent', checked: false },
     { value: 'hot', label: 'Hot', checked: false }
   ]
+
+  public incidentsClosed: IncidentStatus = { value: 'closed', label: 'Include closed incidents', checked: false }
 
   public limit = 2
   public statusSelected = false
@@ -132,7 +132,7 @@ export default class IncidentsPage extends Vue {
     return s?.value
   }
 
-  public toggleStatusFilter (): void {
+  public toggleStatusMenu (): void {
     this.statusSelected = !this.statusSelected
   }
 
@@ -147,6 +147,7 @@ export default class IncidentsPage extends Vue {
     return await StreamService.getStreams({
       projects: [projectId],
       ...status !== undefined && this.optionsForStatus(status),
+      include_closed_incidents: this.incidentsClosed.checked ? true : undefined,
       limit: this.paginationSettings.limit,
       offset: this.paginationSettings.offset * this.paginationSettings.limit,
       keyword: this.searchLabel,
@@ -167,16 +168,7 @@ export default class IncidentsPage extends Vue {
   }
 
   public optionsForStatus (status: string): statusOptions | undefined {
-    if (status === 'closed') return { include_closed_incidents: true }
-    else if (status === 'open') return { include_closed_incidents: false }
-    else if (status === 'hot') return { has_hot_incident: true }
+    if (status === 'hot') return { has_hot_incident: true }
     else if (status === 'recent') return { has_new_events: true }
-  }
-
-  public formatIncidents (incidents: Incident[]): Incident[] {
-    return incidents.map((incident) => {
-      IncidentsService.combineIncidentItems(incident)
-      return incident
-    })
   }
 }

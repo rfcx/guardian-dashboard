@@ -118,9 +118,4 @@ export default class IncidentsTableRows extends Vue {
     })
     return Object.values(rows)
   }
-
-  public checkRecentLabel (events: Event[]): boolean {
-    return false
-    // inLast6Hours((this.getFirstOrLastItem(events, false) as Event).start)
-  }
 }
