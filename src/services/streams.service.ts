@@ -6,7 +6,7 @@ export async function getStreams (params: StreamsWithIncidentsParams = {}): Prom
   try {
     const resp = await ApiClient.request<Stream[]>({
       method: Endpoints.getStreams.method,
-      url: `${Endpoints.getStreams.url}/incidents`,
+      url: `${Endpoints.getStreams.url}`,
       config: { params: params }
     })
     return resp
