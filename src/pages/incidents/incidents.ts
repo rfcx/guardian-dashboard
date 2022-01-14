@@ -5,12 +5,11 @@ import InvalidProjectComponent from '@/components/invalid-project/invalid-projec
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Incident, IncidentStatus, Pagination, Project, Stream } from '@/types'
-// import { getLast6HoursLabel } from '@/utils'
 
 interface statusOptions {
-  incidents_closed?: boolean
-  incidents_min_events?: number
-  // first_event_start?: string
+  include_closed_incidents?: boolean
+  has_hot_incident?: boolean
+  has_new_events?: boolean
 }
 
 @Options({
@@ -33,7 +32,7 @@ export default class IncidentsPage extends Vue {
     { value: 'any', label: 'Any', checked: true },
     { value: 'open', label: 'Open', checked: false },
     { value: 'closed', label: 'Closed', checked: false },
-    // { value: 'recent', label: 'Recent', checked: false },
+    { value: 'recent', label: 'Recent', checked: false },
     { value: 'hot', label: 'Hot', checked: false }
   ]
 
@@ -168,11 +167,10 @@ export default class IncidentsPage extends Vue {
   }
 
   public optionsForStatus (status: string): statusOptions | undefined {
-    if (status === 'closed') return { incidents_closed: true }
-    else if (status === 'open') return { incidents_closed: false }
-    else if (status === 'hot') return { incidents_min_events: 11 }
-    // TODO: Add first_event_start parameter to the endpoint
-    // else if (status === 'recent') return { first_event_start: getLast6HoursLabel() }
+    if (status === 'closed') return { include_closed_incidents: true }
+    else if (status === 'open') return { include_closed_incidents: false }
+    else if (status === 'hot') return { has_hot_incident: true }
+    else if (status === 'recent') return { has_new_events: true }
   }
 
   public formatIncidents (incidents: Incident[]): Incident[] {
