@@ -32,7 +32,7 @@ export default class IncidentsPage extends Vue {
     { value: 'any', label: 'Any', checked: true },
     { value: 'open', label: 'Open', checked: false },
     { value: 'closed', label: 'Closed', checked: false },
-    { value: 'recent', label: 'Recent', checked: false },
+    // { value: 'recent', label: 'Recent', checked: false },
     { value: 'hot', label: 'Hot', checked: false }
   ]
 
