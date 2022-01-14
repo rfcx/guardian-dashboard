@@ -80,9 +80,9 @@
               <div
                 v-for="tag of stream.tags"
                 class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none"
-                :class="{'bg-yellow-500': tag === 'recent', 'bg-red-400': tag === 'hot'}"
+                :class="{'bg-yellow-500': tag === 'new', 'bg-red-400': tag === 'hot'}"
               >
-                {{ tag === 'recent' ? 'Recent' : 'Hot' }}
+                {{ tag === 'new' ? 'New' : 'Hot' }}
               </div>
             </div>
           </dt>
