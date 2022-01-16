@@ -1,29 +1,30 @@
 # Guardian Dashboard Release Notes
 
-## 0.0.5 (2021-12-?)
+## 0.0.5 (2022-01-?)
 
-* **feature:** Include closed incidents logic is separated ([#47](https://github.com/rfcx/incident-center/issues/47))
-* **feature:** Display a list grouped by guardian on the Incidents page ([#47](https://github.com/rfcx/incident-center/issues/47))
-* **feature:** There are new filters on the Icidents page ([#39](https://github.com/rfcx/incident-center/issues/39))
-* **bug:** Fixed favicon issue on the Guardian Dashboard ([#44](https://github.com/rfcx/incident-center/issues/44))
-* **bug:** Use a new guardians with incidents endpoint ([#53](https://github.com/rfcx/incident-center/issues/53))
+* **feature:** Display a list of all accessible guardians grouped by guardian on the Home page ([#54](https://github.com/rfcx/guardian-dashboard/issues/54))
+* **feature:** Include closed incidents logic is separated ([#47](https://github.com/rfcx/guardian-dashboard/issues/47))
+* **feature:** Display a list grouped by guardian on the Incidents page ([#47](https://github.com/rfcx/guardian-dashboard/issues/47))
+* **feature:** There are new filters on the Icidents page ([#39](https://github.com/rfcx/guardian-dashboard/issues/39))
+* **bug:** Fixed favicon issue on the Guardian Dashboard ([#44](https://github.com/rfcx/guardian-dashboard/issues/44))
+* **bug:** Use a new guardians with incidents endpoint ([#53](https://github.com/rfcx/guardian-dashboard/issues/53))
 
 ## 0.0.4 (2021-12-23)
 
-* **bug:** Fixed the issue with the mobile menu ([#43](https://github.com/rfcx/incident-center/issues/43))
-* **bug:** Do not display the navbar menu icon on the left for not logged in users ([#43](https://github.com/rfcx/incident-center/issues/43))
-* **bug:** Pages' margins are updated for the mobile/tablet sizes ([#43](https://github.com/rfcx/incident-center/issues/43))
+* **bug:** Fixed the issue with the mobile menu ([#43](https://github.com/rfcx/guardian-dashboard/issues/43))
+* **bug:** Do not display the navbar menu icon on the left for not logged in users ([#43](https://github.com/rfcx/guardian-dashboard/issues/43))
+* **bug:** Pages' margins are updated for the mobile/tablet sizes ([#43](https://github.com/rfcx/guardian-dashboard/issues/43))
 
 ## 0.0.4 (2021-12-?)
 
-* **feature:** Labels are added to response time ([#32](https://github.com/rfcx/incident-center/issues/32))
-* **bug:** Pagination shows all pages while there are 5 pages ([#37](https://github.com/rfcx/incident-center/issues/37))
+* **feature:** Labels are added to response time ([#32](https://github.com/rfcx/guardian-dashboard/issues/32))
+* **bug:** Pagination shows all pages while there are 5 pages ([#37](https://github.com/rfcx/guardian-dashboard/issues/37))
 
 ## 0.0.3 (2021-12-??)
 
 * **bug:** Fixed the playing audio functionality in Safari ([CE-1553](https://jira.rfcx.org/browse/CE-1553))
-* **feature:** Display the `immediate` label if the difference of calculation time to receive less than 60s ([#25](https://github.com/rfcx/incident-center/issues/25))
-* **bug:** Show email when firstname and lastname are not defined ([#28](https://github.com/rfcx/incident-center/issues/28))
+* **feature:** Display the `immediate` label if the difference of calculation time to receive less than 60s ([#25](https://github.com/rfcx/guardian-dashboard/issues/25))
+* **bug:** Show email when firstname and lastname are not defined ([#28](https://github.com/rfcx/guardian-dashboard/issues/28))
 
 ## 0.0.2 (2021-11-30)
 

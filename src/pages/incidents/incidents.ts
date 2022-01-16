@@ -1,10 +1,11 @@
 import { Options, Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { StreamService, VuexService } from '@/services'
-import { IncidentStatus, Pagination, Project, Stream } from '@/types'
+import { Auth0Option, IncidentStatus, Pagination, Project, Stream } from '@/types'
 
 interface statusOptions {
   include_closed_incidents?: boolean
@@ -20,6 +21,9 @@ interface statusOptions {
   }
 })
 export default class IncidentsPage extends Vue {
+  @VuexService.Auth.auth.bind()
+  public auth!: Auth0Option | undefined
+
   @VuexService.Projects.projects.bind()
   projects!: Project[]
 
@@ -27,6 +31,8 @@ export default class IncidentsPage extends Vue {
 
   public isLoading = true
   public isPaginationAvailable = false
+  public isDataNotValid = false
+  public statusSelected = false
   public streamsData: Stream[] | undefined
   public incidentsStatus: IncidentStatus[] = [
     { value: 'any', label: 'Any', checked: true },
@@ -37,8 +43,6 @@ export default class IncidentsPage extends Vue {
   public incidentsClosed: IncidentStatus = { value: 'closed', label: 'Include closed incidents', checked: false }
 
   public limit = 2
-  public statusSelected = false
-  public alertsLabel = ''
   public searchLabel = ''
   public paginationSettings: Pagination = {
     total: 0,
@@ -56,20 +60,30 @@ export default class IncidentsPage extends Vue {
     }
   }
 
-  updated (): void {
-    if (this.selectedProject !== undefined && this.selectedProject.id !== this.$route.params.projectId) {
-      this.resetPaginationData()
-      void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
-      this.getSelectedProject()
-    }
+  @Watch('$route.params')
+  onRouteParamsChange (): void {
+    this.isDataNotValid = false
+    this.getSelectedProject()
+    this.onUpdatePage()
   }
 
   mounted (): void {
     this.getSelectedProject()
   }
 
+  public onUpdatePage (): void {
+    this.resetPaginationData()
+    this.getSelectedProject()
+    void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+  }
+
   async created (): Promise<void> {
-    await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+    if (this.auth?.isAuthenticated) {
+      await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+      if (this.selectedProject === undefined && this.getProjectIdFromRouterParams() !== undefined) {
+        this.isDataNotValid = true
+      }
+    }
   }
 
   public isProjectAccessed (): boolean {
@@ -142,10 +156,10 @@ export default class IncidentsPage extends Vue {
     void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
-  public async getStreamsData (projectId: string, status?: string): Promise<void> {
+  public async getStreamsData (projectId?: string, status?: string): Promise<void> {
     this.isLoading = true
     return await StreamService.getStreams({
-      projects: [projectId],
+      ...projectId !== undefined && { projects: [projectId] },
       ...status !== undefined && this.optionsForStatus(status),
       include_closed_incidents: this.incidentsClosed.checked ? true : undefined,
       limit: this.paginationSettings.limit,
