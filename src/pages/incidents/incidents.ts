@@ -31,7 +31,7 @@ export default class IncidentsPage extends Vue {
 
   public isLoading = true
   public isPaginationAvailable = false
-  public isDataNotValid = false
+  public isDataValid = true
   public statusSelected = false
   public streamsData: Stream[] | undefined
   public incidentsStatus: IncidentStatus[] = [
@@ -62,7 +62,7 @@ export default class IncidentsPage extends Vue {
 
   @Watch('$route.params')
   onRouteParamsChange (): void {
-    this.isDataNotValid = false
+    this.isDataValid = true
     this.getSelectedProject()
     this.onUpdatePage()
   }
@@ -81,7 +81,7 @@ export default class IncidentsPage extends Vue {
     if (this.auth?.isAuthenticated) {
       await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
       if (this.selectedProject === undefined && this.getProjectIdFromRouterParams() !== undefined) {
-        this.isDataNotValid = true
+        this.isDataValid = false
       }
     }
   }
