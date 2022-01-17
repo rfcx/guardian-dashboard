@@ -73,15 +73,12 @@ export default class IncidentsPage extends Vue {
 
   public onUpdatePage (): void {
     this.resetPaginationData()
-    void this.getStreamsData(this.selectedProject?.id, this.getSelectedValue())
+    void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
   async created (): Promise<void> {
     if (this.auth?.isAuthenticated) {
-      await this.getStreamsData(this.selectedProject?.id, this.getSelectedValue())
-      if (this.selectedProject === undefined && this.getProjectIdFromRouterParams() !== undefined) {
-        this.isDataValid = false
-      }
+      await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
     }
   }
 
@@ -173,6 +170,9 @@ export default class IncidentsPage extends Vue {
       console.error('Error loading streams with incidents', e)
     }).finally(() => {
       this.isLoading = false
+      if (this.selectedProject === undefined && this.getProjectIdFromRouterParams() !== undefined) {
+        this.isDataValid = false
+      }
     })
   }
 
