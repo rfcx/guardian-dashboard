@@ -23,7 +23,7 @@
         v-if="incident.events.length"
         title="Events"
         class="h-5 w-5 inline-block mr-2"
-        src="/src/assets/event.svg"
+        src="/src/assets/alert.svg"
         alt=""
       >
       <div
