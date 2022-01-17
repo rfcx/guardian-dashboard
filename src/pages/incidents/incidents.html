@@ -1,6 +1,6 @@
-<div id="incidents-page" class="pt-10 px-20 <sm:(px-0 pt-0)">
-  <div class="bg-gray shadow overflow-hidden">
-    <div>
+<div id="incidents-page">
+  <div class="bg-gray shadow overflow-hidden pt-10 px-20 <sm:(px-0 pt-0)">
+    <div v-if="auth?.isAuthenticated">
       <div class="mt-1 flex flex-row items-center <sm:(flex-wrap flex-col items-start)">
         <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 mr-2 <sm:mb-2">
           <input
@@ -17,7 +17,7 @@
             type="button"
             class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm w-40 flex items-center mr-2 <sm:mb-2"
             aria-expanded="false" aria-labelledby="listbox-label" aria-haspopup="true" id="status-button"
-            @click="toggleStatusMenu()" @mouseover="statusSelected = true"
+            @click="toggleStatusMenu()"
           >
             <span class="block truncate">
               Status:
@@ -66,7 +66,7 @@
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <div v-if="streamsData && !streamsData.length && !isLoading && selectedProject" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-white">
+      <div v-if="streamsData && !streamsData.length && !isLoading && isProjectAccessed()" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-white">
         No streams data
       </div>
       <dl
@@ -112,6 +112,19 @@
       </dl>
       <pagination-component v-if="!isLoading && streamsData && streamsData.length && isPaginationAvailable" :pagination-settings="paginationSettings" @selected-page="getPage()" />
     </div>
-    <invalid-project-component v-if="!isProjectAccessed() && !isLoading" />
+    <div
+      v-if="!auth?.isAuthenticated"
+      class="px-4 py-5 lg:text-center"
+    >
+      <div class="lg:text-center">
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
+          Guardian Dashboard
+        </p>
+        <p class="mt-4 max-w-2xl text-xl leading-relaxed text-white lg:mx-auto">
+          A dashboard for incidents and responses monitoring
+        </p>
+      </div>
+    </div>
+    <invalid-project-component v-if="!isDataValid" />
   </div>
 </div>

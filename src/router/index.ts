@@ -17,23 +17,24 @@ const selectProjectGuard = createSelectProjectGuard(stores)
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: ROUTES_NAME.index,
-    component: Pages.IndexPage
-  },
-  {
-    path: '/project/:projectId',
     component: Pages.RootPage,
-    beforeEnter: [Auth0.routeGuard, selectProjectGuard],
     children: [
       {
         path: '',
-        name: ROUTES_NAME.incidents,
+        name: ROUTES_NAME.index,
         component: Pages.IncidentsPage
+      },
+      {
+        path: '/project/:projectId',
+        name: ROUTES_NAME.incidents,
+        component: Pages.IncidentsPage,
+        beforeEnter: [Auth0.routeGuard, selectProjectGuard]
       },
       {
         path: '/project/:projectId/incidents/:id',
         name: ROUTES_NAME.incident,
-        component: Pages.IncidentPage
+        component: Pages.IncidentPage,
+        beforeEnter: [Auth0.routeGuard, selectProjectGuard]
       }
     ]
   },
