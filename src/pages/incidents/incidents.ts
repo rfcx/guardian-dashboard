@@ -25,7 +25,7 @@ export default class IncidentsPage extends Vue {
   public auth!: Auth0Option | undefined
 
   @VuexService.Projects.projects.bind()
-  projects!: Project[]
+  public projects!: Project[]
 
   public selectedProject: Project | undefined
 
@@ -64,21 +64,26 @@ export default class IncidentsPage extends Vue {
   onRouteParamsChange (): void {
     this.isDataValid = true
     this.getSelectedProject()
-    this.onUpdatePage()
+    void this.onUpdatePage()
   }
 
   mounted (): void {
     this.getSelectedProject()
   }
 
-  public onUpdatePage (): void {
+  async onUpdatePage (): Promise<void> {
     this.resetPaginationData()
-    void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+    await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
   }
 
   async created (): Promise<void> {
-    if (this.auth?.isAuthenticated) {
-      await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+    if (!this.auth?.isAuthenticated) {
+      return
+    }
+    await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+    this.getSelectedProject()
+    if (this.selectedProject === undefined && this.getProjectIdFromRouterParams() !== undefined) {
+      this.isDataValid = false
     }
   }
 
@@ -170,9 +175,6 @@ export default class IncidentsPage extends Vue {
       console.error('Error loading streams with incidents', e)
     }).finally(() => {
       this.isLoading = false
-      if (this.selectedProject === undefined && this.getProjectIdFromRouterParams() !== undefined) {
-        this.isDataValid = false
-      }
     })
   }
 
