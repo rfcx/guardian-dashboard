@@ -73,13 +73,12 @@ export default class IncidentsPage extends Vue {
 
   public onUpdatePage (): void {
     this.resetPaginationData()
-    this.getSelectedProject()
-    void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+    void this.getStreamsData(this.selectedProject?.id, this.getSelectedValue())
   }
 
   async created (): Promise<void> {
     if (this.auth?.isAuthenticated) {
-      await this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+      await this.getStreamsData(this.selectedProject?.id, this.getSelectedValue())
       if (this.selectedProject === undefined && this.getProjectIdFromRouterParams() !== undefined) {
         this.isDataValid = false
       }
