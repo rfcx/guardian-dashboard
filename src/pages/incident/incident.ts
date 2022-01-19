@@ -6,7 +6,7 @@ import RangerPlayerComponent from '@/components/ranger-player-modal/ranger-playe
 import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Answer, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
+import { Answer, AnswerItem, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
 import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast1Minute, inLast24Hours, isDefined, isNotDefined } from '@/utils'
 
 @Options({
@@ -19,20 +19,6 @@ import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLa
   }
 })
 export default class IncidentPage extends Vue {
-  public loggingScale: string[] = [
-    'none',
-    'not sure',
-    'small',
-    'large'
-  ]
-
-  public damageScale: string[] = [
-    'no visible tree disruption found',
-    'small number of trees cut down',
-    'medium number of trees cut down',
-    'large area substantially clear cut'
-  ]
-
   public streamsData: Stream[] = []
   public incident: Incident | undefined
   public stream: Stream | undefined
@@ -119,11 +105,6 @@ export default class IncidentPage extends Vue {
     if (this.incident !== undefined) {
       this.incidentStatus = this.incident.closedAt ? `Closed on ${(inLast24Hours(this.incident.closedAt) ? formatDayTimeLabel : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
     }
-  }
-
-  public getColor (n: number): string {
-    const classes = ['text-violet-500', 'text-green-500', 'text-yellow-500', 'text-blue-500', 'text-red-300']
-    return classes[n]
   }
 
   public dateFormatted (date: string): string {
@@ -259,6 +240,15 @@ export default class IncidentPage extends Vue {
     }
   }
 
+  public combineAnswers (answer: Answer | undefined, id: number, color: string): AnswerItem[] | undefined {
+    return answer?.items.map((a: AnswerItem) => {
+      return {
+        text: id === 3 ? `Logging scale: ${a?.text}` : id === 7 ? `Poaching scale: ${a?.text}` : id === 4 ? `Damage scale: ${a?.text}` : a.text,
+        color: color
+      }
+    })
+  }
+
   public async getResposeDetails (): Promise<void> {
     if (this.incident !== undefined) {
       const items = (this.incident.items.filter(i => i.type === 'response')) as ResponseExtended[]
@@ -267,17 +257,29 @@ export default class IncidentPage extends Vue {
           const response = await IncidentsService.getResposeDetails(item.id)
           if (isDefined(response.answers)) {
             item.messages = {}
-            if (this.combineAnswers(response.answers, 2).length) {
-              item.messages.actions = this.combineAnswers(response.answers, 2)
+            if (response.answers.find(i => i.question.id === 1)) {
+              const evidences = response.answers.find(i => i.question.id === 1)
+              item.messages.evidences = this.combineAnswers(evidences, 1, 'text-blue-500')
             }
-            if (this.combineAnswers(response.answers, 3).length) {
-              item.messages.loggingScale = [`Logging scale: ${this.combineAnswers(response.answers, 3)[0]}`]
+            if (response.answers.find(i => i.question.id === 3)) {
+              const loggingScale = response.answers.find(i => i.question.id === 3)
+              item.messages.loggingScale = this.combineAnswers(loggingScale, 3, 'text-green-500')
             }
-            if (this.combineAnswers(response.answers, 4).length) {
-              item.messages.damageScale = [`Damage: ${this.combineAnswers(response.answers, 4)[0]}`]
+            if (response.answers.find(i => i.question.id === 6)) {
+              const poachingReport = response.answers.find(i => i.question.id === 6)
+              item.messages.poachingReport = this.combineAnswers(poachingReport, 6, 'text-red-300')
             }
-            if (this.combineAnswers(response.answers, 1).length) {
-              item.messages.evidences = this.combineAnswers(response.answers, 1)
+            if (response.answers.find(i => i.question.id === 7)) {
+              const poachingScale = response.answers.find(i => i.question.id === 7)
+              item.messages.poachingScale = this.combineAnswers(poachingScale, 7, 'text-yellow-500')
+            }
+            if (response.answers.find(i => i.question.id === 2)) {
+              const actions = response.answers.find(i => i.question.id === 2)
+              item.messages.actions = this.combineAnswers(actions, 2, 'text-violet-500')
+            }
+            if (response.answers.find(i => i.question.id === 4)) {
+              const damage = response.answers.find(i => i.question.id === 4)
+              item.messages.damageScale = this.combineAnswers(damage, 4, 'text-orange-500')
             }
           }
         }
@@ -302,11 +304,6 @@ export default class IncidentPage extends Vue {
 
   public getItemDatetime (item: Event): string {
     return item.start
-  }
-
-  public combineAnswers (answers: Answer[], id: number): string[] {
-    const answer = answers.find(i => i.question.id === id)
-    return answer !== undefined ? answer.items.map(a => a.text) : []
   }
 
   public async downloadAssets (item: ResponseExtendedWithStatus<ResponseExtended>): Promise<void> {
