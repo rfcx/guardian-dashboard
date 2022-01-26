@@ -43,7 +43,7 @@
               <div class="text-sm text-secondary inline-block" :title="incident.eventsTitle">{{ incident.eventsLabel }}</div>
             </div>
             <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center mt-2 mr-3" :title="getIconTitle(event.count, event.value)">
-              <img class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300" :src="`https://static.rfcx.org/img/guardian/ic_${event.title}.svg`" @error="$event.target.src='/src/assets/alert.svg'" alt="">
+              <img class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300" :src="`https://static.rfcx.org/img/guardian/ic_${event.title}.svg`" alt="">
               <span class="text-sm text-center inline-block">{{ getIconTitle(event.count, event.title) }}</span>
             </div>
           </div>
@@ -71,7 +71,7 @@
                 <div class="h-full w-1 bg-gray-500 pointer-events-none"></div>
               </div>
               <div class="w-7 h-7 absolute top-1/2 -mt-3 rounded-full shadow text-center" :class="{'bg-red-700': item.type === 'event', 'bg-green-700': item.type === 'response'}">
-                <img v-if="item.type === 'event'" class="flex-shrink-0 mt-1 ml-1 h-5 w-5 text-gray-300" title="Event" :src="`https://static.rfcx.org/img/guardian/ic_${item.classification.value}.svg`" @error="$event.target.src='/src/assets/alert.svg'" alt="">
+                <img v-if="item.type === 'event'" class="flex-shrink-0 mt-1 ml-1 h-5 w-5 text-gray-300" title="Event" :src="`https://static.rfcx.org/img/guardian/ic_${item.classification.value}.svg`" alt="">
                 <div title="Response">
                   <svg v-if="item.type === 'response'" title="Response" class="flex-shrink-0 ml-1 mt-1 h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
