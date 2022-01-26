@@ -8,7 +8,7 @@
     </div>
     <div v-if="!isLoading && incident !== undefined">
       <div class="max-w-screen-2xl mx-auto px-2 py-4 sm:px-6 lg:px-8">
-        <div class="mb-4 grid grid-cols-4 gap-2">
+        <div class="mb-4 grid grid-cols-4 gap-2 <sm:grid-cols-1">
           <div class="">
             <h2 class="text-gray-200 text-2xl">Incident #{{ incident.ref }}</h2>
             <div>
@@ -66,7 +66,7 @@
       <div class="my-4">
         <div class="flex flex-col md:grid grid-cols-12 text-gray-50">
           <div v-for="item in incident.items" class="flex md:contents">
-            <div class="col-start-1 col-end-2 mr-10 md:mx-auto relative">
+            <div class="col-start-1 col-end-2 mr-10 md:mx-auto relative sm:mr-2 <sm:mr-2">
               <div class="h-full w-7 flex items-center justify-center">
                 <div class="h-full w-1 bg-gray-500 pointer-events-none"></div>
               </div>
@@ -90,29 +90,29 @@
                 <span class="font-semibold">Response</span> by {{ getCreatedByLabel(item.createdBy) }}
               </div>
               <div v-if="item.messages">
-                <div v-if="item.messages.evidences" class="text-xs mt-3">
+                <div v-if="item.messages.evidences" class="text-xs mt-3 flex flex-row flex-wrap justify-start">
                   Logging evidence
-                  <span v-for="message in item.messages.evidences" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.evidences" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div class="text-xs mt-3" v-if="item.messages.loggingScale || item.messages.damageScale">
+                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start" v-if="item.messages.loggingScale || item.messages.damageScale">
                   Logging scale and damage
-                  <span v-for="message in item.messages.loggingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message.text}}</span>
-                  <span v-for="message in item.messages.damageScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.loggingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.damageScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div class="text-xs mt-3" v-if="item.messages.poachingReport || item.messages.poachingScale">
+                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start" v-if="item.messages.poachingReport || item.messages.poachingScale">
                   Poaching scale
-                  <span v-for="message in item.messages.poachingReport" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message.text}}</span>
-                  <span v-for="message in item.messages.poachingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.poachingReport" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.poachingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div v-if="item.messages.actions" class="text-xs mt-3">
+                <div v-if="item.messages.actions" class="text-xs mt-3 flex flex-row flex-wrap justify-start">
                   Action taken
-                  <span v-for="message in item.messages.actions" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.actions" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
               </div>
               <div class="text-xs mt-3">
                 <div class="audio-tag">
                   <span class="text-gray-500 mr-2">Additional evidence</span>
-                  <audio controls :id="'audioResponse_' + item.id" style="display: inline-block" controlsList="nodownload"></audio>
+                  <audio controls :id="'audioResponse_' + item.id" style="display: inline-block" class="sm:w-250px <sm:w-250px" controlsList="nodownload"></audio>
                 </div>
                 <div class="my-8 flex flex-row justify-start items-center">
                   <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-6 px-2 inline cursor-pointer mr-2" @click="toggleNotes(item, true)">&nbsp;[Notes]&nbsp;</div>
