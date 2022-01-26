@@ -1,6 +1,10 @@
 # Guardian Dashboard Release Notes
 
-## 0.0.5 (2022-01-?)
+## 0.0.6 (2022-01-?)
+
+* **feature:** The UI logic is updated on the Incident page ([#71](https://github.com/rfcx/guardian-dashboard/issues/71))
+
+## 0.0.5 (2022-01-13)
 
 * **feature:** Display a list of all accessible guardians grouped by guardian on the Home page ([#54](https://github.com/rfcx/guardian-dashboard/issues/54))
 * **feature:** Include closed incidents logic is separated ([#47](https://github.com/rfcx/guardian-dashboard/issues/47))

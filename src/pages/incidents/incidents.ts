@@ -36,7 +36,7 @@ export default class IncidentsPage extends Vue {
   public streamsData: Stream[] | undefined
   public incidentsStatus: IncidentStatus[] = [
     { value: 'any', label: 'Any', checked: true },
-    { value: 'new', label: 'New', checked: false },
+    { value: 'new', label: 'Recent', checked: false },
     { value: 'hot', label: 'Hot', checked: false }
   ]
 
