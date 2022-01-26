@@ -14,8 +14,7 @@ export default class MapComponent extends Vue {
   @Prop({ default: '' })
   width!: string
 
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  public mapbox: any
+  public mapbox?: Mapbox.Map
   public mapIndex = Math.floor(Math.random() * 1000)
   public isLoading = false
   public isError = false
@@ -31,8 +30,7 @@ export default class MapComponent extends Vue {
     void this.createMap()
   }
 
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  async createMap (): Promise<any> {
+  async createMap (): Promise<void> {
     try {
       this.isError = false
       Mapbox.accessToken = MapboxSettings.MAPBOX_ACCESS_TOKEN
