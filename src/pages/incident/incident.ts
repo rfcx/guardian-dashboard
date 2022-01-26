@@ -69,7 +69,6 @@ export default class IncidentPage extends Vue {
     await this.getStreamsData()
     await this.getIncidentData()
     await this.getAssets()
-    console.log(this.incident)
   }
 
   public getEventsTitle (events: Event[]): string {
@@ -260,9 +259,7 @@ export default class IncidentPage extends Vue {
               mimeType: a.mimeType
             }
             const audioEl = document.getElementById(`audioResponse_${item.id}`)
-            console.log(audioEl)
             const blobURL = window.URL.createObjectURL(item.audioObject.src)
-            console.log(blobURL)
             if (audioEl) {
               audioEl.setAttribute('src', blobURL)
             }

@@ -1,23 +1,24 @@
-import Mapbox from 'mapbox-gl'
+import Mapbox, { LngLatLike } from 'mapbox-gl'
 import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 
 import MapboxSettings from '../../../config/map.json'
 
 export default class MapComponent extends Vue {
-  @Prop({ default: null })
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  mapData!: any | null
+  @Prop({ default: [] })
+  center!: LngLatLike | undefined
+
+  @Prop({ default: 8 })
+  zoom!: number
 
   @Prop({ default: '' })
-  mapWidth!: string
-
-  @Prop({ default: '' })
-  mapIndex!: string
+  width!: string
 
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public mapbox: any
+  public mapIndex = Math.floor(Math.random() * 1000)
   public isLoading = false
+  public isError = false
 
   @Watch('mapData')
   onMapDataChange (): void {
@@ -33,16 +34,19 @@ export default class MapComponent extends Vue {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   async createMap (): Promise<any> {
     try {
+      this.isError = false
       Mapbox.accessToken = MapboxSettings.MAPBOX_ACCESS_TOKEN
       this.mapbox = new Mapbox.Map({
         container: `map${this.mapIndex}`,
         style: MapboxSettings.MAPBOX_STYLE,
-        center: this.mapData.center,
-        zoom: this.mapData.zoom
+        center: this.center,
+        zoom: this.zoom
       })
-      this.isLoading = false
     } catch (err) {
       console.log('err', err)
+      this.isError = true
+    } finally {
+      this.isLoading = false
     }
   }
 }

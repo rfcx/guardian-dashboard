@@ -53,9 +53,9 @@
             <div class="text-xs text-gray-500 pt-2">Response time</div>
             <div class="text-lg text-gray-200" :title="incident.responseTitle">{{ incident.responses.length ? incident.responseLabel : '-' }}</div>
           </div>
-          <div class="bg-gray-800 flex items-center">
+          <div class="bg-gray-800 flex justify-center items-center">
             <div v-if="!stream" class="text-xs text-gray-500 my-3 py-12 text-center">[Map]</div>
-            <map-component v-if="stream && mapData.center && mapData.center" :map-data="mapData" :map-width="'h-100px'" :map-index="'1'"/>
+            <map-component v-if="stream && mapData.center && mapData.center" :zoom="mapData.zoom" :center="mapData.center" :width="'h-100px'"/>
           </div>
         </div>
       </div>
@@ -122,7 +122,7 @@
                     <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
                   </div>
                   <div v-if="item.trackData" class="cursor-pointer inline w-100px" @click="toggleTrack(item, true)">
-                    <map-component :map-data="item.trackData.settings" :map-width="'h-65px'" :map-index="'2'"/>
+                    <map-component :zoom="item.trackData.settings.zoom" :center="item.trackData.settings.center" :width="'h-65px'"/>
                   </div>
                   <ranger-track-modal-component v-if="item.showTrack !== undefined && item.showTrack === true && item.trackData.features" :raw-ranger-track="item.trackData" @close-ranger-track="toggleTrack(item, false)" />
                   <a v-if="(item.sliderData || item.audioObject)"
