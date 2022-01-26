@@ -119,7 +119,7 @@
                 v-if="!isError"
                 :class="{'opacity-50 cursor-not-allowed': isDownloading}"
                 :disabled="isDownloading"
-                class="btn btn-primary"
+                class="btn btn-primary flex items-center"
                 @click="downloadAssets()"
               >
                 <img

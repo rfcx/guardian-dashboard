@@ -1,17 +1,35 @@
+import Mapbox from 'mapbox-gl'
 import { Options, Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
+import MapComponent from '@/components/map/map.vue'
 import RangerNotes from '@/components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '@/components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
-import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Answer, AnswerItem, Event, Incident, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
-import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, inLast1Minute, inLast24Hours, isDefined, isNotDefined } from '@/utils'
+import { IncidentsService, StreamService } from '@/services'
+import { Answer, AnswerItem, Event, Incident, MapboxOptions, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
+import { downloadContext, formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, getDay, getGmtDiff, inLast1Minute, inLast24Hours, isDateToday, isDateYesterday, isDefined, isNotDefined } from '@/utils'
+
+interface IncidentLabel extends Incident {
+  eventsTitle: string
+  eventsLabel: string
+  responseTitle: string
+  responseLabel: string
+}
+interface EventItem {
+  title: string
+  value: string
+  count: number
+}
+
+type IncidentItem<T> = T & IncidentLabel
 
 @Options({
   components: {
     InvalidProjectComponent,
+    MapComponent,
     RangerTrackModalComponent,
     RangerPlayerComponent,
     RangerSliderComponent,
@@ -20,11 +38,13 @@ import { downloadContext, formatDayTimeLabel, formatDayWithoutTime, formatTimeLa
 })
 export default class IncidentPage extends Vue {
   public streamsData: Stream[] = []
-  public incident: Incident | undefined
+  public incident: IncidentItem<Incident> | undefined
   public stream: Stream | undefined
   public incidentStatus = ''
   public isLoading = false
   public isAssetsLoading = false
+  public mapData: MapboxOptions | undefined
+  public audio: HTMLAudioElement | null | undefined
   private timerSub!: NodeJS.Timeout
 
   data (): Record<string, unknown> {
@@ -35,59 +55,104 @@ export default class IncidentPage extends Vue {
     }
   }
 
-  mounted (): void {
+  @Watch('$route.params')
+  onRouteParamsChange (): void {
+    void this.onUpdatePage()
+  }
+
+  async created (): Promise<void> {
+    await this.onUpdatePage()
+  }
+
+  async onUpdatePage (): Promise<void> {
     this.isLoading = true
-    void this.getData()
-      .then(() => {
-        void this.getStreamsData()
-          .then(() => {
-            // Check stream in Vuex store.
-            void this.initializeStream()
-            if (!this.stream) {
-              // Get a new streams list.
-              void this.getStreamsDataFromDB()
-                .then(() => {
-                  void this.initializeStream()
-                })
-            }
-          })
-        void this.getAssets()
-      })
+    await this.getStreamsData()
+    await this.getIncidentData()
+    await this.getAssets()
+    console.log(this.incident)
+  }
+
+  public getEventsTitle (events: Event[]): string {
+    const start = (this.getFirstOrLastItem(events, true) as Event).start
+    const end = (this.getFirstOrLastItem(events, false) as Event).end
+    return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
+  }
+
+  public getFirstOrLastItem (items: Response[] | Event[], firstItem: boolean): Response | Event {
+    items.sort((a: Response | Event, b: Response | Event) => {
+      const dateA = new Date(this.getItemDatetime(a, firstItem)).valueOf()
+      const dateB = new Date(this.getItemDatetime(b, firstItem)).valueOf()
+      return firstItem ? dateA - dateB : dateB - dateA
+    })
+    return items[0]
+  }
+
+  public getItemDatetime (item: Response | Event, first: boolean): string {
+    const itemIsEvent = (item as Event).start !== undefined
+    return itemIsEvent ? (first ? (item as Event).start : (item as Event).end) : (item as Response).submittedAt
+  }
+
+  public getEventsLabel (events: Event[]): string {
+    const start = (this.getFirstOrLastItem(events, true) as Event).start
+    const end = (this.getFirstOrLastItem(events, false) as Event).end
+    return formatDateTimeRange(start, end, this.stream?.timezone)
+  }
+
+  public getEventsCount (events: Event[]): EventItem[] {
+    // eslint-disable-next-line prefer-const
+    let rows: any = {}
+    events.forEach((e: Event) => {
+      if (rows[e.classification.value] === undefined) {
+        rows[e.classification.value] = {
+          value: e.classification.value,
+          title: e.classification.title.charAt(0).toLowerCase() + e.classification.title.slice(1),
+          count: 1
+        }
+      } else {
+        rows[e.classification.value].count++
+      }
+    })
+    return Object.values(rows)
+  }
+
+  public getIconTitle (count: number, title: string): string {
+    return `${count} ${title} ${count > 1 ? 'events' : 'event'}`
+  }
+
+  public getResponseTitle (responses: Response[]): string {
+    const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
+    return formatDateTimeLabel(firstResponse)
+  }
+
+  public getResponseLabel (responses: Response[]): string {
+    const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
+    // today => Today, X
+    if (isDateToday(firstResponse, this.stream?.timezone)) {
+      return `Today, ${formatTimeLabel(firstResponse, this.stream?.timezone)}`
+    }
+    // yesterday => Yesterday, X
+    if (isDateYesterday(firstResponse, this.stream?.timezone)) {
+      return `Yesterday, ${formatTimeLabel(firstResponse, this.stream?.timezone)}`
+    } else return `${getDay(firstResponse, this.stream?.timezone)}`
   }
 
   public toggleTrack (response: ResponseExtended, open: boolean): void {
     response.showTrack = open
-    if (response.showTrack) {
-      void this.getAssetsDetails(response, 'geo')
-    }
   }
 
   public toggleNotes (response: ResponseExtended, open: boolean): void {
     response.showNotes = open
-    if (response.showNotes) {
-      void this.getAssetsDetails(response, 'text')
-    }
   }
 
   public toggleSlider (response: ResponseExtended, open: boolean): void {
     response.showSlider = open
-    if (response.showSlider) {
-      void this.getAssetsDetails(response, 'image')
-    }
-  }
-
-  public togglePlayer (response: ResponseExtended, open: boolean): void {
-    response.showPlayer = open
-    if (response.showPlayer) {
-      void this.getAssetsDetails(response, 'audio')
-    }
   }
 
   public async closeReport (): Promise<void> {
     try {
       await IncidentsService.closeIncident((this.$route.params.id as string))
       this.isLoading = true
-      void this.getData()
+      void this.getIncidentData()
     } catch (e) {
       this.incidentStatus = 'Error occurred'
     }
@@ -111,6 +176,14 @@ export default class IncidentPage extends Vue {
     return formatDayTimeLabel(date, this.stream?.timezone ?? 'UTC')
   }
 
+  public formatDayWithoutTime (date: string): string {
+    return formatDayWithoutTime(date, this.stream?.timezone ?? 'UTC')
+  }
+
+  public getGmtDiffFormat (date: string): string {
+    return getGmtDiff(date, this.stream?.timezone ?? 'UTC')
+  }
+
   public timeFormatted (date: string): string {
     return formatTimeLabel(date, this.stream?.timezone ?? 'UTC')
   }
@@ -120,31 +193,42 @@ export default class IncidentPage extends Vue {
   }
 
   public async getStreamsData (): Promise<void> {
-    this.streamsData = VuexService.Projects.streams.get()
-    if (!this.streamsData.length) {
-      void this.getStreamsDataFromDB()
-    }
-  }
-
-  public async getStreamsDataFromDB (): Promise<void> {
     const params: string = this.$route.params.projectId as string
     const streamsData = await StreamService.getStreams({ projects: [params] })
     this.streamsData = streamsData.data
-    await VuexService.Projects.streams.set(this.streamsData)
   }
 
-  public async initializeStream (): Promise<void> {
+  public async initializeStream (id?: string): Promise<void> {
     this.stream = this.streamsData.find((s: Stream) => {
-      return s.id === this.incident?.streamId
+      return s.id === (this.incident?.streamId ?? id)
     })
   }
 
-  public async getData (): Promise<void> {
+  public initializeIncidentMap (): void {
+    if (this.stream === undefined) return
+    if (this.stream.latitude !== undefined && this.stream.longitude !== undefined) {
+      this.mapData = {
+        center: new Mapbox.LngLat(this.stream.longitude, this.stream.latitude),
+        zoom: 6
+      }
+    }
+  }
+
+  public async getIncidentData (): Promise<void> {
     try {
-      this.incident = await IncidentsService.getIncident((this.$route.params.id as string))
-        .then((incident: Incident) => {
+      const incidentId = this.$route.params.id as string
+      this.incident = await IncidentsService.getIncident(incidentId)
+        .then(async (incident: Incident) => {
           IncidentsService.combineIncidentItems(incident)
-          return incident
+          await this.initializeStream(incident.streamId)
+          this.initializeIncidentMap()
+          const inc: IncidentItem<IncidentLabel> = Object.assign(incident, {
+            eventsTitle: incident.events.length ? this.getEventsTitle(incident.events) : '',
+            eventsLabel: incident.events.length ? this.getEventsLabel(incident.events) : '',
+            responseTitle: incident.responses.length ? this.getResponseTitle(incident.responses) : '',
+            responseLabel: incident.responses.length ? this.getResponseLabel(incident.responses) : ''
+          })
+          return inc
         })
       this.isLoading = false
       this.getIncidentStatus()
@@ -167,61 +251,57 @@ export default class IncidentPage extends Vue {
         item.assetsData = await IncidentsService.getResposesAssets(item.id)
         for (const a of item.assetsData) {
           if (isDefined(a) && isNotDefined(a.mimeType)) return
-          if (a.mimeType.includes('audio') === true) {
-            item.audioObject = {}
-          }
-          if (a.mimeType.includes('text') === true) {
-            item.notesData = []
-          }
-          if (a.mimeType.includes('image') === true) {
-            item.sliderData = []
-          }
-          if (a.mimeType.includes('geo') === true) {
-            item.trackData = {}
-          }
-        }
-      }
-    }
-  }
-
-  public async getAssetsDetails (response: ResponseExtended, type: string): Promise<void> {
-    this.clearAssetsDetails(response)
-    const assetsData = response.assetsData.filter(r => r.mimeType.includes(type) === true)
-    for (const a of assetsData) {
-      const asset = await IncidentsService.getFiles(a.id)
-      if (isDefined(a) && isNotDefined(a.mimeType)) return
-      if (a.mimeType.includes('audio') === true && isDefined(asset)) {
-        response.audioObject.src = asset
-        response.audioObject.assetId = a.id
-        response.audioObject.fileName = a.fileName
-        response.audioObject.mimeType = a.mimeType
-      }
-      await new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.addEventListener('loadend', () => {
-          const contents = reader.result as string
-          if (a.mimeType.includes('image') === true) {
-            response.sliderData.push({
-              src: contents,
+          const asset = await IncidentsService.getFiles(a.id)
+          if (a.mimeType.includes('audio') === true && isDefined(asset)) {
+            item.audioObject = {
+              src: asset,
               assetId: a.id,
-              fileName: a.fileName
-            })
-          }
-          if (a.mimeType.includes('text') === true && asset.size !== undefined) {
-            if ((contents).trim().length) {
-              response.notesData.push(contents)
+              fileName: a.fileName,
+              mimeType: a.mimeType
+            }
+            const audioEl = document.getElementById(`audioResponse_${item.id}`)
+            console.log(audioEl)
+            const blobURL = window.URL.createObjectURL(item.audioObject.src)
+            console.log(blobURL)
+            if (audioEl) {
+              audioEl.setAttribute('src', blobURL)
             }
           }
-          if (a.mimeType.includes('geo') === true) {
-            try {
-              response.trackData = JSON.parse(contents)
-            } catch (e) {}
-          }
-          resolve(contents)
-        })
-        if ((a.mimeType.includes('geo') === true || a.mimeType.includes('text') === true) && asset.size !== undefined) reader.readAsText(asset)
-        else reader.readAsDataURL(asset)
-      })
+          await new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.addEventListener('loadend', () => {
+              const contents = reader.result as string
+              if (a.mimeType.includes('image') === true) {
+                item.sliderData = []
+                item.sliderData.push({
+                  src: contents,
+                  assetId: a.id,
+                  fileName: a.fileName
+                })
+              }
+              if (a.mimeType.includes('text') === true && asset.size !== undefined) {
+                item.notesData = []
+                if ((contents).trim().length) {
+                  item.notesData.push(contents)
+                }
+              }
+              if (a.mimeType.includes('geo') === true) {
+                item.trackData = {}
+                try {
+                  item.trackData = JSON.parse(contents)
+                  item.trackData.settings = {
+                    center: new Mapbox.LngLat(item.trackData.features[0].geometry.coordinates[0][0], item.trackData.features[0].geometry.coordinates[0][1]),
+                    zoom: 8
+                  }
+                } catch (e) {}
+              }
+              resolve(contents)
+            })
+            if ((a.mimeType.includes('geo') === true || a.mimeType.includes('text') === true) && asset.size !== undefined) reader.readAsText(asset)
+            else reader.readAsDataURL(asset)
+          })
+        }
+      }
     }
   }
 
@@ -293,19 +373,6 @@ export default class IncidentPage extends Vue {
     } else return user.email
   }
 
-  public getFirstItem (items: Event[]): Event {
-    items.sort((a: Event, b: Event) => {
-      const dateA = new Date(this.getItemDatetime(a)).valueOf()
-      const dateB = new Date(this.getItemDatetime(b)).valueOf()
-      return dateA - dateB
-    })
-    return items[0]
-  }
-
-  public getItemDatetime (item: Event): string {
-    return item.start
-  }
-
   public async downloadAssets (item: ResponseExtendedWithStatus<ResponseExtended>): Promise<void> {
     try {
       item.isDownloading = true
@@ -314,7 +381,6 @@ export default class IncidentPage extends Vue {
         if (item.audioObject.src !== undefined) {
           tempArray.push(item.audioObject)
         } else {
-          await this.getAssetsDetails(item, 'audio')
           tempArray.push(item.audioObject)
         }
       }
@@ -322,7 +388,6 @@ export default class IncidentPage extends Vue {
         if (item.sliderData.length) {
           tempArray = tempArray.concat([...new Set(item.sliderData)])
         } else {
-          await this.getAssetsDetails(item, 'image')
           tempArray = tempArray.concat([...new Set(item.sliderData)])
         }
       }

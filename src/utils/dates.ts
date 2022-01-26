@@ -117,6 +117,10 @@ export const formatDayTimeLabel = (label: string | any, timezone: string = 'UTC'
   return dayjs(label).tz(timezone).format('MMM DD, HH:mm')
 }
 
+export const getGmtDiff = (label: string, timezone: string = 'UTC'): string => {
+  return dayjs(label).tz(timezone).format('Z')
+}
+
 export const formatDayWithoutTime = (date: any, timezone: string = 'UTC'): string => {
   return dayjs(date).tz(timezone).format('DD MMM YYYY')
 }
