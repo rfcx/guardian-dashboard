@@ -11,10 +11,10 @@
       <div class="flex justify-start items-center whitespace-nowrap">
         <span class="text-white text-xl mr-4">#{{ incident.ref }}</span>
         <div
-          :class="{ 'bg-gray-500': incident.closedAt, 'bg-green-500': !incident.closedAt }"
-          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none"
+          v-if="incident.closedAt"
+          class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none bg-gray-500"
         >
-          {{ incident.closedAt ? 'Closed' : 'Open' }}
+          'Closed'
         </div>
       </div>
     </div>

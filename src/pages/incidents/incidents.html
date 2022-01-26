@@ -1,5 +1,5 @@
 <div id="incidents-page">
-  <div class="bg-gray shadow overflow-hidden pt-10 px-20 <sm:(px-0 pt-0)">
+  <div class="bg-gray shadow overflow-hidden px-20 <sm:(px-0 pt-0)">
     <div v-if="auth?.isAuthenticated">
       <div class="mt-1 flex flex-row items-center <sm:(flex-wrap flex-col items-start)">
         <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 mr-2 <sm:mb-2">
@@ -80,9 +80,9 @@
               <div
                 v-for="tag of stream.tags"
                 class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
-                :class="{'bg-yellow-500': tag === 'new', 'bg-red-400': tag === 'hot'}"
+                :class="{'bg-yellow-500': tag === 'new', 'bg-red-400': tag === 'hot', 'bg-green-500': tag === 'open'}"
               >
-                {{ tag }}
+                {{ tag === 'new' ? 'Recent' : tag }}
               </div>
             </div>
           </dt>
