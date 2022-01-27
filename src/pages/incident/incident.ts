@@ -77,6 +77,11 @@ export default class IncidentPage extends Vue {
     return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  public replaceByDefault (e: any): void {
+    e.target.src = 'https://static.rfcx.org/img/guardian/ic_report.svg'
+  }
+
   public getFirstOrLastItem (items: Response[] | Event[], firstItem: boolean): Response | Event {
     items.sort((a: Response | Event, b: Response | Event) => {
       const dateA = new Date(this.getItemDatetime(a, firstItem)).valueOf()
