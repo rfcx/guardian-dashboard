@@ -39,7 +39,7 @@
           <div class="pl-4 border-l-4 border-gray-800">
             <div class="text-xs text-gray-500 pt-2">Events summary</div>
             <div class="mt-2 flex text-sm text-gray-400" title="Time range of events">
-              <img v-if="incident.events.length" title="Events" class="h-5 w-5 inline-block mr-2" src="/src/assets/alert.svg" alt="" />
+              <img v-if="incident.events.length" title="Events" class="h-5 w-5 inline-block mr-2" src="/src/assets/alert.svg" alt="">
               <div class="text-sm text-secondary inline-block" :title="incident.eventsTitle">{{ incident.eventsLabel }}</div>
             </div>
             <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center mt-2 mr-3" :title="getIconTitle(event.count, event.value)">
@@ -110,9 +110,9 @@
                 </div>
               </div>
               <div class="text-xs mt-3">
-                <div class="audio-tag">
-                  <span class="text-gray-500 mr-2">Additional evidence</span>
-                  <audio controls :id="'audioResponse_' + item.id" style="display: inline-block" class="sm:w-250px <sm:w-250px" controlsList="nodownload"></audio>
+                <div v-if="item.audioObject !== undefined && item.audioObject.src" class="audio-tag flex flex-row justify-start items-center <sm:(mt-2 flex-col items-start)">
+                  <span class="text-gray-500 mr-2 <sm:(mr-0 mb-2)">Additional evidence</span>
+                  <ranger-player-component :audio-prop="item.audioObject" />
                 </div>
                 <div class="my-8 flex flex-row justify-start items-center">
                   <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-6 px-2 inline cursor-pointer mr-2" @click="toggleNotes(item, true)">&nbsp;[Notes]&nbsp;</div>
