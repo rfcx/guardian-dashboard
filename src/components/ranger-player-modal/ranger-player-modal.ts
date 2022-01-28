@@ -31,6 +31,10 @@ export default class RangerPlayerComponent extends Vue {
     }
   }
 
+  beforeDestroy (): void {
+    this.clearTimeUpdateInterval()
+  }
+
   public initializeAudio (): void {
     this.audio = new Audio()
     const source = document.createElement('source')
@@ -85,7 +89,7 @@ export default class RangerPlayerComponent extends Vue {
 
   public recalculateProgress (): void {
     if (this.audio?.duration === undefined) return
-    this.progress = this.audio?.currentTime / Math.ceil(this.audio.duration) * 100
+    this.progress = Math.ceil(this.audio?.currentTime / this.audio.duration * 100)
   }
 
   public calculateTotalDuration (): void {

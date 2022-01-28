@@ -90,21 +90,21 @@
                 <span class="font-semibold">Response</span> by {{ getCreatedByLabel(item.createdBy) }}
               </div>
               <div v-if="item.messages">
-                <div v-if="item.messages.evidences" class="text-xs mt-3 flex flex-row flex-wrap justify-start">
+                <div v-if="item.messages.evidences" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center">
                   Logging evidence
                   <span v-for="message in item.messages.evidences" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start" v-if="item.messages.loggingScale || item.messages.damageScale">
+                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center" v-if="item.messages.loggingScale || item.messages.damageScale">
                   Logging scale and damage
                   <span v-for="message in item.messages.loggingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                   <span v-for="message in item.messages.damageScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start" v-if="item.messages.poachingReport || item.messages.poachingScale">
+                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center" v-if="item.messages.poachingReport || item.messages.poachingScale">
                   Poaching scale
                   <span v-for="message in item.messages.poachingReport" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                   <span v-for="message in item.messages.poachingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div v-if="item.messages.actions" class="text-xs mt-3 flex flex-row flex-wrap justify-start">
+                <div v-if="item.messages.actions" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center">
                   Action taken
                   <span v-for="message in item.messages.actions" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
