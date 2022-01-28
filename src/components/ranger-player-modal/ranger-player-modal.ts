@@ -58,9 +58,6 @@ export default class RangerPlayerComponent extends Vue {
     audio.addEventListener('pause', () => {
       this.clearTimeUpdateInterval()
     })
-    audio.addEventListener('ended', () => {
-      this.progress = 100
-    })
     audio.addEventListener('onerror', () => {
       this.isError = true
     })
