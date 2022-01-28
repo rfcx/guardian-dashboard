@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { describe, expect, test } from 'vitest'
 
-import { formatDateRange, formatDateTimeLabel, formatDateTimeRange, formatTimeLabel, formatTwoDateDiff, getDay, twoDateDiffExcludeHours } from './dates'
+import { formatDateRange, formatDateTimeLabel, formatDateTimeRange, formatTimeLabel, formatTwoDateDiff, getDay, getPlayerTime, twoDateDiffExcludeHours } from './dates'
 
 // Date Range
 
@@ -102,6 +102,20 @@ describe('getDay', () => {
   test('Test different days, months with UTC timezone', () => {
     examples.forEach(([label, notExpected, expected]) => {
       expect(getDay(label)).toEqual(expected)
+    })
+  })
+})
+
+describe('getPlayerTime', () => {
+  const examples = [
+    [3.712, '0:03'],
+    [7.275, '0:07'],
+    [77.275, '1:17']
+  ]
+
+  test('Test for getting a correct player time', () => {
+    examples.forEach(([label, expected]) => {
+      expect(getPlayerTime(label as number)).toEqual(expected)
     })
   })
 })
