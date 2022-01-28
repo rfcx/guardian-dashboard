@@ -1,16 +1,8 @@
-import { Options, Vue } from 'vue-class-component'
-import { Emit, Prop, Watch } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
+import { Prop, Watch } from 'vue-property-decorator'
 
-import { OnClickOutside } from '@vueuse/components'
+import { getPlayerTime } from '@/utils'
 
-import { IncidentsService } from '@/services'
-import { downloadContext } from '@/utils'
-
-@Options({
-  components: {
-    OnClickOutside
-  }
-})
 export default class RangerPlayerComponent extends Vue {
   @Prop({ default: null })
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -18,9 +10,10 @@ export default class RangerPlayerComponent extends Vue {
 
   public isLoading = false
   public isPlaying = false
-  public isDownloading = false
   public isError = false
+  public progress?: number = 0
   public audio: HTMLAudioElement | null | undefined
+  public timeupdateInterval?: NodeJS.Timer
 
   @Watch('audioProp')
   onAudioPropChange (): void {
@@ -31,16 +24,15 @@ export default class RangerPlayerComponent extends Vue {
     }
   }
 
-  @Emit('closePlayer')
-  public closePlayer (): boolean {
-    return true
-  }
-
   mounted (): void {
     this.isLoading = true
     if (this.audioProp.src !== undefined) {
       this.initializeAudio()
     }
+  }
+
+  beforeDestroy (): void {
+    this.clearTimeUpdateInterval()
   }
 
   public initializeAudio (): void {
@@ -51,7 +43,24 @@ export default class RangerPlayerComponent extends Vue {
     source.type = this.audioProp.mimeType
     source.src = window.URL.createObjectURL(this.audioProp.src)
     this.audio.load()
+    this.bindEvents(this.audio)
     this.isLoading = false
+  }
+
+  public bindEvents (audio: HTMLAudioElement): void {
+    audio.addEventListener('loadedmetadata', () => {
+      this.calculateTotalDuration()
+      this.audioProp.current = '0:00'
+    })
+    audio.addEventListener('play', () => {
+      this.startTimeUpdateInterval()
+    })
+    audio.addEventListener('pause', () => {
+      this.clearTimeUpdateInterval()
+    })
+    audio.addEventListener('onerror', () => {
+      this.isError = true
+    })
   }
 
   public async toggleSound (): Promise<void> {
@@ -65,24 +74,38 @@ export default class RangerPlayerComponent extends Vue {
     }
   }
 
-  public close (): void {
-    if (this.isPlaying) {
-      if (this.audio) this.audio.pause()
-      this.isPlaying = false
-      this.audio = null
-    }
-    this.closePlayer()
+  public startTimeUpdateInterval (): void {
+    this.timeupdateInterval = setInterval(this.onTimeUpdate.bind(this), 50)
   }
 
-  public async downloadAssets (): Promise<void> {
-    try {
-      this.isDownloading = true
-      const asset = await IncidentsService.getFiles(this.audioProp.assetId, this.audioProp.mimeType)
-      downloadContext(asset, this.audioProp.fileName)
-      this.isDownloading = false
-    } catch (e) {
-      this.isDownloading = false
-      this.isError = true
+  public clearTimeUpdateInterval (): void {
+    if (this.timeupdateInterval) {
+      clearInterval(this.timeupdateInterval)
     }
+  }
+
+  public recalculateProgress (): void {
+    if (this.audio?.duration === undefined) return
+    this.progress = Math.ceil(this.audio?.currentTime / this.audio.duration * 100)
+  }
+
+  public calculateTotalDuration (): void {
+    if (this.audio?.duration === undefined) return
+    this.audioProp.total = getPlayerTime(this.audio.duration)
+  }
+
+  public onTimeUpdate (): void {
+    if (!this.audio) return
+    if (!this.audio.currentTime) return
+    this.recalculateProgress()
+    this.audioProp.current = getPlayerTime(this.audio.currentTime)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  public onProgressClicked (event: any): void {
+    if (this.audio?.duration === undefined) return
+    const newTime = event.offsetX / event.target.offsetWidth * Math.round(this.audio.duration)
+    this.audio.currentTime = newTime
+    this.onTimeUpdate()
   }
 }

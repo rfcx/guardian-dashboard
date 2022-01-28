@@ -39,7 +39,7 @@
           <div class="pl-4 border-l-4 border-gray-800">
             <div class="text-xs text-gray-500 pt-2">Events summary</div>
             <div class="mt-2 flex text-sm text-gray-400" title="Time range of events">
-              <img v-if="incident.events.length" title="Events" class="h-5 w-5 inline-block mr-2" src="/src/assets/alert.svg" alt="" />
+              <img v-if="incident.events.length" title="Events" class="h-5 w-5 inline-block mr-2" src="/src/assets/alert.svg" alt="">
               <div class="text-sm text-secondary inline-block" :title="incident.eventsTitle">{{ incident.eventsLabel }}</div>
             </div>
             <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center mt-2 mr-3" :title="getIconTitle(event.count, event.value)">
@@ -90,29 +90,29 @@
                 <span class="font-semibold">Response</span> by {{ getCreatedByLabel(item.createdBy) }}
               </div>
               <div v-if="item.messages">
-                <div v-if="item.messages.evidences" class="text-xs mt-3 flex flex-row flex-wrap justify-start">
+                <div v-if="item.messages.evidences" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center">
                   Logging evidence
                   <span v-for="message in item.messages.evidences" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start" v-if="item.messages.loggingScale || item.messages.damageScale">
+                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center" v-if="item.messages.loggingScale || item.messages.damageScale">
                   Logging scale and damage
                   <span v-for="message in item.messages.loggingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                   <span v-for="message in item.messages.damageScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start" v-if="item.messages.poachingReport || item.messages.poachingScale">
+                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center" v-if="item.messages.poachingReport || item.messages.poachingScale">
                   Poaching scale
                   <span v-for="message in item.messages.poachingReport" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                   <span v-for="message in item.messages.poachingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
-                <div v-if="item.messages.actions" class="text-xs mt-3 flex flex-row flex-wrap justify-start">
+                <div v-if="item.messages.actions" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center">
                   Action taken
                   <span v-for="message in item.messages.actions" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
                 </div>
               </div>
               <div class="text-xs mt-3">
-                <div class="audio-tag">
-                  <span class="text-gray-500 mr-2">Additional evidence</span>
-                  <audio controls :id="'audioResponse_' + item.id" style="display: inline-block" class="sm:w-250px <sm:w-250px" controlsList="nodownload"></audio>
+                <div v-if="item.audioObject !== undefined && item.audioObject.src" class="audio-tag flex flex-row justify-start items-center <sm:(mt-2 flex-col items-start)">
+                  <span class="text-gray-500 mr-2 <sm:(mr-0 mb-2)">Additional evidence</span>
+                  <ranger-player-component :audio-prop="item.audioObject" />
                 </div>
                 <div class="my-8 flex flex-row justify-start items-center">
                   <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-6 px-2 inline cursor-pointer mr-2" @click="toggleNotes(item, true)">&nbsp;[Notes]&nbsp;</div>

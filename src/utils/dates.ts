@@ -121,6 +121,10 @@ export const getGmtDiff = (label: string, timezone: string = 'UTC'): string => {
   return dayjs(label).tz(timezone).format('Z')
 }
 
+export const getPlayerTime = (label: number): string => {
+  return dayjs().startOf('day').add(Math.floor(label), 'seconds').format('m:ss')
+}
+
 export const formatDayWithoutTime = (date: any, timezone: string = 'UTC'): string => {
   return dayjs(date).tz(timezone).format('DD MMM YYYY')
 }

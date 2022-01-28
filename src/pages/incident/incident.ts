@@ -221,6 +221,7 @@ export default class IncidentPage extends Vue {
   public async getIncidentData (): Promise<void> {
     try {
       const incidentId = this.$route.params.id as string
+      if (!incidentId) return
       this.incident = await IncidentsService.getIncident(incidentId)
         .then(async (incident: Incident) => {
           IncidentsService.combineIncidentItems(incident)
