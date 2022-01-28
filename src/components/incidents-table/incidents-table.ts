@@ -76,6 +76,11 @@ export default class IncidentsTableRows extends Vue {
     return formatDateTimeRange(start, end, this.timezone)
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  public replaceByDefault (e: any): void {
+    e.target.src = 'https://static.rfcx.org/img/guardian/ic_report.svg'
+  }
+
   public getResponseTitle (responses: Response[]): string {
     const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
     return formatDateTimeLabel(firstResponse)
