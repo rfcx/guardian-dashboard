@@ -27,4 +27,9 @@ export default class AuthNavbarItemComponent extends Vue {
   public toggleMenu (): void {
     this.isMenuOpen = !this.isMenuOpen
   }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  public replaceByDefault (e: any): void {
+    e.target.src = 'https://static.rfcx.org/img/guardian/ic_account.svg'
+  }
 }

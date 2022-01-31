@@ -198,6 +198,7 @@ export default class IncidentPage extends Vue {
 
   public async getStreamsData (): Promise<void> {
     const params: string = this.$route.params.projectId as string
+    if (!params) return
     const streamsData = await StreamService.getStreams({ projects: [params] })
     this.streamsData = streamsData.data
   }

@@ -21,7 +21,7 @@
             <div v-if="stream && stream.tags && stream.tags.length" class="mt-1">
               <div
                 v-for="tag of stream.tags"
-                class="shadow-sm text-xs text-gray-200 tracking-wide rounded-lg leading-none capitalize mr-2 px-2 py-1 inline"
+                class="shadow-sm text-xs text-gray-200 tracking-wide rounded-lg leading-none mr-2 px-2 py-1 inline-block capitalize"
                 title="Tag"
                 :class="{'bg-yellow-600 bg-opacity-70': tag === 'new', 'bg-warning bg-opacity-70': tag === 'hot',
                   'bg-green-600 bg-opacity-70': tag === 'open'}"
