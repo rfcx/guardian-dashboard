@@ -78,7 +78,7 @@ export default class IncidentsTableRows extends Vue {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public setDefaultImg (e: any): void {
+  public setDefaultReportImg (e: any): void {
     e.target.src = icons.reportIcon
   }
 
