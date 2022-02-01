@@ -3,6 +3,7 @@ import { Prop } from 'vue-property-decorator'
 
 import { Event, EventExtended, Incident, Response, ResponseExtended } from '@/types'
 import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
+import icons from '../../assets/index'
 
 interface IncidentItem extends Event, Incident, Response {
   eventsTitle: string
@@ -77,8 +78,8 @@ export default class IncidentsTableRows extends Vue {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public replaceByDefault (e: any): void {
-    e.target.src = 'https://static.rfcx.org/img/guardian/ic_report.svg'
+  public setDefaultImg (e: any): void {
+    e.target.src = icons.reportIcon
   }
 
   public getResponseTitle (responses: Response[]): string {

@@ -2,6 +2,7 @@ import { Vue } from 'vue-class-component'
 
 import { VuexService } from '@/services'
 import { Auth0Option, Auth0User } from '@/types'
+import icons from '../../../assets/index'
 
 export default class AuthNavbarItemComponent extends Vue {
   @VuexService.Auth.auth.bind()
@@ -29,7 +30,7 @@ export default class AuthNavbarItemComponent extends Vue {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public replaceByDefault (e: any): void {
-    e.target.src = 'https://static.rfcx.org/img/guardian/ic_account.svg'
+  public setDefaultAccountImg (e: any): void {
+    e.target.src = icons.accountIcon
   }
 }

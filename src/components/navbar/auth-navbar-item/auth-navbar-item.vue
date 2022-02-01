@@ -24,7 +24,7 @@
       <img
         class="h-8 w-8 rounded-full"
         :src="userImage"
-        @error="replaceByDefault"
+        @error="setDefaultAccountImg"
       >
       <ul
         v-if="isMenuOpen"
