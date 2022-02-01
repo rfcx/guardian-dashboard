@@ -11,6 +11,7 @@ import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-tr
 import { IncidentsService, StreamService } from '@/services'
 import { Answer, AnswerItem, Event, Incident, MapboxOptions, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
 import { downloadContext, formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, getDay, getGmtDiff, inLast1Minute, inLast24Hours, isDateToday, isDateYesterday, isDefined, isNotDefined } from '@/utils'
+import icons from '../../assets/index'
 
 interface IncidentLabel extends Incident {
   eventsTitle: string
@@ -78,8 +79,8 @@ export default class IncidentPage extends Vue {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public replaceByDefault (e: any): void {
-    e.target.src = 'https://static.rfcx.org/img/guardian/ic_report.svg'
+  public setDefaultReportImg (e: any): void {
+    e.target.src = icons.reportIcon
   }
 
   public getFirstOrLastItem (items: Response[] | Event[], firstItem: boolean): Response | Event {
@@ -198,6 +199,7 @@ export default class IncidentPage extends Vue {
 
   public async getStreamsData (): Promise<void> {
     const params: string = this.$route.params.projectId as string
+    if (!params) return
     const streamsData = await StreamService.getStreams({ projects: [params] })
     this.streamsData = streamsData.data
   }
