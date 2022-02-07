@@ -23,7 +23,7 @@
                 v-for="tag of stream.tags"
                 class="shadow-sm text-xs text-gray-200 tracking-wide rounded-lg leading-none mr-2 px-2 py-1 inline-block capitalize"
                 title="Tag"
-                :class="{'bg-yellow-600 bg-opacity-70': tag === 'new', 'bg-warning bg-opacity-70': tag === 'hot',
+                :class="{'bg-yellow-500 bg-opacity-70': tag === 'new', 'bg-red-400 bg-opacity-70': tag === 'hot',
                   'bg-green-600 bg-opacity-70': tag === 'open'}"
               >
                 {{ tag === 'new' ? 'Recent' : tag }}

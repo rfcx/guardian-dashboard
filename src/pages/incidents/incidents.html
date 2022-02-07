@@ -80,7 +80,7 @@
               <div
                 v-for="tag of stream.tags"
                 class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
-                :class="{'bg-yellow-500': tag === 'new', 'bg-red-400': tag === 'hot', 'bg-green-500': tag === 'open'}"
+                :class="{'bg-yellow-500 bg-opacity-70': tag === 'new', 'bg-red-400 bg-opacity-70': tag === 'hot', 'bg-green-600 bg-opacity-70': tag === 'open'}"
               >
                 {{ tag === 'new' ? 'Recent' : tag }}
               </div>
