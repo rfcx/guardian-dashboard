@@ -73,7 +73,7 @@ export interface ResponseExtended extends Response {
   showTrack: boolean
   showPlayer: boolean
   assetsData: any[]
-  sliderData: any[]
+  sliderData?: any[]
   trackData: any
   notesData: string[]
   audioObject: any

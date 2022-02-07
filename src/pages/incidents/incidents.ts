@@ -36,7 +36,7 @@ export default class IncidentsPage extends Vue {
   public streamsData: Stream[] | undefined
   public incidentsStatus: IncidentStatus[] = [
     { value: 'any', label: 'Any', checked: true },
-    { value: 'new', label: 'Recent', checked: false },
+    { value: 'recent', label: 'Recent', checked: false },
     { value: 'hot', label: 'Hot', checked: false }
   ]
 
@@ -184,6 +184,6 @@ export default class IncidentsPage extends Vue {
 
   public optionsForStatus (status: string): statusOptions | undefined {
     if (status === 'hot') return { has_hot_incident: true }
-    else if (status === 'new') return { has_new_events: true }
+    else if (status === 'recent') return { has_new_events: true }
   }
 }

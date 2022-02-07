@@ -23,14 +23,14 @@
                 v-for="tag of stream.tags"
                 class="shadow-sm text-xs text-gray-200 tracking-wide rounded-lg leading-none mr-2 px-2 py-1 inline-block capitalize"
                 title="Tag"
-                :class="{'bg-yellow-500 bg-opacity-70': tag === 'new', 'bg-red-400 bg-opacity-70': tag === 'hot',
+                :class="{'bg-blue-500 bg-opacity-70': tag === 'recent', 'bg-red-400 bg-opacity-70': tag === 'hot',
                   'bg-green-600 bg-opacity-70': tag === 'open'}"
               >
-                {{ tag === 'new' ? 'Recent' : tag }}
+                {{ tag }}
               </div>
             </div>
             <div class="rounded-md shadow mt-3 text-sm text-gray-500 text-white">
-              <a v-if="!incident.closedAt && !isError()" @click="closeReport()" class="inline-flex items-center justify-center px-3 py-0.5 border border-transparent text-white font-small rounded-md bg-gray-600 hover:bg-gray-800 cursor-pointer">
+              <a v-if="!incident.closedAt && !isError()" @click="closeReport()" class="inline-flex items-center justify-center px-3 py-0.5 border border-transparent text-white font-small rounded-md bg-gray-600 hover:bg-steel-grey cursor-pointer">
                 Mark as closed
               </a>
               <span v-else class="text-sm font-medium text-white px-3 py-0.7" :class="{'text-danger': isError()}">{{incidentStatus}}</span>
@@ -53,7 +53,7 @@
             <div class="text-xs text-gray-500 pt-2">Response time</div>
             <div class="text-lg text-gray-200" :title="incident.responseTitle">{{ incident.responses.length ? incident.responseLabel : '-' }}</div>
           </div>
-          <div class="bg-gray-800 flex justify-center items-center">
+          <div class="bg-steel-grey flex justify-center items-center">
             <div v-if="!stream" class="text-xs text-gray-500 my-3 py-12 text-center">[Map]</div>
             <map-component v-if="stream && mapData.center && mapData.center" :zoom="mapData.zoom" :center="mapData.center" :width="'h-100px'"/>
           </div>
@@ -63,10 +63,10 @@
         No responses and events data
       </div>
 
-      <div class="my-4">
+      <div class="mx-auto px-2 py-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:grid grid-cols-12 text-gray-50">
           <div v-for="item in incident.items" class="flex md:contents">
-            <div class="col-start-1 col-end-2 mr-10 md:mx-auto relative sm:mr-2 <sm:mr-2">
+            <div class="relative justify-start col-span-1 sm:mr-2 <sm:mr-2">
               <div class="h-full w-7 flex items-center justify-center">
                 <div class="h-full w-1 bg-gray-500 pointer-events-none"></div>
               </div>
@@ -80,11 +80,11 @@
                 </div>
               </div>
             </div>
-            <div v-if="item.type === 'event'" class="bg-gray-800 col-start-2 col-end-12 px-4 py-2 rounded-lg my-2 mr-auto">
+            <div v-if="item.type === 'event'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">
               <span class="mr-2">{{formatDayWithoutTime(item.createdAt)}}, {{timeFormatted(item.start)}}-{{timeFormatted(item.end)}} {{getGmtDiffFormat(item.createdAt)}}</span>
               <span class="font-semibold">{{item.classification && item.classification.title}}</span>
             </div>
-            <div v-if="item.type === 'response'" class="bg-gray-800 col-start-2 col-end-12 px-4 py-2 rounded-lg my-2 mr-auto">
+            <div v-if="item.type === 'response'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">
               <div>
                 <span class="mr-2">{{dateFormatted(item.investigatedAt) || 0}} {{getGmtDiffFormat(item.investigatedAt)}}</span>
                 <span class="font-semibold">Response</span> by {{ getCreatedByLabel(item.createdBy) }}

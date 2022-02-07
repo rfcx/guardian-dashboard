@@ -10,7 +10,7 @@
         class="hidden sm:inline-block sm:align-middle sm:h-screen"
         aria-hidden="true"
       />
-      <div class="inline-block bg-gray-800 rounded text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+      <div class="inline-block bg-steel-grey rounded text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
         <OnClickOutside @trigger="close">
           <div>
             <div class="flex flex-row justify-between content-center pt-4 pb-2 px-4 border-b-1">
@@ -40,11 +40,11 @@
           </div>
           <div
             v-if="isLoading || !notes.length"
-            class="flex flex-row bg-gray-800 h-10 w-10 min-h-lg"
+            class="flex flex-row bg-steel-grey h-10 w-10 min-h-lg"
             :style="{margin: '0 auto'}"
           >
             <svg
-              class="animate-spin bg-gray-800 text-white"
+              class="animate-spin bg-steel-grey text-white"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
