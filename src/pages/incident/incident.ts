@@ -256,6 +256,7 @@ export default class IncidentPage extends Vue {
       const items = (this.incident.items.filter(i => i.type === 'response')) as ResponseExtended[]
       for (const item of items) {
         item.assetsData = await IncidentsService.getResposesAssets(item.id)
+        item.sliderData = []
         for (const a of item.assetsData) {
           if (isDefined(a) && isNotDefined(a.mimeType)) return
           const asset = await IncidentsService.getFiles(a.id)
@@ -276,8 +277,7 @@ export default class IncidentPage extends Vue {
             const reader = new FileReader()
             reader.addEventListener('loadend', () => {
               const contents = reader.result as string
-              if (a.mimeType.includes('image') === true) {
-                item.sliderData = []
+              if (a.mimeType.includes('image') === true && item.sliderData) {
                 item.sliderData.push({
                   src: contents,
                   assetId: a.id,

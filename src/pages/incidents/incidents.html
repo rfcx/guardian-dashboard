@@ -2,11 +2,11 @@
   <div class="bg-gray shadow overflow-hidden px-20 <sm:(px-0 pt-0)">
     <div v-if="auth?.isAuthenticated">
       <div class="mt-1 flex flex-row items-center <sm:(flex-wrap flex-col items-start)">
-        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-gray-800 w-60 mr-2 <sm:mb-2">
+        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 mr-2 <sm:mb-2">
           <input
             v-model="searchLabel"
             type="text"
-            class="search px-1 py-0 text-white text-sm font-medium bg-gray-800 focus:steel-grey focus:outline-none outline-none border-none w-full focus:ring-transparent"
+            class="search px-1 py-0 text-white text-sm font-medium bg-steel-grey focus:steel-grey focus:outline-none outline-none border-none w-full focus:ring-transparent"
             placeholder="Filter by keyword"
             @keyup="searchStream()"
           >
@@ -15,7 +15,7 @@
           <button
             v-if="incidentsStatus"
             type="button"
-            class="relative w-full bg-gray-800 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm w-40 flex items-center mr-2 <sm:mb-2"
+            class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm w-40 flex items-center mr-2 <sm:mb-2"
             aria-expanded="false" aria-labelledby="listbox-label" aria-haspopup="true" id="status-button"
             @click="toggleStatusMenu()"
           >
@@ -31,7 +31,7 @@
               </svg>
             </span>
           </button>
-          <ul v-if="incidentsStatus !== undefined && statusSelected === true" class="absolute z-10 mt-1 bg-gray-800 w-40 shadow-lg max-h-56 rounded-md overflow-y focus:outline-none"
+          <ul v-if="incidentsStatus !== undefined && statusSelected === true" class="absolute z-10 mt-1 bg-steel-grey w-40 shadow-lg max-h-56 rounded-md overflow-y focus:outline-none"
             role="menu" aria-labelledby="status-button" @mouseleave="statusSelected = false">
             <li
               v-for="(status, i) in incidentsStatus"
@@ -53,7 +53,7 @@
             </li>
           </ul>
         </div>
-        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-gray-800 w-60 <sm:mb-2">
+        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 <sm:mb-2">
           <input id="closedIncidents" name="closedIncidents" value="incidentsClosed.value" v-model="incidentsClosed.checked" type="checkbox" class="h-3 w-3 rounded bg-gray text-gray-500 focus:ring-transparent" @change="getPage($event)" />
           <label for="closedIncidents" class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap">
             {{ incidentsClosed.label }}
@@ -73,16 +73,16 @@
       v-if="streamsData && streamsData.length && !isLoading"
       class="mt-5"
       >
-        <div class="bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-gray-800 rounded-md" v-for="stream of streamsData">
+        <div class="px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
           <dt title="Stream" class="flex justify-start items-center whitespace-nowrap">
             <span class="text-secondary text-xl mr-4">{{getStreamName(stream.id)}}</span>
             <div v-if="stream.tags && stream.tags.length" class="flex justify-start">
               <div
                 v-for="tag of stream.tags"
                 class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
-                :class="{'bg-yellow-500 bg-opacity-70': tag === 'new', 'bg-red-400 bg-opacity-70': tag === 'hot', 'bg-green-600 bg-opacity-70': tag === 'open'}"
+                :class="{'bg-blue-500 bg-opacity-70': tag === 'recent', 'bg-red-400 bg-opacity-70': tag === 'hot', 'bg-green-600 bg-opacity-70': tag === 'open'}"
               >
-                {{ tag === 'new' ? 'Recent' : tag }}
+                {{ tag }}
               </div>
             </div>
           </dt>
