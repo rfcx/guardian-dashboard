@@ -102,8 +102,10 @@ function combineLabel (dateDiff: duration.Duration, excludeHours?: boolean): str
       if (item === 'seconds' && (data.minutes !== 0 && data.hours !== 0) && excludeHours === undefined) return string
       if (excludeHours !== undefined && data.seconds !== 0 && item === 'seconds') {
         // do not include seconds
-      } else if (excludeHours !== undefined && data.hours !== 0 && item === 'minutes') {
-        // do not include minutes if hours exist
+      } else if (excludeHours !== undefined && (data.hours !== 0 || data.days !== 0) && item === 'minutes') {
+        // do not include minutes if hours, days exist
+      } else if (excludeHours !== undefined && data.days !== 0 && item === 'hours') {
+        // do not include hours if days exist
       } else string += ` ${(data[item] as string)} ${getEndLabel(data[item], item)}`
     }
   })
