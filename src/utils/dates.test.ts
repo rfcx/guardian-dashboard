@@ -125,7 +125,9 @@ describe('getPlayerTime', () => {
 describe('twoDateDiffExcludeHours: get the difference between two days excluding hours if difference more than one day', () => {
   const examples = [
     ['2021-12-22T12:27:00.075Z', '2021-12-27T03:53:27.023Z', ' 4 days'],
-    ['2021-12-07T16:29:00.075Z', '2021-12-07T16:46:36.176Z', ' 17 minutes 36 seconds']
+    ['2021-12-07T16:29:00.075Z', '2021-12-07T16:46:36.176Z', ' 17 minutes'],
+    ['2021-12-07T13:29:00.075Z', '2021-12-07T16:46:36.176Z', ' 3 hours'],
+    ['2021-11-07T13:29:00.075Z', '2021-12-07T16:46:36.176Z', ' 1 month 3 hours']
   ]
 
   test('Test different days, months, years, time', () => {

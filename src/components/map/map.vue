@@ -14,7 +14,7 @@
     >
     <img
       v-if="isLoading"
-      class="h-8 w-8 animate-spin bg-gray-800 text-white"
+      class="h-8 w-8 animate-spin bg-steel-grey text-white"
       src="/src/assets/spinner.svg"
     >
   </div>
