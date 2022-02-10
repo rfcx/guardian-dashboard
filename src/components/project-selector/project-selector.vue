@@ -40,7 +40,7 @@
                   <span class="truncate w-11/12">{{ project.name }}</span>
                   <span v-if="selectedProject !== undefined">
                     <i
-                      v-if="isSelectedProject(project) && selectedProject !== undefined"
+                      v-if="isSelectedProject(project)"
                       class="icon-check"
                     />
                   </span>
