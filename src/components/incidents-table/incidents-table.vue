@@ -8,15 +8,17 @@
     :class="{ 'border-b border-gray-700': itemsData.length > 1 && i !== itemsData.length - 1 }"
   >
     <div class="pr-2 flex flex-nowrap items-center justify-start flex-1 <sm:py-1">
-      <span class="text-white text-lg mr-1">#{{ incident.ref }}</span>
+      <span class="text-white text-lg mr-2">#{{ incident.ref }}</span>
       <div
         v-if="incident.closedAt"
-        class="px-3 shadow-sm inline-block mr-2 flex self-center items-center text-sm tracking-wide btn-tag leading-none bg-gray-500"
+        class="px-3 shadow-sm inline-block mr-2 flex self-center items-center text-sm tracking-wide btn-tag leading-none bg-gray-600 bg-opacity-70"
       >
         Closed
       </div>
     </div>
-    <div class="pr-2 col-span-2 flex flex-1 justify-start flex-wrap items-end text-secondary <sm:py-1">
+    <div
+      class="pr-2 col-span-2 flex flex-1 justify-start flex-wrap items-end text-secondary <sm:py-1"
+    >
       <img
         v-if="incident.events.length"
         title="Events"
@@ -32,22 +34,22 @@
       </div>
       <div
         v-if="incident.events.length"
-        class="flex flex-row"
+        class="flex flex-row items-start"
       >
         <div
           v-for="event in getEventsCount(incident.events)"
           :key="event.value"
-          class="text-sm text-secondary mr-3"
+          class="text-sm text-secondary mb-0.2 mr-3"
           :title="getIconTitle(event.count, event.value)"
         >
           <img
-            class="h-5 w-5 inline-block self-center text-gray-500 mr-1"
+            class="h-5 w-5 inline-block self-start mr-1"
             :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`"
             alt=""
             @error="setDefaultReportImg"
           >
           <span
-            class="text-sm mb-0.2 text-center"
+            class="text-sm text-secondary text-center"
           >
             {{ event.count || '' }}
           </span>

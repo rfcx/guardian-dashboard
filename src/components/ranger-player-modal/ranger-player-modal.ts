@@ -101,10 +101,11 @@ export default class RangerPlayerComponent extends Vue {
     this.audioProp.current = getPlayerTime(this.audio.currentTime)
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public onProgressClicked (event: any): void {
+  public onProgressClicked (event: MouseEvent): void {
     if (this.audio?.duration === undefined) return
-    const newTime = event.offsetX / event.target.offsetWidth * Math.round(this.audio.duration)
+    if (event?.offsetX === undefined) return
+    if (event?.target === undefined) return
+    const newTime = event.offsetX / (event.target as HTMLElement).offsetWidth * Math.round(this.audio.duration)
     this.audio.currentTime = newTime
     this.onTimeUpdate()
   }

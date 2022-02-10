@@ -1,11 +1,11 @@
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 
-import { Event, EventExtended, Incident, Response, ResponseExtended } from '@/types'
+import { Event as Ev, EventExtended, Incident, Response, ResponseExtended } from '@/types'
 import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
 
-interface IncidentItem extends Event, Incident, Response {
+interface IncidentItem extends Ev, Incident, Response {
   eventsTitle: string
   eventsLabel: string
   responseTitle: string
@@ -47,8 +47,8 @@ export default class IncidentsTableRows extends Vue {
     return formatTimeLabel(date, this.timezone)
   }
 
-  public getFirstOrLastItem (items: Response[] | Event[], firstItem: boolean): Response | Event {
-    items.sort((a: Response | Event, b: Response | Event) => {
+  public getFirstOrLastItem (items: Response[] | Ev[], firstItem: boolean): Response | Ev {
+    items.sort((a: Response | Ev, b: Response | Ev) => {
       const dateA = new Date(this.getItemDatetime(a, firstItem)).valueOf()
       const dateB = new Date(this.getItemDatetime(b, firstItem)).valueOf()
       return firstItem ? dateA - dateB : dateB - dateA
@@ -56,14 +56,14 @@ export default class IncidentsTableRows extends Vue {
     return items[0]
   }
 
-  public getItemDatetime (item: Response | Event, first: boolean): string {
-    const itemIsEvent = (item as Event).start !== undefined
-    return itemIsEvent ? (first ? (item as Event).start : (item as Event).end) : (item as Response).submittedAt
+  public getItemDatetime (item: Response | Ev, first: boolean): string {
+    const itemIsEvent = (item as Ev).start !== undefined
+    return itemIsEvent ? (first ? (item as Ev).start : (item as Ev).end) : (item as Response).submittedAt
   }
 
-  public getEventsTitle (events: Event[]): string {
-    const start = (this.getFirstOrLastItem(events, true) as Event).start
-    const end = (this.getFirstOrLastItem(events, false) as Event).end
+  public getEventsTitle (events: Ev[]): string {
+    const start = (this.getFirstOrLastItem(events, true) as Ev).start
+    const end = (this.getFirstOrLastItem(events, false) as Ev).end
     return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
   }
 
@@ -71,15 +71,16 @@ export default class IncidentsTableRows extends Vue {
     return `${count} ${value} ${count > 1 ? 'events' : 'event'}`
   }
 
-  public getEventsLabel (events: Event[]): string {
-    const start = (this.getFirstOrLastItem(events, true) as Event).start
-    const end = (this.getFirstOrLastItem(events, false) as Event).end
+  public getEventsLabel (events: Ev[]): string {
+    const start = (this.getFirstOrLastItem(events, true) as Ev).start
+    const end = (this.getFirstOrLastItem(events, false) as Ev).end
     return formatDateTimeRange(start, end, this.timezone)
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public setDefaultReportImg (e: any): void {
-    e.target.src = icons.reportIcon
+  public setDefaultReportImg (e: Event): void {
+    if ((e?.target as HTMLImageElement) !== undefined) {
+      (e.target as HTMLImageElement).src = icons.reportIcon
+    }
   }
 
   public getResponseTitle (responses: Response[]): string {
@@ -106,13 +107,12 @@ export default class IncidentsTableRows extends Vue {
     if (incident.responses.length === 0 || incident.events.length === 0) {
       return '-'
     }
-    return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem((incident.events as EventExtended[]), true) as Event).start, (this.getFirstOrLastItem((incident.responses as ResponseExtended[]), true) as Response).submittedAt, true) as string)}`
+    return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem((incident.events as EventExtended[]), true) as Ev).start, (this.getFirstOrLastItem((incident.responses as ResponseExtended[]), true) as Response).submittedAt, true) as string)}`
   }
 
-  public getEventsCount (events: Event[]): EventItem[] {
-    // eslint-disable-next-line prefer-const
-    let rows: any = {}
-    events.forEach((e: Event) => {
+  public getEventsCount (events: Ev[]): EventItem[] {
+    const rows: Record<string, EventItem> = {}
+    events.forEach((e: Ev) => {
       if (rows[e.classification.value] === undefined) {
         rows[e.classification.value] = {
           value: e.classification.value,

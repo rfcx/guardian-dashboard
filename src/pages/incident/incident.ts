@@ -9,7 +9,7 @@ import RangerPlayerComponent from '@/components/ranger-player-modal/ranger-playe
 import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService } from '@/services'
-import { Answer, AnswerItem, Event, Incident, MapboxOptions, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
+import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
 import { downloadContext, formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, getDay, getGmtDiff, inLast1Minute, inLast24Hours, isDateToday, isDateYesterday, isDefined, isNotDefined } from '@/utils'
 import icons from '../../assets/index'
 
@@ -72,19 +72,20 @@ export default class IncidentPage extends Vue {
     await this.getAssets()
   }
 
-  public getEventsTitle (events: Event[]): string {
-    const start = (this.getFirstOrLastItem(events, true) as Event).start
-    const end = (this.getFirstOrLastItem(events, false) as Event).end
+  public getEventsTitle (events: Ev[]): string {
+    const start = (this.getFirstOrLastItem(events, true) as Ev).start
+    const end = (this.getFirstOrLastItem(events, false) as Ev).end
     return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public setDefaultReportImg (e: any): void {
-    e.target.src = icons.reportIcon
+  public setDefaultReportImg (e: Event): void {
+    if ((e?.target as HTMLImageElement) !== undefined) {
+      (e.target as HTMLImageElement).src = icons.reportIcon
+    }
   }
 
-  public getFirstOrLastItem (items: Response[] | Event[], firstItem: boolean): Response | Event {
-    items.sort((a: Response | Event, b: Response | Event) => {
+  public getFirstOrLastItem (items: Response[] | Ev[], firstItem: boolean): Response | Ev {
+    items.sort((a: Response | Ev, b: Response | Ev) => {
       const dateA = new Date(this.getItemDatetime(a, firstItem)).valueOf()
       const dateB = new Date(this.getItemDatetime(b, firstItem)).valueOf()
       return firstItem ? dateA - dateB : dateB - dateA
@@ -92,21 +93,20 @@ export default class IncidentPage extends Vue {
     return items[0]
   }
 
-  public getItemDatetime (item: Response | Event, first: boolean): string {
-    const itemIsEvent = (item as Event).start !== undefined
-    return itemIsEvent ? (first ? (item as Event).start : (item as Event).end) : (item as Response).submittedAt
+  public getItemDatetime (item: Response | Ev, first: boolean): string {
+    const itemIsEvent = (item as Ev).start !== undefined
+    return itemIsEvent ? (first ? (item as Ev).start : (item as Ev).end) : (item as Response).submittedAt
   }
 
-  public getEventsLabel (events: Event[]): string {
-    const start = (this.getFirstOrLastItem(events, true) as Event).start
-    const end = (this.getFirstOrLastItem(events, false) as Event).end
+  public getEventsLabel (events: Ev[]): string {
+    const start = (this.getFirstOrLastItem(events, true) as Ev).start
+    const end = (this.getFirstOrLastItem(events, false) as Ev).end
     return formatDateTimeRange(start, end, this.stream?.timezone)
   }
 
-  public getEventsCount (events: Event[]): EventItem[] {
-    // eslint-disable-next-line prefer-const
-    let rows: any = {}
-    events.forEach((e: Event) => {
+  public getEventsCount (events: Ev[]): EventItem[] {
+    const rows: Record<string, EventItem> = {}
+    events.forEach((e: Ev) => {
       if (rows[e.classification.value] === undefined) {
         rows[e.classification.value] = {
           value: e.classification.value,

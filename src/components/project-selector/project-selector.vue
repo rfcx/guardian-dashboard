@@ -38,10 +38,12 @@
                   @click="setSelectedProject(project)"
                 >
                   <span class="truncate w-11/12">{{ project.name }}</span>
-                  <i
-                    v-show="isSelectedProject(project)"
-                    class="icon-check"
-                  />
+                  <span v-if="selectedProject !== undefined">
+                    <i
+                      v-if="isSelectedProject(project)"
+                      class="icon-check"
+                    />
+                  </span>
                 </div>
               </div>
               <div class="flex justify-end mt-2">

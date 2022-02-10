@@ -1,7 +1,7 @@
 <template>
   <div id="index-page">
     <navigation-bar-component />
-    <div class="pt-10 px-20 <sm:(px-3 pt-3)">
+    <div class="pt-10 <sm:(px-3 pt-3)">
       <div class="bg-gray shadow overflow-hidden">
         <div>
           <div
@@ -92,7 +92,7 @@
                 </svg>
                 <span class="text-white">{{ getProjectName(incident.streamId) }}</span>
               </dt>
-              <dt class="text-sm font-medium flex items-center justify-start <sm:(pl-12)">
+              <dt class="text-sm font-medium flex items-center justify-start <sm:pl-12">
                 <span
                   v-if="incident.items && !incident.items.length && !incident.closedAt"
                   class="text-white"
