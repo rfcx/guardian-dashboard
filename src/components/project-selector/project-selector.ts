@@ -16,10 +16,26 @@ export default class ProjectSelectorComponent extends Vue {
 
   public componentProjects: Project[] | undefined
 
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  public selectedProject: any = {}
+  public selectedProject: Project | undefined
 
   public searchLabel = ''
+
+  @Emit('closeProjectSelector')
+  public closeProjectSelector (): boolean {
+    return false
+  }
+
+  data (): Record<string, unknown> {
+    return {
+      componentProjects: this.componentProjects,
+      selectedProject: this.selectedProject
+    }
+  }
+
+  mounted (): void {
+    this.componentProjects = this.projects
+    this.getSelectedProject()
+  }
 
   public isSelectedProject (project: Project): boolean {
     return project.id === this.selectedProject?.id
@@ -46,21 +62,5 @@ export default class ProjectSelectorComponent extends Vue {
     const newProjectId = this.selectedProject?.id
     if (newProjectId !== undefined) void this.$router.push({ name: ROUTES_NAME.incidents, params: { projectId: newProjectId } })
     this.closeProjectSelector()
-  }
-
-  @Emit('closeProjectSelector')
-  public closeProjectSelector (): boolean {
-    return false
-  }
-
-  data (): Record<string, unknown> {
-    return {
-      componentProjects: this.componentProjects
-    }
-  }
-
-  mounted (): void {
-    this.componentProjects = this.projects
-    this.getSelectedProject()
   }
 }

@@ -29,8 +29,9 @@ export default class AuthNavbarItemComponent extends Vue {
     this.isMenuOpen = !this.isMenuOpen
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public setDefaultAccountImg (e: any): void {
-    e.target.src = icons.accountIcon
+  public setDefaultAccountImg (e: Event): void {
+    if ((e?.target as HTMLImageElement) !== undefined) {
+      (e.target as HTMLImageElement).src = icons.accountIcon
+    }
   }
 }
