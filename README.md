@@ -21,6 +21,15 @@ Guardian Dashboard website build with Vue 3, Typescript, Vite, Windi CSS, Vuex
 
 `npm run lint`
 
-4. Build package:
+4. Run unit tests:
+
+`npx vitest`
+
+6. Build package:
 
 `npm run build`
+
+7. To see how it looks on production:
+
+`npm run docker.build`
+`npm run docker.run`
