@@ -1,6 +1,10 @@
 # Guardian Dashboard Release Notes
 
-## 0.0.6 (2022-01-?)
+## 0.0.7 (2022-02-XX)
+
+* **bug:** Fixed the issue for the RFCx icon in the Safari browser ([#50](https://github.com/rfcx/guardian-dashboard/issues/50))
+
+## 0.0.6 (2022-02-04)
 
 * **feature:** The UI logic is updated on the Incident page ([#71](https://github.com/rfcx/guardian-dashboard/issues/71))
 
