@@ -65,7 +65,7 @@
         alt=""
       >
       <div
-        class="text-sm mb-0.2 text-secondary"
+        class="text-sm mb-0.2 text-secondary w-150px"
         :title="incident.responseTitle"
       >
         {{ incident.responseLabel }}
