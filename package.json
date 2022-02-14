@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "serve": "vite",
     "test": "npx vitest",
-    "docker.build": "docker build . -t guardian-dashboard -f build/Dockerfile",
+    "docker.build": "docker build . -t guardian-dashboard -f build/Dockerfile.staging",
     "docker.run": "docker run --rm -it -p 8080:8080 guardian-dashboard"
   },
   "dependencies": {
