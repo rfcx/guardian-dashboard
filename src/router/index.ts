@@ -9,7 +9,8 @@ export const ROUTES_NAME = Object.freeze({
   index: 'index',
   incidents: 'incidents',
   incident: 'incident',
-  error: 'error'
+  error: 'error',
+  streams: 'streams'
 })
 
 const selectProjectGuard = createSelectProjectGuard(stores)
@@ -34,6 +35,12 @@ const routes: RouteRecordRaw[] = [
         path: '/project/:projectId/incidents/:id',
         name: ROUTES_NAME.incident,
         component: Pages.IncidentPage,
+        beforeEnter: [Auth0.routeGuard, selectProjectGuard]
+      },
+      {
+        path: '/streams/:streamId',
+        name: ROUTES_NAME.streams,
+        component: Pages.IndexPage,
         beforeEnter: [Auth0.routeGuard, selectProjectGuard]
       }
     ]

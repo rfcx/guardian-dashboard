@@ -1,5 +1,5 @@
 import { Vue } from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { Prop, Watch } from 'vue-property-decorator'
 
 import { Event as Ev, EventExtended, Incident, Response, ResponseExtended } from '@/types'
 import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
@@ -24,6 +24,11 @@ export default class IncidentsTableRows extends Vue {
   items!: IncidentItem[]
 
   public itemsData: IncidentItem[] = []
+
+  @Watch('items')
+  onItemsChange (): void {
+    this.combineItemsTitles(this.items)
+  }
 
   mounted (): void {
     this.combineItemsTitles(this.items)

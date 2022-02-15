@@ -1,16 +1,16 @@
 import { Options, Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 
+import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
 import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
-import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Auth0Option, Event, EventExtended, Incident, Pagination, Project, ResponseExtended, Stream } from '@/types'
-import { formatDiffFromNow, getUtcTimeValueOf } from '@/utils'
+import { Auth0Option, Incident, Pagination, Stream } from '@/types'
 
 @Options({
   components: {
+    IncidentsTableRows,
     InvalidProjectComponent,
-    NavigationBarComponent,
     PaginationComponent
   }
 })
@@ -19,11 +19,10 @@ export default class IndexPage extends Vue {
   public auth!: Auth0Option | undefined
 
   public incidents: Incident[] | undefined
-  public errorMessage: string | undefined
-  public streamsData: Stream[] = []
-  public selectedProject: Project | undefined
   public isLoading = false
   public isPaginationAvailable = false
+  public stream?: Stream
+
   public paginationSettings: Pagination = {
     total: 0,
     limit: 10,
@@ -34,58 +33,28 @@ export default class IndexPage extends Vue {
   data (): Record<string, unknown> {
     return {
       incidents: this.incidents,
-      selectedProject: this.selectedProject
+      stream: this.stream
     }
   }
 
-  mounted (): void {
-    if (this.$route.params.projectId === undefined && this.auth?.isAuthenticated) {
-      this.isLoading = true
-      void this.getIncidentsData()
-      void this.getStreamsData()
+  @Watch('$route.params')
+  onRouteParamsChange (): void {
+    this.resetPaginationData()
+    this.isLoading = true
+    void this.onUpdatePage()
+  }
+
+  async created (): Promise<void> {
+    if (!this.getStreamIdFromRouterParams()) {
+      return
     }
-  }
-
-  public formatDiffFromNow (date: string, timezone: string): string {
-    return formatDiffFromNow(date, timezone)
-  }
-
-  public async getStreamsData (): Promise<void> {
-    const streamsData = await StreamService.getStreams()
-    this.streamsData = streamsData.data
-  }
-
-  public getStreamName (streamId: string): string | null {
-    const stream: Stream | undefined = this.getStreamById(streamId)
-    return stream !== undefined ? stream.name : null
-  }
-
-  public getProjectName (streamId: string): string | null | undefined {
-    const stream: Stream | undefined = this.getStreamById(streamId)
-    return stream !== undefined ? stream.project?.name : null
-  }
-
-  public getProjectId (streamId: string): string | null | undefined {
-    const stream: Stream | undefined = this.getStreamById(streamId)
-    return stream !== undefined ? stream.project?.id : null
-  }
-
-  public getStreamTimezone (streamId: string): string | undefined {
-    const stream: Stream | undefined = this.getStreamById(streamId)
-    if (stream !== undefined) {
-      return stream.timezone
-    }
-  }
-
-  public getStreamById (streamId: string): Stream | undefined {
-    const stream = this.streamsData.find(s => s.id === streamId)
-    return stream
+    await this.onUpdatePage()
   }
 
   public async getIncidentsData (): Promise<void> {
-    this.errorMessage = ''
     try {
       const resp = await IncidentsService.getIncidents({
+        streams: [this.getStreamIdFromRouterParams()],
         limit: this.paginationSettings.limit,
         offset: this.paginationSettings.offset * this.paginationSettings.limit
       })
@@ -102,56 +71,49 @@ export default class IndexPage extends Vue {
     }
   }
 
-  // The function returns a count of last events without response.
-  public getEventsCount (incident: Incident): number {
-    return this.getLastEvents(incident).length
+  async onUpdatePage (): Promise<void> {
+    await this.getStreamData()
+    await this.getIncidentsData()
   }
 
-  public getLastEvents (incident: Incident): Event[] {
-    let lastEvents: Event[] = []
-    if (incident.events.length && incident.responses.length) {
-      const events = this.filterEvents(incident)
-      lastEvents = events
+  public getStreamIdFromRouterParams (): string {
+    const streamId: string = this.$route.params.streamId as string
+    return streamId
+  }
+
+  public resetPaginationData (): void {
+    this.paginationSettings = {
+      total: 0,
+      limit: 10,
+      offset: 0,
+      page: 1
     }
-    if (incident.events.length && !incident.responses.length) {
-      lastEvents = incident.events
-    }
-    lastEvents.length ?? this.sortItems(lastEvents)
-    return lastEvents
   }
 
-  // The function compares a response submission time with the event start time.
-  public filterEvents (incident: Incident): Event[] {
-    const temp: number[] = incident.responses.map(r => { return getUtcTimeValueOf(r.submittedAt) })
-    const maxTime: number = Math.max(...temp)
-    return incident.events.filter(e => getUtcTimeValueOf(e.start) > maxTime)
+  public getStreamName (): string | undefined {
+    return this.stream?.name
   }
 
-  public getItemDatetime (item: ResponseExtended | EventExtended | Event): string {
-    if ((item as Event).start) {
-      return (item as Event).start
-    }
-    return (item as EventExtended).type === 'event' ? (item as EventExtended).start : (item as ResponseExtended).submittedAt
+  public getStreamTimezone (): string | undefined {
+    return this.stream?.timezone
   }
 
-  public sortItems (items: Array<ResponseExtended | EventExtended | Event>): void {
-    items.sort((a: ResponseExtended | EventExtended | Event, b: ResponseExtended | EventExtended | Event) => {
-      const dateA = new Date(this.getItemDatetime(a)).valueOf()
-      const dateB = new Date(this.getItemDatetime(b)).valueOf()
-      return dateB - dateA
+  public async getStreamData (): Promise<void> {
+    this.isLoading = true
+    return await StreamService.getStreams({
+      streams: [this.getStreamIdFromRouterParams()],
+      include_closed_incidents: true
+    }).then(res => {
+      this.stream = res.data.find(stream => { return stream.id === this.getStreamIdFromRouterParams() })
+    }).catch(e => {
+      console.error('Error getting streams data', e)
+    }).finally(() => {
+      this.isLoading = false
     })
   }
 
-  public getEventsLabel (events: Event[], timezone: string): string {
-    this.sortItems(events)
-    return events.length ? `${this.formatDiffFromNow(events[events.length - 1].start, timezone)} no response` : ''
-  }
-
-  public getResponsesLabel (incident: Incident, timezone: string): string {
-    return `last response was ${this.formatDiffFromNow(incident.items[0].createdAt, timezone)} ago`
-  }
-
-  public getClosedLabel (closedAt: string, timezone: string): string {
-    return `incident closed ${this.formatDiffFromNow(closedAt, timezone)} ago`
+  public async getPage (): Promise<void> {
+    this.isLoading = true
+    await this.getIncidentsData()
   }
 }

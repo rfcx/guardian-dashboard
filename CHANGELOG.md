@@ -2,6 +2,7 @@
 
 ## 0.0.7 (2022-02-XX)
 
+* **feature:** The ability to see more than 3 incidents is added ([#97](https://github.com/rfcx/guardian-dashboard/issues/97))
 * **bug:** Fixed the issue for the RFCx icon in the Safari browser ([#50](https://github.com/rfcx/guardian-dashboard/issues/50))
 
 ## 0.0.6 (2022-02-04)

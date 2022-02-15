@@ -9,6 +9,7 @@ export interface Stream {
   longitude?: number
   project?: Project
   incidents?: IncidentsObject
+  tags?: string[]
 }
 
 export interface IncidentsObject {
@@ -18,6 +19,7 @@ export interface IncidentsObject {
 
 export interface StreamsWithIncidentsParams {
   projects?: string[]
+  streams?: string[]
   limit?: number
   offset?: number
   keyword?: string
