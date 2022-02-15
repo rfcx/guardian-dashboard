@@ -67,7 +67,10 @@
       :pagination-settings="paginationSettings"
       @selected-page="getPage()"
     />
-    <invalid-stream-component v-if="!isDataValid" />
+    <invalid-page-state-component
+      v-if="!isDataValid"
+      :message="'This stream either does not exist or you do not have permission to access it'"
+    />
   </div>
 </template>
 <script src="./index.ts" lang="ts" />

@@ -133,6 +133,6 @@
         </div>
       </div>
     </div>
-    <invalid-project-component v-if="!incident && !isLoading" />
+    <invalid-page-state-component v-if="!incident && !isLoading" :message="'This incident either does not exist or you do not have permission to access it'"/>
   </div>
 </div>

@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
-import InvalidStreamComponent from '@/components/invalid-stream/invalid-stream.vue'
+import InvalidPageStateComponent from '@/components/invalid-page-state/invalid-page-state.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Incident, Pagination, Stream } from '@/types'
@@ -10,7 +10,7 @@ import { Auth0Option, Incident, Pagination, Stream } from '@/types'
 @Options({
   components: {
     IncidentsTableRows,
-    InvalidStreamComponent,
+    InvalidPageStateComponent,
     PaginationComponent
   }
 })
@@ -51,7 +51,7 @@ export default class IndexPage extends Vue {
     if (!this.getStreamIdFromRouterParams()) return
     this.isDataValid = true
     await this.onUpdatePage()
-    if (!this.incidents?.length || !this.stream) {
+    if ((this.incidents && !this.incidents.length) ?? !this.stream) {
       this.isDataValid = false
     }
   }
