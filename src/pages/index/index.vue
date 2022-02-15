@@ -1,6 +1,9 @@
 <template>
   <div id="index-page">
-    <div class="bg-gray shadow overflow-hidden <sm:pt-0">
+    <div
+      v-if="isDataValid"
+      class="bg-gray shadow overflow-hidden <sm:pt-0"
+    >
       <div class="px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md">
         <div
           title="Stream"
@@ -64,6 +67,7 @@
       :pagination-settings="paginationSettings"
       @selected-page="getPage()"
     />
+    <invalid-stream-component v-if="!isDataValid" />
   </div>
 </template>
 <script src="./index.ts" lang="ts" />

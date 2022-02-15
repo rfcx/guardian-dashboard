@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
-import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
+import InvalidStreamComponent from '@/components/invalid-stream/invalid-stream.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { IncidentsService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Incident, Pagination, Stream } from '@/types'
@@ -10,7 +10,7 @@ import { Auth0Option, Incident, Pagination, Stream } from '@/types'
 @Options({
   components: {
     IncidentsTableRows,
-    InvalidProjectComponent,
+    InvalidStreamComponent,
     PaginationComponent
   }
 })
@@ -19,6 +19,7 @@ export default class IndexPage extends Vue {
   public auth!: Auth0Option | undefined
 
   public incidents: Incident[] | undefined
+  public isDataValid = true
   public isLoading = false
   public isPaginationAvailable = false
   public stream?: Stream
@@ -40,15 +41,19 @@ export default class IndexPage extends Vue {
   @Watch('$route.params')
   onRouteParamsChange (): void {
     this.resetPaginationData()
+    this.isDataValid = true
+    if (!this.getStreamIdFromRouterParams()) return
     this.isLoading = true
     void this.onUpdatePage()
   }
 
   async created (): Promise<void> {
-    if (!this.getStreamIdFromRouterParams()) {
-      return
-    }
+    if (!this.getStreamIdFromRouterParams()) return
+    this.isDataValid = true
     await this.onUpdatePage()
+    if (!this.incidents?.length || !this.stream) {
+      this.isDataValid = false
+    }
   }
 
   public async getIncidentsData (): Promise<void> {

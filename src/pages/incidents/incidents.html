@@ -70,7 +70,10 @@
       >
         <div class="px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
           <div title="Stream" class="flex justify-start items-center whitespace-nowrap">
-            <span class="text-secondary text-xl mr-2">{{getStreamName(stream.id)}}</span>
+            <router-link v-if="stream.incidents && stream.incidents.items && stream.incidents.items.length"
+              :to="{ path: '/streams/'+ stream.id}" tag="tr">
+              <span class="text-secondary text-xl mr-2">{{getStreamName(stream.id)}}</span>
+            </router-link>
             <div v-if="stream.tags && stream.tags.length" class="flex justify-start">
               <div
                 v-for="tag of stream.tags"
@@ -92,10 +95,7 @@
                   <router-link v-if="stream.incidents && stream.incidents.total && stream.incidents.total > 3" class="grid grid-cols-1 gap-2 cursor-pointer hover:bg-gray-300 hover:bg-opacity-5 border-t border-gray-700 py-2 <sm:(flex flex-col)"
                     :to="{ path: '/streams/'+ stream.id}" tag="tr">
                     <div class="pr-2 flex flex-nowrap items-center justify-start flex-1 text-sm text-secondary <sm:py-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-flex" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                      </svg>
-                      {{ stream.incidents.total - 3 }} more incidents
+                      + {{ stream.incidents.total - 3 }} more incidents
                     </div>
                   </router-link>
                   <div v-if="stream.incidents !== undefined && !stream.incidents.items.length && !stream.loading" class="flex justify-start items-center">
