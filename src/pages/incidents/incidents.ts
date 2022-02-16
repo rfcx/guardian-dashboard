@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
-import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
+import InvalidPageStateComponent from '@/components/invalid-page-state/invalid-page-state.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { StreamService, VuexService } from '@/services'
 import { Auth0Option, IncidentStatus, Pagination, Project, Stream } from '@/types'
@@ -16,7 +16,7 @@ interface statusOptions {
 @Options({
   components: {
     IncidentsTableRows,
-    InvalidProjectComponent,
+    InvalidPageStateComponent,
     PaginationComponent
   }
 })
