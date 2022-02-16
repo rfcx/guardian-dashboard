@@ -1,127 +1,76 @@
 <template>
   <div id="index-page">
-    <navigation-bar-component />
-    <div class="pt-10 <sm:(px-3 pt-3)">
-      <div class="bg-gray shadow overflow-hidden">
-        <div>
-          <div
-            v-if="isLoading"
-            class="bg-mirage-grey h-10 w-10"
-            :style="{margin: '0 auto'}"
+    <div
+      v-if="isDataValid"
+      class="bg-gray shadow overflow-hidden <sm:pt-0"
+    >
+      <div class="px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md">
+        <div
+          title="Stream"
+          class="flex justify-start items-center whitespace-nowrap"
+        >
+          <img
+            v-if="!stream"
+            class="h-5 w-5 animate-spin bg-steel-grey text-white"
+            src="/src/assets/spinner.svg"
           >
-            <svg
-              class="animate-spin bg-mirage-grey text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              />
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-          </div>
-          <div
-            v-if="incidents !== undefined && !incidents.length && !isLoading"
-            class="px-4 py-5 text-sm font-medium whitespace-nowrap text-white"
+          <span
+            v-if="stream !== undefined"
+            class="text-secondary text-xl mr-2"
           >
-            No incidents data
-          </div>
-          <invalid-project-component v-if="incidents === undefined && !isLoading && auth?.isAuthenticated" />
+            {{ getStreamName() }}
+          </span>
           <div
-            v-if="!auth?.isAuthenticated"
-            class="px-4 py-5 lg:text-center"
+            v-if="stream && stream.tags && stream.tags.length"
+            class="flex justify-start"
           >
-            <div class="lg:text-center">
-              <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
-                Guardian Dashboard
-              </p>
-              <p class="mt-4 max-w-2xl text-xl leading-relaxed text-white lg:mx-auto">
-                A dashboard for incidents and responses monitoring
-              </p>
-            </div>
-          </div>
-          <dl v-if="!isLoading && incidents !== undefined && incidents.length">
             <div
-              v-for="incident of incidents"
-              :key="incident.id"
-              class="bg-gray px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 border-b border-gray-500"
+              v-for="tag of stream.tags"
+              :key="tag"
+              class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
+              :class="{'bg-blue-500 bg-opacity-70': tag === 'recent', 'bg-red-400 bg-opacity-70': tag === 'hot', 'bg-green-600 bg-opacity-70': tag === 'open'}"
             >
-              <dt class="text-sm font-medium flex items-center">
-                <div
-                  :class="{'bg-red-500': getEventsCount(incident) !== 0, 'bg-green-500': getEventsCount(incident) === 0 || !getEventsCount(incident)}"
-                  class="h-10 w-10 rounded-full rounded-full inline-block flex justify-center items-center min-w-10 truncate"
-                >
-                  <span> {{ getEventsCount(incident) || ' ' }} </span>
-                </div>
-                <router-link
-                  v-if="incident !== undefined"
-                  :to="{ path: '/project/' + getProjectId(incident.streamId) + '/incidents/'+ incident.id}"
-                >
-                  <span class="border-b border-gray-200 whitespace-nowrap text-white mx-2">#{{ incident.ref }} {{ getStreamName(incident.streamId) }} {{ getProjectName(incident.streamId)? ', ' : '' }}</span>
-                </router-link>
-                <svg
-                  v-if="!getStreamName(incident.streamId)"
-                  class="animate-spin bg-mirage-grey text-white inline-block h-5 w-5 mx-1 align-top"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  />
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                <span class="text-white">{{ getProjectName(incident.streamId) }}</span>
-              </dt>
-              <dt class="text-sm font-medium flex items-center justify-start <sm:pl-12">
-                <span
-                  v-if="incident.items && !incident.items.length && !incident.closedAt"
-                  class="text-white"
-                >
-                  no events and responses
-                </span>
-                <span
-                  v-if="incident.closedAt"
-                  class="text-white"
-                >
-                  {{ getClosedLabel(incident.closedAt, getStreamTimezone(incident.streamId) || 'UTC') }}
-                </span>
-                <span
-                  v-if="incident.items && incident.items.length && getEventsCount(incident) !== undefined && !incident.closedAt"
-                  :class="{'text-white': !getEventsCount(incident), 'text-green-500': getEventsCount(incident) === 0, 'text-red-300': getEventsCount(incident) !== 0}"
-                >
-                  {{ getEventsCount(incident) !== 0 ? getEventsLabel(getLastEvents(incident), (getStreamTimezone(incident.streamId) || 'UTC')) : getResponsesLabel(incident, (getStreamTimezone(incident.streamId) || 'UTC')) }}
-                </span>
-              </dt>
+              {{ tag }}
             </div>
-          </dl>
-          <pagination-component
-            v-if="!isLoading && incidents && incidents.length && isPaginationAvailable"
-            :pagination-settings="paginationSettings"
-            @selected-page="getIncidentsData()"
-          />
+          </div>
+        </div>
+        <div class="justify-self-end <sm:hidden">
+          <span class="text-secondary text-sm font-medium">Response time</span>
+        </div>
+        <div class="col-span-3 flex flex-col">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="align-middle inline-block min-w-full sm:px-6 lg:px-8">
+              <div class="overflow-hidden">
+                <div
+                  v-if="isLoading"
+                  class="mb-4"
+                >
+                  <img
+                    class="flex flex-row bg-steel-grey h-10 w-10 animate-spin"
+                    :style="{margin: '0 auto'}"
+                    src="/src/assets/spinner.svg"
+                  >
+                </div>
+                <incidents-table-rows
+                  v-if="!isLoading && incidents && incidents.length && stream && stream.timezone"
+                  :timezone="stream.timezone"
+                  :items="incidents"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <pagination-component
+      v-if="!isLoading && stream && isPaginationAvailable"
+      :pagination-settings="paginationSettings"
+      @selected-page="getPage()"
+    />
+    <invalid-page-state-component
+      v-if="!isDataValid"
+      :message="'This stream either does not exist or you do not have permission to access it'"
+    />
   </div>
 </template>
 <script src="./index.ts" lang="ts" />

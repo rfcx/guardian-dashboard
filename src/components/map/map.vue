@@ -4,7 +4,7 @@
     :id="'map' + mapIndex"
     :class="width"
   />
-  <div :style="{margin: '0 auto'}">
+  <div>
     <img
       v-if="isError"
       class="h-9 <sm:h-7 h-min-7"

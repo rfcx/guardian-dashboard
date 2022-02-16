@@ -1,6 +1,6 @@
 <div id="incidents-page">
   <div class="bg-gray shadow overflow-hidden <sm:pt-0">
-    <div v-if="auth?.isAuthenticated">
+    <div v-if="auth?.isAuthenticated && isDataValid">
       <div class="mt-1 flex flex-row items-center <sm:(flex-wrap flex-col items-start)">
         <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 mr-2 <sm:mb-2">
           <input
@@ -60,22 +60,20 @@
           </label>
         </div>
       </div>
-      <div v-if="isLoading" class="bg-mirage-grey mt-50 h-10 w-10 mx-auto">
-        <svg class="animate-spin bg-mirage-grey text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-      </div>
-      <div v-if="streamsData && !streamsData.length && !isLoading && isProjectAccessed()" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-white">
+      <img v-if="isLoading" class="animate-spin bg-mirage-grey mt-50 h-10 w-10 mx-auto" src="/src/assets/spinner.svg">
+      <div v-if="streamsData && !streamsData.length && !isLoading" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-white">
         No streams data
       </div>
-      <dl
+      <div
       v-if="streamsData && streamsData.length && !isLoading"
       class="mt-5"
       >
-        <div class="px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
+        <div class="px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
           <div title="Stream" class="flex justify-start items-center whitespace-nowrap">
-            <span class="text-secondary text-xl mr-2">{{getStreamName(stream.id)}}</span>
+            <router-link v-if="stream.incidents && stream.incidents.items && stream.incidents.items.length"
+              :to="{ path: '/streams/'+ stream.id}" tag="tr">
+              <span class="text-secondary text-xl mr-2">{{getStreamName(stream.id)}}</span>
+            </router-link>
             <div v-if="stream.tags && stream.tags.length" class="flex justify-start">
               <div
                 v-for="tag of stream.tags"
@@ -91,9 +89,15 @@
           </div>
           <div class="col-span-3 flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+              <div class="align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
                   <incidents-table-rows v-if="stream.incidents && stream.incidents.items && stream.incidents.items.length" :timezone="stream.timezone" :items="stream.incidents.items"/>
+                  <router-link v-if="stream.incidents && stream.incidents.total && stream.incidents.total > 3" class="grid grid-cols-1 gap-2 cursor-pointer hover:bg-gray-300 hover:bg-opacity-5 border-t border-gray-700 py-2 <sm:(flex flex-col)"
+                    :to="{ path: '/streams/'+ stream.id}" tag="tr">
+                    <div class="pr-2 flex flex-nowrap items-center justify-start flex-1 text-sm text-secondary <sm:py-1">
+                      + {{ stream.incidents.total - 3 }} more incidents
+                    </div>
+                  </router-link>
                   <div v-if="stream.incidents !== undefined && !stream.incidents.items.length && !stream.loading" class="flex justify-start items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -105,12 +109,12 @@
             </div>
           </div>
         </div>
-      </dl>
+      </div>
       <pagination-component v-if="!isLoading && streamsData && streamsData.length && isPaginationAvailable" :pagination-settings="paginationSettings" @selected-page="getPage()" />
     </div>
     <div
       v-if="!auth?.isAuthenticated"
-      class="px-4 py-5 lg:text-center"
+      class="px-4 py-4 lg:text-center"
     >
       <div class="lg:text-center">
         <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
@@ -121,6 +125,6 @@
         </p>
       </div>
     </div>
-    <invalid-project-component v-if="!isDataValid" />
+    <invalid-page-state-component v-if="!isDataValid" :message="'This project either does not exist or you do not have permission to access it'"/>
   </div>
 </div>

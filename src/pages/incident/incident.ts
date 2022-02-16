@@ -2,7 +2,7 @@ import Mapbox from 'mapbox-gl'
 import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 
-import InvalidProjectComponent from '@/components/invalid-project/invalid-project.vue'
+import InvalidPageStateComponent from '@/components/invalid-page-state/invalid-page-state.vue'
 import MapComponent from '@/components/map/map.vue'
 import RangerNotes from '@/components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '@/components/ranger-player-modal/ranger-player-modal.vue'
@@ -29,7 +29,7 @@ type IncidentItem<T> = T & IncidentLabel
 
 @Options({
   components: {
-    InvalidProjectComponent,
+    InvalidPageStateComponent,
     MapComponent,
     RangerTrackModalComponent,
     RangerPlayerComponent,
