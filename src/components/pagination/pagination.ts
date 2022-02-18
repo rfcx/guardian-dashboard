@@ -53,11 +53,11 @@ export default class PaginationComponent extends Vue {
   }
 
   public getNextPage (): void {
-    if (this.paginationSettings.offset === this.lastPage) {
+    if (this.paginationSettings.page === this.lastPage) {
       this.select()
     } else {
       this.paginationSettings.offset++
-      this.paginationSettings.page = this.paginationSettings.offset + 1
+      this.paginationSettings.page++
       this.select()
     }
   }
@@ -67,7 +67,7 @@ export default class PaginationComponent extends Vue {
       this.select()
     } else {
       this.paginationSettings.offset--
-      this.paginationSettings.page = this.paginationSettings.offset - 1
+      this.paginationSettings.page--
       this.select()
     }
   }

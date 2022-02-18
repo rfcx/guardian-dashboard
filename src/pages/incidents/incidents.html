@@ -64,6 +64,9 @@
       <div v-if="streamsData && !streamsData.length && !isLoading" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-white">
         No streams data
       </div>
+      <div v-if="!isLoading && errorMessage" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-danger">
+        {{ errorMessage }}
+      </div>
       <div
       v-if="streamsData && streamsData.length && !isLoading"
       class="mt-5"

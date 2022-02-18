@@ -30,6 +30,7 @@ export default class IncidentsPage extends Vue {
   public selectedProject: Project | undefined
 
   public isLoading = true
+  public errorMessage?: string | null
   public isPaginationAvailable = false
   public isDataValid = true
   public statusSelected = false
@@ -46,7 +47,7 @@ export default class IncidentsPage extends Vue {
   public searchLabel = ''
   public paginationSettings: Pagination = {
     total: 0,
-    limit: 10,
+    limit: 8,
     offset: 0,
     page: 1
   }
@@ -56,7 +57,8 @@ export default class IncidentsPage extends Vue {
   data (): Record<string, unknown> {
     return {
       incidentsStatus: this.incidentsStatus,
-      streamsData: this.streamsData
+      streamsData: this.streamsData,
+      errorMessage: this.errorMessage
     }
   }
 
@@ -103,7 +105,7 @@ export default class IncidentsPage extends Vue {
   public resetPaginationData (): void {
     this.paginationSettings = {
       total: 0,
-      limit: 10,
+      limit: 8,
       offset: 0,
       page: 1
     }
@@ -158,6 +160,7 @@ export default class IncidentsPage extends Vue {
   }
 
   public async getStreamsData (projectId?: string, status?: string): Promise<void> {
+    this.errorMessage = null
     this.isLoading = true
     return await StreamService.getStreams({
       ...projectId !== undefined && { projects: [projectId] },
@@ -172,7 +175,8 @@ export default class IncidentsPage extends Vue {
       this.paginationSettings.total = res.headers['total-items']
       this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
     }).catch(e => {
-      console.error('Error loading streams with incidents', e)
+      console.error('Error getting streams with incidents', e)
+      this.errorMessage = 'Error getting streams with incidents'
     }).finally(() => {
       this.isLoading = false
     })

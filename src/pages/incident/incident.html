@@ -44,7 +44,12 @@
           </div>
           <div class="pl-4 border-l-4 border-gray-800">
             <div class="text-xs text-gray-500 pt-2">Response summary</div>
-            <div class="text-lg text-gray-200 pt-2">{{ incident.responses.length ? 'Logging confirmed' : '-' }}</div>
+            <div v-if="incident.resposeSummary.length">
+              <div v-for="response in incident.resposeSummary">
+                <p class="text-lg text-gray-200 pt-1">{{ response }} confirmed</p>
+              </div>
+            </div>
+            <span v-if="!incident.resposeSummary.length" class="text-lg text-gray-200 pt-2">-</span>
             <div class="text-xs text-gray-500 pt-2">Response time</div>
             <div class="text-lg text-gray-200 pt-2" :title="incident.responseTitle">{{ incident.responses.length ? incident.responseLabel : '-' }}</div>
           </div>
@@ -85,23 +90,25 @@
                 <span class="font-semibold">Response</span> by {{ getCreatedByLabel(item.createdBy) }}
               </div>
               <div v-if="item.messages">
-                <div v-if="item.messages.evidences" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center">
+                <div v-if="item.messages.loggingEvidence" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center <sm:mt-1">
                   Logging evidence
-                  <span v-for="message in item.messages.evidences" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.loggingEvidence" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message}}</span>
                 </div>
-                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center" v-if="item.messages.loggingScale || item.messages.damageScale">
-                  Logging scale and damage
-                  <span v-for="message in item.messages.loggingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
-                  <span v-for="message in item.messages.damageScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
+                <div v-if="item.messages.loggingScale" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center <sm:mt-1">
+                  Logging scale
+                  <span v-for="message in item.messages.loggingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message}}</span>
                 </div>
-                <div class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center" v-if="item.messages.poachingReport || item.messages.poachingScale">
+                <div v-if="item.messages.poachingEvidence" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center <sm:mt-1">
+                  Poaching evidence
+                  <span v-for="message in item.messages.poachingEvidence" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message}}</span>
+                </div>
+                <div v-if="item.messages.poachingScale" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center <sm:mt-1">
                   Poaching scale
-                  <span v-for="message in item.messages.poachingReport" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
-                  <span v-for="message in item.messages.poachingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.poachingScale" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message}}</span>
                 </div>
-                <div v-if="item.messages.actions" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center">
+                <div v-if="item.messages.actions" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center <sm:mt-1">
                   Action taken
-                  <span v-for="message in item.messages.actions" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 sm:mt-1 <sm:mt-1">{{message.text}}</span>
+                  <span v-for="message in item.messages.actions" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1">{{message}}</span>
                 </div>
               </div>
               <div class="text-xs mt-3">
@@ -113,9 +120,9 @@
                   <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-6 px-2 inline cursor-pointer mr-2" @click="toggleNotes(item, true)">&nbsp;[Notes]&nbsp;</div>
                   <ranger-notes v-if="item.showNotes !== undefined && item.showNotes === true" :notes="item.notesData" @close-notes="toggleNotes(item, false)"/>
                   <div v-for="image in item.sliderData" class="inline mr-2" :style="{'background': 'center / contain no-repeat url(' + image.src + ')'}">
-                    <img class="h-70px inline-block cursor-pointer" :src="image.src" alt="" @click="toggleSlider(item, true)">
-                    <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
+                    <img class="h-70px inline-block cursor-pointer" :src="image.src" alt="" @click="toggleSlider(item, true, image)">
                   </div>
+                  <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
                   <div v-if="item.trackData" class="cursor-pointer inline w-100px" @click="toggleTrack(item, true)">
                     <map-component :zoom="item.trackData.settings.zoom" :center="item.trackData.settings.center" :width="'h-65px'"/>
                   </div>
