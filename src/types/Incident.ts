@@ -57,7 +57,6 @@ export interface Answer {
 export interface AnswerItem {
   id?: number
   text: string
-  color?: string
 }
 
 export interface IncidentStatus {

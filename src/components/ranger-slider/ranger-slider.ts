@@ -41,6 +41,8 @@ export default class RangerSliderComponent extends Vue {
 
   public getSourceFiles (): void {
     this.images = this.imagesProps
+    const selected = this.images.findIndex((image: RawImageItem) => { return image.selected })
+    if (selected) this.currentIndex = selected
     this.getImage(this.currentIndex)
     this.isLoading = false
   }

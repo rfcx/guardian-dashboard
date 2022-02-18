@@ -4,4 +4,5 @@ export interface RawImageItem {
   fileName: string
   width?: number
   heigth?: number
+  selected?: boolean
 }

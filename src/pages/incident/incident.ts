@@ -9,7 +9,7 @@ import RangerPlayerComponent from '@/components/ranger-player-modal/ranger-playe
 import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService } from '@/services'
-import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
+import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, RawImageItem, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
 import { downloadContext, formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, getDay, getGmtDiff, inLast1Minute, inLast24Hours, isDateToday, isDateYesterday, isDefined, isNotDefined } from '@/utils'
 import icons from '../../assets/index'
 
@@ -18,6 +18,7 @@ interface IncidentLabel extends Incident {
   eventsLabel: string
   responseTitle: string
   responseLabel: string
+  resposeSummary: string[]
 }
 interface EventItem {
   title: string
@@ -149,8 +150,12 @@ export default class IncidentPage extends Vue {
     response.showNotes = open
   }
 
-  public toggleSlider (response: ResponseExtended, open: boolean): void {
+  public toggleSlider (response: ResponseExtended, open: boolean, image?: RawImageItem): void {
     response.showSlider = open
+    if (!open && response !== undefined && response.sliderData) {
+      response.sliderData.forEach((item: RawImageItem) => { item.selected = false })
+    }
+    if (image) image.selected = true
   }
 
   public async closeReport (): Promise<void> {
@@ -233,7 +238,8 @@ export default class IncidentPage extends Vue {
             eventsTitle: incident.events.length ? this.getEventsTitle(incident.events) : '',
             eventsLabel: incident.events.length ? this.getEventsLabel(incident.events) : '',
             responseTitle: incident.responses.length ? this.getResponseTitle(incident.responses) : '',
-            responseLabel: incident.responses.length ? this.getResponseLabel(incident.responses) : ''
+            responseLabel: incident.responses.length ? this.getResponseLabel(incident.responses) : '',
+            resposeSummary: []
           })
           return inc
         })
@@ -325,12 +331,9 @@ export default class IncidentPage extends Vue {
     }
   }
 
-  public combineAnswers (answer: Answer | undefined, id: number, color: string): AnswerItem[] | undefined {
+  public combineAnswers (answer: Answer | undefined): string[] | undefined {
     return answer?.items.map((a: AnswerItem) => {
-      return {
-        text: id === 3 ? `Logging scale: ${a?.text}` : id === 7 ? `Poaching scale: ${a?.text}` : id === 4 ? `Damage scale: ${a?.text}` : a.text,
-        color: color
-      }
+      return a.text
     })
   }
 
@@ -343,32 +346,37 @@ export default class IncidentPage extends Vue {
           if (isDefined(response.answers)) {
             item.messages = {}
             if (response.answers.find(i => i.question.id === 1)) {
-              const evidences = response.answers.find(i => i.question.id === 1)
-              item.messages.evidences = this.combineAnswers(evidences, 1, 'text-blue-500')
+              const loggingEvidence = response.answers.find(i => i.question.id === 1)
+              item.messages.loggingEvidence = this.combineAnswers(loggingEvidence)
             }
             if (response.answers.find(i => i.question.id === 3)) {
               const loggingScale = response.answers.find(i => i.question.id === 3)
-              item.messages.loggingScale = this.combineAnswers(loggingScale, 3, 'text-green-500')
+              item.messages.loggingScale = this.combineAnswers(loggingScale)
             }
             if (response.answers.find(i => i.question.id === 6)) {
-              const poachingReport = response.answers.find(i => i.question.id === 6)
-              item.messages.poachingReport = this.combineAnswers(poachingReport, 6, 'text-red-300')
+              const poachingEvidence = response.answers.find(i => i.question.id === 6)
+              item.messages.poachingEvidence = this.combineAnswers(poachingEvidence)
             }
             if (response.answers.find(i => i.question.id === 7)) {
               const poachingScale = response.answers.find(i => i.question.id === 7)
-              item.messages.poachingScale = this.combineAnswers(poachingScale, 7, 'text-yellow-500')
+              item.messages.poachingScale = this.combineAnswers(poachingScale)
             }
             if (response.answers.find(i => i.question.id === 2)) {
               const actions = response.answers.find(i => i.question.id === 2)
-              item.messages.actions = this.combineAnswers(actions, 2, 'text-violet-500')
+              item.messages.actions = this.combineAnswers(actions)
             }
-            if (response.answers.find(i => i.question.id === 4)) {
-              const damage = response.answers.find(i => i.question.id === 4)
-              item.messages.damageScale = this.combineAnswers(damage, 4, 'text-orange-500')
+            if (response.answers.find(i => i.question.id === 5)) {
+              const investigate = response.answers.find(i => i.question.id === 5)
+              const arr = this.combineAnswers(investigate)
+              console.log(this.incident, arr)
+              if (arr) {
+                this.incident.resposeSummary = this.incident.resposeSummary.concat(arr.filter(item => { return item !== 'Other' }))
+              }
             }
           }
         }
       }
+      this.incident.resposeSummary = [...new Set(this.incident.resposeSummary)]
     }
   }
 
