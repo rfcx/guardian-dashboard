@@ -38,7 +38,7 @@ const routes: RouteRecordRaw[] = [
         beforeEnter: [Auth0.routeGuard, selectProjectGuard]
       },
       {
-        path: '/streams/:streamId',
+        path: '/project/:projectId/streams/:streamId',
         name: ROUTES_NAME.streams,
         component: Pages.IndexPage,
         beforeEnter: [Auth0.routeGuard, selectProjectGuard]
