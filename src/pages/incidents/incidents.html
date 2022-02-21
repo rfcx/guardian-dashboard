@@ -72,12 +72,16 @@
       class="mt-5"
       >
         <div class="px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
-          <div title="Stream" class="flex justify-start items-center whitespace-nowrap">
+          <div title="Stream" class="flex justify-start content-end whitespace-nowrap">
             <router-link v-if="stream.incidents && stream.incidents.items && stream.incidents.items.length"
-              :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id}" tag="tr">
-              <span class="text-secondary text-xl mr-2">{{getStreamName(stream.id)}}</span>
+              :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id}" class="flex items-end" tag="tr">
+              <span class="text-secondary text-xl self-end mr-2">{{ getStreamName(stream.id) }}</span>
             </router-link>
-            <div v-if="stream.tags && stream.tags.length" class="flex justify-start">
+            <div v-if="stream && stream.guardianType" class="flex items-center mr-4">
+              <img class="h-6 w-6 inline-block self-center mr-1" :src="`https://static.rfcx.org/img/guardian/ic_${stream.guardianType}.svg`" :title="`${stream.guardianType}` + ' type'" alt="">
+              <span class="text-secondary capitalize inline-block mb-0.5 self-end text-sm" :title="`${stream.guardianType}` + ' type'">{{ stream.guardianType }}</span>
+            </div>
+            <div v-if="stream.tags && stream.tags.length" class="flex justify-start items-center">
               <div
                 v-for="tag of stream.tags"
                 class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
