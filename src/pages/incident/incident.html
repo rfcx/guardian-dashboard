@@ -81,12 +81,12 @@
               </div>
             </div>
             <div v-if="item.type === 'event'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">
-              <span class="mr-2">{{formatDayWithoutTime(item.createdAt)}}, {{timeFormatted(item.start)}}-{{timeFormatted(item.end)}} {{getGmtDiffFormat(item.createdAt)}}</span>
+              <span class="mr-2">{{formatDayWithoutTime(item.createdAt)}}, {{timeFormatted(item.start)}}-{{timeFormatted(item.end)}} GMT{{getGmtDiffFormat(item.createdAt)}}</span>
               <span class="font-semibold">{{item.classification && item.classification.title}}</span>
             </div>
             <div v-if="item.type === 'response'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">
               <div>
-                <span class="mr-2">{{dateFormatted(item.investigatedAt) || 0}} {{getGmtDiffFormat(item.investigatedAt)}}</span>
+                <span class="mr-2">{{dateFormatted(item.investigatedAt) || 0}} GMT{{getGmtDiffFormat(item.investigatedAt)}}</span>
                 <span class="font-semibold">Response</span> by {{ getCreatedByLabel(item.createdBy) }}
               </div>
               <div v-if="item.messages">

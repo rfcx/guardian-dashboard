@@ -191,7 +191,7 @@ export default class IncidentPage extends Vue {
   }
 
   public getGmtDiffFormat (date: string): string {
-    return getGmtDiff(date, this.stream?.timezone ?? 'UTC')
+    return getGmtDiff(date, this.stream?.timezone ?? 'UTC').replace(/\b:00/g, '').replace(/\b0/g, '')
   }
 
   public timeFormatted (date: string): string {
