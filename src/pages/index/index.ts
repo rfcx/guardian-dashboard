@@ -58,20 +58,17 @@ export default class IndexPage extends Vue {
 
   public async getIncidentsData (): Promise<void> {
     try {
+      const includeClosedIncidents = this.$route.query.includeClosedIncidents
       const resp = await IncidentsService.getIncidents({
         streams: [this.getStreamIdFromRouterParams()],
+        closed: includeClosedIncidents === 'true' ? undefined : false,
         limit: this.paginationSettings.limit,
         offset: this.paginationSettings.offset * this.paginationSettings.limit
       })
       this.paginationSettings.total = resp.headers['total-items']
       this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
       const incidentsData: Incident[] = resp.data
-      const includeClosedIncidents = this.$route.query.includeClosedIncidents
-      if (includeClosedIncidents === 'true') {
-        this.incidents = incidentsData
-      } else {
-        this.incidents = incidentsData.filter(incident => incident.closedAt === null)
-      }
+      this.incidents = incidentsData
       this.isLoading = false
       for (const item of this.incidents) {
         void IncidentsService.combineIncidentItems(item)
