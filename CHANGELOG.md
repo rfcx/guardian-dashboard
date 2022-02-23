@@ -1,8 +1,12 @@
 # Guardian Dashboard Release Notes
 
-## 0.0.7 (2022-02-XX)
+## 0.0.8 (2022-02-XX)
 
-* **feature:** Display guardian type
+* **bug:** Timezone abbreviation is displayed
+
+## 0.0.7 (2022-02-21)
+
+* **feature:** Guardian type is displayed 
 * **feature:** The ability to see more than 3 incidents is added ([#97](https://github.com/rfcx/guardian-dashboard/issues/97))
 * **bug:** Fixed the issue for the RFCx icon in the Safari browser ([#50](https://github.com/rfcx/guardian-dashboard/issues/50))
 
