@@ -2,7 +2,8 @@
 
 ## 0.0.8 (2022-02-XX)
 
-* **bug:** Timezone abbreviation is displayed
+* **bug:** Timezone abbreviation is displayed ([#110](https://github.com/rfcx/guardian-dashboard/issues/110))
+* **bug:** Do not include closed incidents on the load more incidents if the checkbox is not selected ([#110](https://github.com/rfcx/guardian-dashboard/issues/110))
 
 ## 0.0.7 (2022-02-21)
 

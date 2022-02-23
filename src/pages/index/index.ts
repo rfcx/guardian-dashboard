@@ -66,7 +66,12 @@ export default class IndexPage extends Vue {
       this.paginationSettings.total = resp.headers['total-items']
       this.isPaginationAvailable = (this.paginationSettings.total / this.paginationSettings.limit) > 1
       const incidentsData: Incident[] = resp.data
-      this.incidents = incidentsData
+      const includeClosedIncidents = this.$route.query.includeClosedIncidents
+      if (includeClosedIncidents === 'true') {
+        this.incidents = incidentsData
+      } else {
+        this.incidents = incidentsData.filter(incident => incident.closedAt === null)
+      }
       this.isLoading = false
       for (const item of this.incidents) {
         void IncidentsService.combineIncidentItems(item)
@@ -107,7 +112,8 @@ export default class IndexPage extends Vue {
     this.isLoading = true
     return await StreamService.getStreams({
       streams: [this.getStreamIdFromRouterParams()],
-      include_closed_incidents: true
+      include_closed_incidents: true,
+      limit: 1000
     }).then(res => {
       this.stream = res.data.find(stream => { return stream.id === this.getStreamIdFromRouterParams() })
     }).catch(e => {
