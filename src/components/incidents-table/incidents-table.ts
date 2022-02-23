@@ -2,7 +2,7 @@ import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 
 import { Event as Ev, EventExtended, Incident, Response, ResponseExtended } from '@/types'
-import { formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatTimeLabel, getDay, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
+import { formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatTime, getDayAndMonth, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
 
 interface IncidentItem extends Ev, Incident, Response {
@@ -45,11 +45,11 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public dateFormatted (date: string): string {
-    return formatDayTimeLabel(date, this.timezone)
+    return formatDateTimeWithoutYear(date, this.timezone)
   }
 
   public timeFormatted (date: string): string {
-    return formatTimeLabel(date, this.timezone)
+    return formatTime(date, this.timezone)
   }
 
   public getFirstOrLastItem (items: Response[] | Ev[], firstItem: boolean): Response | Ev {
@@ -69,7 +69,7 @@ export default class IncidentsTableRows extends Vue {
   public getEventsTitle (events: Ev[]): string {
     const start = (this.getFirstOrLastItem(events, true) as Ev).start
     const end = (this.getFirstOrLastItem(events, false) as Ev).end
-    return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
+    return `${formatDateTime(start)} - ${formatDateTime(end)}`
   }
 
   public getIconTitle (count: number, value: string): string {
@@ -90,19 +90,19 @@ export default class IncidentsTableRows extends Vue {
 
   public getResponseTitle (responses: Response[]): string {
     const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
-    return formatDateTimeLabel(firstResponse)
+    return formatDateTime(firstResponse)
   }
 
   public getResponseLabel (responses: Response[]): string {
     const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
     // today => Today, X
     if (isDateToday(firstResponse, this.timezone)) {
-      return `Today, ${formatTimeLabel(firstResponse, this.timezone)}`
+      return `Today, ${formatTime(firstResponse, this.timezone)}`
     }
     // yesterday => Yesterday, X
     if (isDateYesterday(firstResponse, this.timezone)) {
-      return `Yesterday, ${formatTimeLabel(firstResponse, this.timezone)}`
-    } else return `${getDay(firstResponse, this.timezone)}`
+      return `Yesterday, ${formatTime(firstResponse, this.timezone)}`
+    } else return `${getDayAndMonth(firstResponse, this.timezone)}`
   }
 
   public getResponseTime (incident: IncidentItem): string | undefined {

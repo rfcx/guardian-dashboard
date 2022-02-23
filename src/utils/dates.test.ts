@@ -1,9 +1,11 @@
 import dayjs from 'dayjs'
 import { describe, expect, test } from 'vitest'
 
-import { formatDateRange, formatDateTimeLabel, formatDateTimeRange, formatTimeLabel, formatTwoDateDiff, getDay, getPlayerTime, twoDateDiffExcludeHours } from './dates'
+import { formatDateRange, formatDateTime, formatDateTimeRange, formatTime, formatTwoDateDiff, getDayAndMonth, getPlayerTime, getTzAbbr, twoDateDiffExcludeHours } from './dates'
 
-// Date Range
+// ----------------------------
+// Format Date Range
+// ----------------------------
 
 describe('formatDateRange: different days, months, years', () => {
   const examples = [
@@ -47,9 +49,11 @@ describe('formatDateTimeRange', () => {
   })
 })
 
-// Date Label
+// ----------------------------
+// Format Date and Time
+// ----------------------------
 
-describe('formatDateTimeLabel', () => {
+describe('formatDateTime', () => {
   const examples = [
     ['2021-09-06T18:51:19.707Z', 'Sep 07, 2021 01:51', 'Sep 06, 2021 18:51'],
     ['2021-08-26T21:28:46.606Z', 'Aug 27, 2021 04:28', 'Aug 26, 2021 21:28']
@@ -57,18 +61,18 @@ describe('formatDateTimeLabel', () => {
 
   test('Test different days, months, years, time with site timezone', () => {
     examples.forEach(([label, expected]) => {
-      expect(formatDateTimeLabel(label, 'Asia/Bangkok')).toEqual(expected)
+      expect(formatDateTime(label, 'Asia/Bangkok')).toEqual(expected)
     })
   })
 
   test('Test different days, months, years, time with UTC timezone', () => {
     examples.forEach(([label, notExpected, expected]) => {
-      expect(formatDateTimeLabel(label)).toEqual(expected)
+      expect(formatDateTime(label)).toEqual(expected)
     })
   })
 })
 
-describe('formatTimeLabel', () => {
+describe('formatTime', () => {
   const examples = [
     ['2021-09-06T18:51:19.707Z', '01:51', '18:51'],
     ['2021-08-26T21:28:46.606Z', '04:28', '21:28']
@@ -76,18 +80,18 @@ describe('formatTimeLabel', () => {
 
   test('Test different time with site timezone', () => {
     examples.forEach(([label, expected]) => {
-      expect(formatTimeLabel(label, 'Asia/Bangkok')).toEqual(expected)
+      expect(formatTime(label, 'Asia/Bangkok')).toEqual(expected)
     })
   })
 
   test('Test different time with UTC timezone', () => {
     examples.forEach(([label, notExpected, expected]) => {
-      expect(formatTimeLabel(label)).toEqual(expected)
+      expect(formatTime(label)).toEqual(expected)
     })
   })
 })
 
-describe('getDay', () => {
+describe('getDayAndMonth', () => {
   const examples = [
     ['2021-09-06T18:51:19.707Z', '07 Sep', '06 Sep'],
     ['2021-08-26T21:28:46.606Z', '27 Aug', '26 Aug']
@@ -95,16 +99,20 @@ describe('getDay', () => {
 
   test('Test different days, months with site timezone', () => {
     examples.forEach(([label, expected]) => {
-      expect(getDay(label, 'Asia/Bangkok')).toEqual(expected)
+      expect(getDayAndMonth(label, 'Asia/Bangkok')).toEqual(expected)
     })
   })
 
   test('Test different days, months with UTC timezone', () => {
     examples.forEach(([label, notExpected, expected]) => {
-      expect(getDay(label)).toEqual(expected)
+      expect(getDayAndMonth(label)).toEqual(expected)
     })
   })
 })
+
+// ----------------------------
+// Manipulate
+// ----------------------------
 
 describe('getPlayerTime', () => {
   const examples = [
@@ -120,7 +128,9 @@ describe('getPlayerTime', () => {
   })
 })
 
-// Date Difference
+// ----------------------------
+// Durations
+// ----------------------------
 
 describe('twoDateDiffExcludeHours: get the difference between two days excluding hours if difference more than one day', () => {
   const examples = [
@@ -148,6 +158,27 @@ describe('formatTwoDateDiff: response times difference', () => {
   test('Test different days, months, years, time', () => {
     examples.forEach(([start, end, expected]) => {
       expect(formatTwoDateDiff(start, end)).toEqual(expected)
+    })
+  })
+})
+
+// ----------------------------
+// Time Zone
+// ----------------------------
+
+describe('getTzAbbr: List of common timezones https://abbreviations.yourdictionary.com/articles/common-world-time-zone-abbreviations.html', () => {
+  const examples = [
+    ['2022-02-23T03:46:10.627Z', 'Asia/Shanghai', 'GMT+8'],
+    ['2022-02-23T08:20:02.257Z', 'America/Los_Angeles', 'PST'],
+    ['2022-02-21T16:30:06.348Z', 'Asia/Bangkok', 'GMT+7'],
+    ['2022-01-24T15:38:48.685Z', 'America/Chicago', 'CST'],
+    ['2022-02-23T07:01:25.765Z', 'America/Panama', 'EST'],
+    ['2022-02-23T07:25:38.861Z', 'America/New_York', 'EST']
+  ]
+
+  test('Test getting timezone abbreviation', () => {
+    examples.forEach(([label, timezone, expected]) => {
+      expect(getTzAbbr(label, timezone)).toEqual(expected)
     })
   })
 })
