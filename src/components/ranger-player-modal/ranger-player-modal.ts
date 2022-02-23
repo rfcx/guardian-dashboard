@@ -61,6 +61,12 @@ export default class RangerPlayerComponent extends Vue {
     audio.addEventListener('onerror', () => {
       this.isError = true
     })
+    audio.addEventListener('ended', () => {
+      this.isPlaying = false
+      this.progress = 0
+      this.calculateTotalDuration()
+      this.audioProp.current = '0:00'
+    })
   }
 
   public async toggleSound (): Promise<void> {

@@ -1,5 +1,7 @@
 # Guardian Dashboard Release Notes
 
+* **bug:** Return the audio player to the initial state once the audio is ended
+
 ## 0.0.7 (2022-02-XX)
 
 * **feature:** Display guardian type
