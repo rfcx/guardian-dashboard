@@ -4,8 +4,9 @@ import { Watch } from 'vue-property-decorator'
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
 import InvalidPageStateComponent from '@/components/invalid-page-state/invalid-page-state.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
+import router from '@/router'
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Auth0Option, Incident, Pagination, Stream } from '@/types'
+import { Auth0Option, Incident, IncidentStatus, Pagination, Stream } from '@/types'
 
 @Options({
   components: {
@@ -31,6 +32,8 @@ export default class IndexPage extends Vue {
     page: 1
   }
 
+  public incidentsClosed: IncidentStatus = { value: 'closed', label: 'Include closed incidents', checked: false }
+
   data (): Record<string, unknown> {
     return {
       incidents: this.incidents,
@@ -47,9 +50,18 @@ export default class IndexPage extends Vue {
     void this.onUpdatePage()
   }
 
+  @Watch('incidentsClosed.checked')
+  onIncidentsClosedCheckedChange (): void {
+    if (this.$route?.query?.includeClosedIncidents !== undefined) {
+      void router.push({ query: { includeClosedIncidents: this.incidentsClosed.checked ? 'true' : 'false' } })
+    }
+  }
+
   async created (): Promise<void> {
     if (!this.getStreamIdFromRouterParams()) return
     this.isDataValid = true
+    const includeClosedIncidents = this.$route.query.includeClosedIncidents
+    this.incidentsClosed.checked = includeClosedIncidents === 'true'
     await this.onUpdatePage()
     if ((this.incidents && !this.incidents.length) ?? !this.stream) {
       this.isDataValid = false
@@ -58,10 +70,9 @@ export default class IndexPage extends Vue {
 
   public async getIncidentsData (): Promise<void> {
     try {
-      const includeClosedIncidents = this.$route.query.includeClosedIncidents
       const resp = await IncidentsService.getIncidents({
         streams: [this.getStreamIdFromRouterParams()],
-        closed: includeClosedIncidents === 'true' ? undefined : false,
+        closed: this.incidentsClosed.checked ? undefined : false,
         limit: this.paginationSettings.limit,
         offset: this.paginationSettings.offset * this.paginationSettings.limit
       })
