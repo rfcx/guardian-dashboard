@@ -3,6 +3,7 @@
 ## 0.0.8 (2022-02-XX)
 
 * **bug:** Timezone abbreviation is displayed
+* **bug:** Return the audio player to the initial state once the audio is ended
 
 ## 0.0.7 (2022-02-21)
 
