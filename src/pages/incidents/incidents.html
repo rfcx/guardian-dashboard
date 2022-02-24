@@ -77,7 +77,7 @@
               :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id}" class="flex items-end" tag="tr">
               <span class="text-secondary text-xl self-end mr-2">{{ getStreamName(stream.id) }}</span>
             </router-link>
-            <div v-if="stream && stream.guardianType" class="flex items-center mr-4">
+            <div v-if="stream && stream.guardianType && stream.guardianType !== unknown" class="flex items-center mr-4">
               <img class="h-6 w-6 inline-block self-center mr-1" :src="`https://static.rfcx.org/img/guardian/ic_${stream.guardianType}.svg`" :title="`${stream.guardianType}` + ' type'" alt="">
               <span class="text-secondary capitalize inline-block mb-0.5 self-end text-sm" :title="`${stream.guardianType}` + ' type'">{{ stream.guardianType }}</span>
             </div>
