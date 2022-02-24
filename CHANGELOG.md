@@ -4,6 +4,7 @@
 
 * **bug:** Timezone abbreviation is displayed ([#110](https://github.com/rfcx/guardian-dashboard/issues/110))
 * **bug:** Do not include closed incidents on the load more incidents if the checkbox is not selected ([#110](https://github.com/rfcx/guardian-dashboard/issues/110))
+* **bug:** Return the audio player to the initial state once the audio is ended
 
 ## 0.0.7 (2022-02-21)
 
