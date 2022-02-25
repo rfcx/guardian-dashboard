@@ -7,9 +7,9 @@
       <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 <sm:mb-2">
         <input
           id="closedIncidents"
-          v-model="incidentsClosed.checked"
+          v-model="includeClosedIncidents.checked"
           name="closedIncidents"
-          value="incidentsClosed.value"
+          value="includeClosedIncidents.value"
           type="checkbox"
           class="h-3 w-3 rounded bg-gray text-gray-500 focus:ring-transparent"
           @change="getPage()"
@@ -18,7 +18,7 @@
           for="closedIncidents"
           class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap"
         >
-          {{ incidentsClosed.label }}
+          {{ includeClosedIncidents.label }}
         </label>
       </div>
       <div class="mt-5 px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md">

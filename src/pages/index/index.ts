@@ -32,7 +32,7 @@ export default class IndexPage extends Vue {
     page: 1
   }
 
-  public incidentsClosed: IncidentStatus = { value: 'closed', label: 'Include closed incidents', checked: false }
+  public includeClosedIncidents: IncidentStatus = { value: 'closed', label: 'Include closed incidents', checked: false }
 
   data (): Record<string, unknown> {
     return {
@@ -50,10 +50,10 @@ export default class IndexPage extends Vue {
     void this.onUpdatePage()
   }
 
-  @Watch('incidentsClosed.checked')
-  onIncidentsClosedCheckedChange (): void {
+  @Watch('includeClosedIncidents.checked')
+  onincludeClosedIncidentsCheckedChange (): void {
     if (this.$route?.query?.includeClosedIncidents !== undefined) {
-      void router.push({ query: { includeClosedIncidents: this.incidentsClosed.checked ? 'true' : 'false' } })
+      void router.push({ query: { includeClosedIncidents: this.includeClosedIncidents.checked ? 'true' : 'false' } })
     }
   }
 
@@ -61,7 +61,7 @@ export default class IndexPage extends Vue {
     if (!this.getStreamIdFromRouterParams()) return
     this.isDataValid = true
     const includeClosedIncidents = this.$route.query.includeClosedIncidents
-    this.incidentsClosed.checked = includeClosedIncidents === 'true'
+    this.includeClosedIncidents.checked = includeClosedIncidents === 'true'
     await this.onUpdatePage()
     if ((this.incidents && !this.incidents.length) ?? !this.stream) {
       this.isDataValid = false
@@ -72,7 +72,7 @@ export default class IndexPage extends Vue {
     try {
       const resp = await IncidentsService.getIncidents({
         streams: [this.getStreamIdFromRouterParams()],
-        closed: this.incidentsClosed.checked ? undefined : false,
+        closed: this.includeClosedIncidents.checked ? undefined : false,
         limit: this.paginationSettings.limit,
         offset: this.paginationSettings.offset * this.paginationSettings.limit
       })
