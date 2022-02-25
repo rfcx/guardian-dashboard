@@ -10,7 +10,7 @@ import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService } from '@/services'
 import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, RawImageItem, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
-import { downloadContext, formatDateTimeLabel, formatDateTimeRange, formatDayTimeLabel, formatDayWithoutTime, formatTimeLabel, formatTwoDateDiff, getDay, getGmtDiff, inLast1Minute, inLast24Hours, isDateToday, isDateYesterday, isDefined, isNotDefined } from '@/utils'
+import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatDayWithoutTime, formatTime, formatTwoDateDiff, getDayAndMonth, getTzAbbr, inLast1Minute, inLast24Hours, isDateToday, isDateYesterday, isDefined, isNotDefined } from '@/utils'
 import icons from '../../assets/index'
 
 interface IncidentLabel extends Incident {
@@ -76,7 +76,7 @@ export default class IncidentPage extends Vue {
   public getEventsTitle (events: Ev[]): string {
     const start = (this.getFirstOrLastItem(events, true) as Ev).start
     const end = (this.getFirstOrLastItem(events, false) as Ev).end
-    return `${formatDateTimeLabel(start)} - ${formatDateTimeLabel(end)}`
+    return `${formatDateTime(start)} - ${formatDateTime(end)}`
   }
 
   public setDefaultReportImg (e: Event): void {
@@ -127,19 +127,19 @@ export default class IncidentPage extends Vue {
 
   public getResponseTitle (responses: Response[]): string {
     const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
-    return formatDateTimeLabel(firstResponse)
+    return formatDateTime(firstResponse)
   }
 
   public getResponseLabel (responses: Response[]): string {
     const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
     // today => Today, X
     if (isDateToday(firstResponse, this.stream?.timezone)) {
-      return `Today, ${formatTimeLabel(firstResponse, this.stream?.timezone)}`
+      return `Today, ${formatTime(firstResponse, this.stream?.timezone)}`
     }
     // yesterday => Yesterday, X
     if (isDateYesterday(firstResponse, this.stream?.timezone)) {
-      return `Yesterday, ${formatTimeLabel(firstResponse, this.stream?.timezone)}`
-    } else return `${getDay(firstResponse, this.stream?.timezone)}`
+      return `Yesterday, ${formatTime(firstResponse, this.stream?.timezone)}`
+    } else return `${getDayAndMonth(firstResponse, this.stream?.timezone)}`
   }
 
   public toggleTrack (response: ResponseExtended, open: boolean): void {
@@ -178,24 +178,26 @@ export default class IncidentPage extends Vue {
 
   public getIncidentStatus (): void {
     if (this.incident !== undefined) {
-      this.incidentStatus = this.incident.closedAt ? `Closed on ${(inLast24Hours(this.incident.closedAt) ? formatDayTimeLabel : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+      this.incidentStatus = this.incident.closedAt ? `Closed on ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
     }
   }
 
   public dateFormatted (date: string): string {
-    return formatDayTimeLabel(date, this.stream?.timezone ?? 'UTC')
+    return formatDateTimeWithoutYear(date, this.stream?.timezone ?? 'UTC')
   }
 
   public formatDayWithoutTime (date: string): string {
     return formatDayWithoutTime(date, this.stream?.timezone ?? 'UTC')
   }
 
-  public getGmtDiffFormat (date: string): string {
-    return getGmtDiff(date, this.stream?.timezone ?? 'UTC')
+  public getTzAbbrFormat (date: string): string | undefined {
+    const label = getTzAbbr(date, this.stream?.timezone ?? 'UTC')
+    if ((label?.startsWith('GMT')) === true) return label
+    if (label) return `(${label})`
   }
 
   public timeFormatted (date: string): string {
-    return formatTimeLabel(date, this.stream?.timezone ?? 'UTC')
+    return formatTime(date, this.stream?.timezone ?? 'UTC')
   }
 
   public hoursDiffFormatted (from: string, to: string): string {
@@ -368,7 +370,6 @@ export default class IncidentPage extends Vue {
             if (response.answers.find(i => i.question.id === 5)) {
               const investigate = response.answers.find(i => i.question.id === 5)
               const arr = this.combineAnswers(investigate)
-              console.log(this.incident, arr)
               if (arr) {
                 this.incident.resposeSummary = this.incident.resposeSummary.concat(arr.filter(item => { return item !== 'Other' }))
               }

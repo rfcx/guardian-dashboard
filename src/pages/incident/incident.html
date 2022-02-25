@@ -81,12 +81,12 @@
               </div>
             </div>
             <div v-if="item.type === 'event'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">
-              <span class="mr-2">{{formatDayWithoutTime(item.createdAt)}}, {{timeFormatted(item.start)}}-{{timeFormatted(item.end)}} {{getGmtDiffFormat(item.createdAt)}}</span>
-              <span class="font-semibold">{{item.classification && item.classification.title}}</span>
+              <span class="mr-2">{{ formatDayWithoutTime(item.createdAt) }}, {{ timeFormatted(item.start) }}-{{ timeFormatted(item.end) }} {{ getTzAbbrFormat(item.createdAt) || '' }}</span>
+              <span class="font-semibold">{{ item.classification && item.classification.title }}</span>
             </div>
             <div v-if="item.type === 'response'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">
               <div>
-                <span class="mr-2">{{dateFormatted(item.investigatedAt) || 0}} {{getGmtDiffFormat(item.investigatedAt)}}</span>
+                <span class="mr-2">{{ dateFormatted(item.investigatedAt) || '' }} {{ getTzAbbrFormat(item.investigatedAt) || '' }}</span>
                 <span class="font-semibold">Response</span> by {{ getCreatedByLabel(item.createdBy) }}
               </div>
               <div v-if="item.messages">
@@ -127,7 +127,7 @@
                     <map-component :zoom="item.trackData.settings.zoom" :center="item.trackData.settings.center" :width="'h-65px'"/>
                   </div>
                   <ranger-track-modal-component v-if="item.showTrack !== undefined && item.showTrack === true && item.trackData.features" :raw-ranger-track="item.trackData" @close-ranger-track="toggleTrack(item, false)" />
-                  <a v-if="(item.sliderData || item.audioObject)"
+                  <a v-if="((item.sliderData && item.sliderData.length) || item.audioObject)"
                       class="cursor-pointer btn py-0.5 bg-transparent hover:bg-transparent ml-auto shadow-transparent inline" :class="{'opacity-50 cursor-not-allowed disabled': item.isDownloading || item.isError}" @click="downloadAssets(item)"
                       title="Download Assets"
                   >
