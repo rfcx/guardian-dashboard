@@ -4,8 +4,9 @@ import { Watch } from 'vue-property-decorator'
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
 import InvalidPageStateComponent from '@/components/invalid-page-state/invalid-page-state.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
+import router from '@/router'
 import { IncidentsService, StreamService, VuexService } from '@/services'
-import { Auth0Option, Incident, Pagination, Stream } from '@/types'
+import { Auth0Option, Incident, IncidentStatus, Pagination, Stream } from '@/types'
 
 @Options({
   components: {
@@ -31,6 +32,8 @@ export default class IndexPage extends Vue {
     page: 1
   }
 
+  public includeClosedIncidents: IncidentStatus = { value: 'closed', label: 'Include closed incidents', checked: false }
+
   data (): Record<string, unknown> {
     return {
       incidents: this.incidents,
@@ -47,9 +50,18 @@ export default class IndexPage extends Vue {
     void this.onUpdatePage()
   }
 
+  @Watch('includeClosedIncidents.checked')
+  onincludeClosedIncidentsCheckedChange (): void {
+    if (this.$route?.query?.includeClosedIncidents !== undefined) {
+      void router.push({ query: { includeClosedIncidents: this.includeClosedIncidents.checked ? 'true' : 'false' } })
+    }
+  }
+
   async created (): Promise<void> {
     if (!this.getStreamIdFromRouterParams()) return
     this.isDataValid = true
+    const includeClosedIncidents = this.$route.query.includeClosedIncidents
+    this.includeClosedIncidents.checked = includeClosedIncidents === 'true'
     await this.onUpdatePage()
     if ((this.incidents && !this.incidents.length) ?? !this.stream) {
       this.isDataValid = false
@@ -60,6 +72,7 @@ export default class IndexPage extends Vue {
     try {
       const resp = await IncidentsService.getIncidents({
         streams: [this.getStreamIdFromRouterParams()],
+        closed: this.includeClosedIncidents.checked ? undefined : false,
         limit: this.paginationSettings.limit,
         offset: this.paginationSettings.offset * this.paginationSettings.limit
       })
@@ -105,16 +118,15 @@ export default class IndexPage extends Vue {
 
   public async getStreamData (): Promise<void> {
     this.isLoading = true
-    return await StreamService.getStreams({
-      streams: [this.getStreamIdFromRouterParams()],
-      include_closed_incidents: true
-    }).then(res => {
-      this.stream = res.data.find(stream => { return stream.id === this.getStreamIdFromRouterParams() })
-    }).catch(e => {
-      console.error('Error getting streams data', e)
-    }).finally(() => {
+    if (!this.getStreamIdFromRouterParams()) return
+    try {
+      const streamData = await StreamService.getStream(this.getStreamIdFromRouterParams())
+      this.stream = streamData.data
       this.isLoading = false
-    })
+    } catch (e) {
+      console.error('Error getting streams data', e)
+      this.isLoading = false
+    }
   }
 
   public async getPage (): Promise<void> {

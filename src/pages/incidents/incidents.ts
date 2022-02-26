@@ -41,7 +41,7 @@ export default class IncidentsPage extends Vue {
     { value: 'hot', label: 'Hot', checked: false }
   ]
 
-  public incidentsClosed: IncidentStatus = { value: 'closed', label: 'Include closed incidents', checked: false }
+  public includeClosedIncidents: IncidentStatus = { value: 'closed', label: 'Include closed incidents', checked: false }
 
   public limit = 2
   public searchLabel = ''
@@ -165,7 +165,7 @@ export default class IncidentsPage extends Vue {
     return await StreamService.getStreams({
       ...projectId !== undefined && { projects: [projectId] },
       ...status !== undefined && this.optionsForStatus(status),
-      include_closed_incidents: this.incidentsClosed.checked ? true : undefined,
+      include_closed_incidents: this.includeClosedIncidents.checked ? true : undefined,
       limit: this.paginationSettings.limit,
       offset: this.paginationSettings.offset * this.paginationSettings.limit,
       keyword: this.searchLabel,
