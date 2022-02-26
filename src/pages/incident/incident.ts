@@ -39,7 +39,6 @@ type IncidentItem<T> = T & IncidentLabel
   }
 })
 export default class IncidentPage extends Vue {
-  public streamsData: Stream[] = []
   public incident: IncidentItem<Incident> | undefined
   public stream: Stream | undefined
   public incidentStatus = ''
@@ -68,8 +67,9 @@ export default class IncidentPage extends Vue {
 
   async onUpdatePage (): Promise<void> {
     this.isLoading = true
-    await this.getStreamsData()
     await this.getIncidentData()
+    await this.getStreamData()
+    this.initializeIncidentMap()
     await this.getAssets()
   }
 
@@ -204,17 +204,10 @@ export default class IncidentPage extends Vue {
     return formatTwoDateDiff(from, to)
   }
 
-  public async getStreamsData (): Promise<void> {
-    const params: string = this.$route.params.projectId as string
-    if (!params) return
-    const streamsData = await StreamService.getStreams({ projects: [params], limit: 1000 })
-    this.streamsData = streamsData.data
-  }
-
-  public async initializeStream (id?: string): Promise<void> {
-    this.stream = this.streamsData.find((s: Stream) => {
-      return s.id === (this.incident?.streamId ?? id)
-    })
+  public async getStreamData (): Promise<void> {
+    if (!this.incident?.streamId) return
+    const streamData = await StreamService.getStream(this.incident.streamId)
+    this.stream = streamData.data
   }
 
   public initializeIncidentMap (): void {
@@ -234,8 +227,6 @@ export default class IncidentPage extends Vue {
       this.incident = await IncidentsService.getIncident(incidentId)
         .then(async (incident: Incident) => {
           IncidentsService.combineIncidentItems(incident)
-          await this.initializeStream(incident.streamId)
-          this.initializeIncidentMap()
           const inc: IncidentItem<IncidentLabel> = Object.assign(incident, {
             eventsTitle: incident.events.length ? this.getEventsTitle(incident.events) : '',
             eventsLabel: incident.events.length ? this.getEventsLabel(incident.events) : '',

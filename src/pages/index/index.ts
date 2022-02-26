@@ -118,17 +118,15 @@ export default class IndexPage extends Vue {
 
   public async getStreamData (): Promise<void> {
     this.isLoading = true
-    return await StreamService.getStreams({
-      streams: [this.getStreamIdFromRouterParams()],
-      include_closed_incidents: true,
-      limit: 1000
-    }).then(res => {
-      this.stream = res.data.find(stream => { return stream.id === this.getStreamIdFromRouterParams() })
-    }).catch(e => {
-      console.error('Error getting streams data', e)
-    }).finally(() => {
+    if (!this.getStreamIdFromRouterParams()) return
+    try {
+      const streamData = await StreamService.getStream(this.getStreamIdFromRouterParams())
+      this.stream = streamData.data
       this.isLoading = false
-    })
+    } catch (e) {
+      console.error('Error getting streams data', e)
+      this.isLoading = false
+    }
   }
 
   public async getPage (): Promise<void> {
