@@ -14,3 +14,15 @@ export async function getStreams (params: StreamsWithIncidentsParams = {}): Prom
     return await Promise.reject(e)
   }
 }
+
+export async function getStream (streamId: string): Promise<{ data: Stream, headers: any }> {
+  try {
+    const resp = await ApiClient.request<Stream>({
+      method: Endpoints.getStreams.method,
+      url: `${Endpoints.getStreams.url}/${streamId}`
+    })
+    return resp
+  } catch (e) {
+    return await Promise.reject(e)
+  }
+}

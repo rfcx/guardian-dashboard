@@ -54,9 +54,9 @@
           </ul>
         </div>
         <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 <sm:mb-2">
-          <input id="closedIncidents" name="closedIncidents" value="incidentsClosed.value" v-model="incidentsClosed.checked" type="checkbox" class="h-3 w-3 rounded bg-gray text-gray-500 focus:ring-transparent" @change="getPage($event)" />
-          <label for="closedIncidents" class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap">
-            {{ incidentsClosed.label }}
+          <input id="includeClosedIncidents" name="includeClosedIncidents" value="includeClosedIncidents.value" v-model="includeClosedIncidents.checked" type="checkbox" class="h-3 w-3 rounded bg-gray text-gray-500 focus:ring-transparent" @change="getPage($event)" />
+          <label for="includeClosedIncidents" class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap">
+            {{ includeClosedIncidents.label }}
           </label>
         </div>
       </div>
@@ -74,7 +74,7 @@
         <div class="px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
           <div title="Stream" class="flex justify-start content-end whitespace-nowrap">
             <router-link v-if="stream.incidents && stream.incidents.items && stream.incidents.items.length"
-              :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id}" class="flex items-end" tag="tr">
+            :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id, name: streams, query: { includeClosedIncidents: includeClosedIncidents.checked } }" class="flex items-end" tag="tr">
               <span class="text-secondary text-xl self-end mr-2">{{ getStreamName(stream.id) }}</span>
             </router-link>
             <div v-if="stream && stream.guardianType && stream.guardianType !== unknown" class="flex items-center mr-4">
@@ -100,7 +100,7 @@
                 <div class="overflow-hidden">
                   <incidents-table-rows v-if="stream.incidents && stream.incidents.items && stream.incidents.items.length" :timezone="stream.timezone" :items="stream.incidents.items"/>
                   <router-link v-if="stream.incidents && stream.incidents.total && stream.incidents.total > 3" class="grid grid-cols-1 gap-2 cursor-pointer hover:bg-gray-300 hover:bg-opacity-5 border-t border-gray-700 py-2 <sm:(flex flex-col)"
-                    :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id}" tag="tr">
+                    :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id, name: streams, query: { includeClosedIncidents: includeClosedIncidents.checked } }" tag="tr">
                     <div class="pr-2 flex flex-nowrap items-center justify-start flex-1 text-sm text-secondary <sm:py-1">
                       + {{ stream.incidents.total - 3 }} more incidents
                     </div>
