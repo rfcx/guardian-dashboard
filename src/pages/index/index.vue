@@ -6,16 +6,16 @@
     >
       <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 <sm:mb-2">
         <input
-          id="closedIncidents"
+          id="includeClosedIncidents"
           v-model="includeClosedIncidents.checked"
-          name="closedIncidents"
+          name="includeClosedIncidents"
           value="includeClosedIncidents.value"
           type="checkbox"
           class="h-3 w-3 rounded bg-gray text-gray-500 focus:ring-transparent"
           @change="getPage()"
         >
         <label
-          for="closedIncidents"
+          for="includeClosedIncidents"
           class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap"
         >
           {{ includeClosedIncidents.label }}
