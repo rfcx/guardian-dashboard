@@ -35,7 +35,7 @@ pipeline {
       steps {
         container(name: 'kaniko') {
           sh """
-          /kaniko/executor --snapshotMode=redo --use-new-run=true --cache=true --cache-repo=${ECR_HOST}/${ECR_REPO} --dockerfile `pwd`/build/Dockerfile --context `pwd` --destination=${ECR_HOST}/${ECR_REPO}:latest --destination=${ECR_HOST}/${ECR_REPO}:$BUILD_NUMBER
+          /kaniko/executor --snapshotMode=redo --use-new-run=true --cache=true --cache-repo=${ECR_HOST}/${ECR_REPO} --dockerfile `pwd`/build/Dockerfile.${K8S_NAMESPACE} --context `pwd` --destination=${ECR_HOST}/${ECR_REPO}:latest --destination=${ECR_HOST}/${ECR_REPO}:$BUILD_NUMBER
           """
         }
       }
