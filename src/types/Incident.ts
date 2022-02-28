@@ -5,6 +5,8 @@ export interface Incident {
   ref?: number
   streamId: string
   projectId: string
+  firstResponseId: string
+  firstEventId: string
   closedBy?: User
   events: Event[]
   responses: Response[]

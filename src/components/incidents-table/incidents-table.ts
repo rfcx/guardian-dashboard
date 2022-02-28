@@ -38,8 +38,8 @@ export default class IncidentsTableRows extends Vue {
     items.forEach((incident: IncidentItem) => {
       incident.eventsTitle = incident.events.length ? this.getEventsTitle(incident.events) : ''
       incident.eventsLabel = incident.events.length ? this.getEventsLabel(incident.events) : ''
-      incident.responseTitle = incident.responses.length ? this.getResponseTitle(incident.responses) : ''
-      incident.responseLabel = incident.responses.length ? this.getResponseLabel(incident.responses) : ''
+      incident.responseTitle = this.getResponseTitle(incident)
+      incident.responseLabel = this.getResponseLabel(incident)
     })
     this.itemsData = this.items
   }
@@ -69,7 +69,7 @@ export default class IncidentsTableRows extends Vue {
   public getEventsTitle (events: Ev[]): string {
     const start = (this.getFirstOrLastItem(events, true) as Ev).start
     const end = (this.getFirstOrLastItem(events, false) as Ev).end
-    return `${formatDateTime(start)} - ${formatDateTime(end)}`
+    return `${formatDateTime(start, this.timezone)} - ${formatDateTime(end, this.timezone)}`
   }
 
   public getIconTitle (count: number, value: string): string {
@@ -88,30 +88,27 @@ export default class IncidentsTableRows extends Vue {
     }
   }
 
-  public getResponseTitle (responses: Response[]): string {
-    const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
-    return formatDateTime(firstResponse)
+  public getResponseTitle (incident: IncidentItem): string {
+    if (!incident.responses.length) return '-'
+    const firstResponse = incident.responses.find(response => response.id === incident.firstResponseId)
+    if (!firstResponse) return '-'
+    return formatDateTime(firstResponse.submittedAt, this.timezone)
   }
 
-  public getResponseLabel (responses: Response[]): string {
-    const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
-    // today => Today, X
-    if (isDateToday(firstResponse, this.timezone)) {
-      return `Today, ${formatTime(firstResponse, this.timezone)}`
+  public getResponseLabel (incident: IncidentItem): string {
+    if (!incident.responses.length) return '-'
+    const firstResponse = incident.responses.find(response => response.id === incident.firstResponseId)
+    if (!firstResponse) return '-'
+    if (isDateToday(firstResponse.submittedAt, this.timezone)) {
+      return `Today, ${formatTime(firstResponse.submittedAt, this.timezone)}`
     }
-    // yesterday => Yesterday, X
-    if (isDateYesterday(firstResponse, this.timezone)) {
-      return `Yesterday, ${formatTime(firstResponse, this.timezone)}`
-    } else return `${getDayAndMonth(firstResponse, this.timezone)}`
+    if (isDateYesterday(firstResponse.submittedAt, this.timezone)) {
+      return `Yesterday, ${formatTime(firstResponse.submittedAt, this.timezone)}`
+    } else return `${getDayAndMonth(firstResponse.submittedAt, this.timezone)}`
   }
 
-  public getResponseTime (incident: IncidentItem): string | undefined {
-    if (this.timezone === undefined) {
-      return undefined
-    }
-    if (incident.responses.length === 0 || incident.events.length === 0) {
-      return '-'
-    }
+  public getResponseTime (incident: IncidentItem): string {
+    if (!incident.responses.length || !incident.events.length) return '-'
     return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem((incident.events as EventExtended[]), true) as Ev).start, (this.getFirstOrLastItem((incident.responses as ResponseExtended[]), true) as Response).submittedAt, true) as string)}`
   }
 
