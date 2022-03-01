@@ -75,7 +75,15 @@
       class="pr-2  flex-1 flex justify-end items-center <sm:justify-start <sm:py-1"
       title="Difference between a first event start time and a first response was submitted in the Guardian App"
     >
-      <span class="text-secondary text-sm font-medium mr-3 sm:hidden">Response time</span>
+      <div class="text-secondary text-sm font-medium mr-3 sm:hidden flex items-center">
+        Response time
+        <img
+          title="Duration between the first event and the first response"
+          class="h-4 w-4 self-center ml-1 cursor-default"
+          src="/src/assets/info.svg"
+          alt=""
+        >
+      </div>
       <span class="text-right text-lg text-gray-200"> {{ getResponseTime(incident) }} </span>
     </div>
   </router-link>

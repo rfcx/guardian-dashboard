@@ -50,7 +50,10 @@
               </div>
             </div>
             <span v-if="!incident.resposeSummary.length" class="text-lg text-gray-200 pt-2">-</span>
-            <div class="text-xs text-gray-500 pt-2">Response time</div>
+            <div class="text-xs text-gray-500 pt-2 flex items-center">
+              Response time
+              <img title="Duration between the first event and the first response" class="h-3 w-3 self-center ml-1 cursor-default" src="/src/assets/info.svg" alt="">
+            </div>
             <div class="pt-2">
               <img v-if="incident.responseLabel === true" class="animate-spin bg-mirage-grey h-5 w-5" src="/src/assets/spinner.svg">
               <span v-else class="text-lg text-gray-200" :title="incident.responseTitle">{{ incident.responseLabel }}</span>
