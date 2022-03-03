@@ -90,14 +90,14 @@ export default class IncidentsTableRows extends Vue {
 
   public getResponseTitle (incident: IncidentItem): string {
     if (!incident.responses.length) return '-'
-    const firstResponse = incident.responses.find(response => response.id === incident.firstResponseId)
+    const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
     if (!firstResponse) return '-'
     return formatDateTime(firstResponse.submittedAt, this.timezone)
   }
 
   public getResponseLabel (incident: IncidentItem): string {
     if (!incident.responses.length) return '-'
-    const firstResponse = incident.responses.find(response => response.id === incident.firstResponseId)
+    const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
     if (!firstResponse) return '-'
     if (isDateToday(firstResponse.submittedAt, this.timezone)) {
       return `Today, ${formatTime(firstResponse.submittedAt, this.timezone)}`
@@ -105,6 +105,10 @@ export default class IncidentsTableRows extends Vue {
     if (isDateYesterday(firstResponse.submittedAt, this.timezone)) {
       return `Yesterday, ${formatTime(firstResponse.submittedAt, this.timezone)}`
     } else return `${getDayAndMonth(firstResponse.submittedAt, this.timezone)}`
+  }
+
+  public getFirstResponse (responses: Response[], firstResponseId: string): Response | undefined {
+    return responses.find(response => response.id === firstResponseId)
   }
 
   public getResponseTime (incident: IncidentItem): string {

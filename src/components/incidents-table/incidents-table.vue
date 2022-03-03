@@ -81,7 +81,7 @@
           title="Duration between the first event and the first response"
           class="h-4 w-4 self-center ml-1 cursor-default"
           src="/src/assets/info.svg"
-          alt=""
+          alt="i"
         >
       </div>
       <span class="text-right text-lg text-gray-200"> {{ getResponseTime(incident) }} </span>
