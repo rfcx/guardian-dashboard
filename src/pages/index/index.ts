@@ -51,9 +51,9 @@ export default class IndexPage extends Vue {
   }
 
   @Watch('includeClosedIncidents.checked')
-  onincludeClosedIncidentsCheckedChange (): void {
+  onIncludeClosedIncidentsChange (): void {
     if (this.$route?.query?.includeClosedIncidents !== undefined) {
-      void router.push({ query: { includeClosedIncidents: this.includeClosedIncidents.checked ? 'true' : 'false' } })
+      void router.replace({ query: { includeClosedIncidents: this.includeClosedIncidents.checked ? 'true' : 'false' } })
     }
   }
 

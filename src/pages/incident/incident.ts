@@ -10,14 +10,14 @@ import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService } from '@/services'
 import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, RawImageItem, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
-import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatDayWithoutTime, formatTime, formatTwoDateDiff, getDayAndMonth, getTzAbbr, inLast1Minute, inLast24Hours, isDateToday, isDateYesterday, isDefined, isNotDefined } from '@/utils'
+import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatDayWithoutTime, formatTime, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
 
 interface IncidentLabel extends Incident {
-  eventsTitle: string
-  eventsLabel: string
-  responseTitle: string
-  responseLabel: string
+  eventsTitle: string | boolean
+  eventsLabel: string | boolean
+  responseTitle: string | boolean
+  responseLabel: string | boolean
   resposeSummary: string[]
 }
 interface EventItem {
@@ -69,14 +69,20 @@ export default class IncidentPage extends Vue {
     this.isLoading = true
     await this.getIncidentData()
     await this.getStreamData()
+      .then(() => {
+        if (this.incident !== undefined) {
+          this.incident.eventsTitle = this.getEventsTitle()
+          this.incident.eventsLabel = this.getEventsLabel()
+          this.incident.responseTitle = this.getResponseTitle()
+          this.incident.responseLabel = this.getResponseLabel()
+        }
+      })
     this.initializeIncidentMap()
     await this.getAssets()
   }
 
-  public getEventsTitle (events: Ev[]): string {
-    const start = (this.getFirstOrLastItem(events, true) as Ev).start
-    const end = (this.getFirstOrLastItem(events, false) as Ev).end
-    return `${formatDateTime(start)} - ${formatDateTime(end)}`
+  public getIconTitle (count: number, title: string): string {
+    return `${count} ${title} ${count > 1 ? 'events' : 'event'}`
   }
 
   public setDefaultReportImg (e: Event): void {
@@ -99,9 +105,19 @@ export default class IncidentPage extends Vue {
     return itemIsEvent ? (first ? (item as Ev).start : (item as Ev).end) : (item as Response).submittedAt
   }
 
-  public getEventsLabel (events: Ev[]): string {
-    const start = (this.getFirstOrLastItem(events, true) as Ev).start
-    const end = (this.getFirstOrLastItem(events, false) as Ev).end
+  public getEventsTitle (): string {
+    if (this.incident === undefined) return '-'
+    if (this.incident !== undefined && !this.incident.events.length) return '-'
+    const start = (this.getFirstOrLastItem(this.incident.events, true) as Ev).start
+    const end = (this.getFirstOrLastItem(this.incident.events, false) as Ev).end
+    return `${formatDateTime(start, this.stream?.timezone)} - ${formatDateTime(end, this.stream?.timezone)}`
+  }
+
+  public getEventsLabel (): string {
+    if (this.incident === undefined) return '-'
+    if (this.incident !== undefined && !this.incident.events.length) return '-'
+    const start = (this.getFirstOrLastItem(this.incident.events, true) as Ev).start
+    const end = (this.getFirstOrLastItem(this.incident.events, false) as Ev).end
     return formatDateTimeRange(start, end, this.stream?.timezone)
   }
 
@@ -121,25 +137,17 @@ export default class IncidentPage extends Vue {
     return Object.values(rows)
   }
 
-  public getIconTitle (count: number, title: string): string {
-    return `${count} ${title} ${count > 1 ? 'events' : 'event'}`
+  public getResponseTitle (): string {
+    if (this.incident === undefined) return '-'
+    if (this.incident !== undefined && !this.incident.responses.length) return '-'
+    const firstResponse = (this.getFirstOrLastItem(this.incident.responses, true) as Response).submittedAt
+    return formatDateTime(firstResponse, this.stream?.timezone)
   }
 
-  public getResponseTitle (responses: Response[]): string {
-    const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
-    return formatDateTime(firstResponse)
-  }
-
-  public getResponseLabel (responses: Response[]): string {
-    const firstResponse = (this.getFirstOrLastItem(responses, true) as Response).submittedAt
-    // today => Today, X
-    if (isDateToday(firstResponse, this.stream?.timezone)) {
-      return `Today, ${formatTime(firstResponse, this.stream?.timezone)}`
-    }
-    // yesterday => Yesterday, X
-    if (isDateYesterday(firstResponse, this.stream?.timezone)) {
-      return `Yesterday, ${formatTime(firstResponse, this.stream?.timezone)}`
-    } else return `${getDayAndMonth(firstResponse, this.stream?.timezone)}`
+  public getResponseLabel (): string {
+    if (this.incident === undefined) return '-'
+    if (!this.incident.responses.length || !this.incident.events.length) return '-'
+    return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem(this.incident.events, true) as Ev).start, (this.getFirstOrLastItem(this.incident.responses, true) as Response).submittedAt, true) as string)}`
   }
 
   public toggleTrack (response: ResponseExtended, open: boolean): void {
@@ -192,7 +200,6 @@ export default class IncidentPage extends Vue {
 
   public getTzAbbrFormat (date: string): string | undefined {
     const label = getTzAbbr(date, this.stream?.timezone ?? 'UTC')
-    if ((label?.startsWith('GMT')) === true) return label
     if (label) return `(${label})`
   }
 
@@ -228,10 +235,10 @@ export default class IncidentPage extends Vue {
         .then(async (incident: Incident) => {
           IncidentsService.combineIncidentItems(incident)
           const inc: IncidentItem<IncidentLabel> = Object.assign(incident, {
-            eventsTitle: incident.events.length ? this.getEventsTitle(incident.events) : '',
-            eventsLabel: incident.events.length ? this.getEventsLabel(incident.events) : '',
-            responseTitle: incident.responses.length ? this.getResponseTitle(incident.responses) : '',
-            responseLabel: incident.responses.length ? this.getResponseLabel(incident.responses) : '',
+            eventsTitle: true,
+            eventsLabel: true,
+            responseTitle: true,
+            responseLabel: true,
             resposeSummary: []
           })
           return inc
