@@ -23,8 +23,9 @@ export default class PaginationComponent extends Vue {
     return this.paginationSettings
   }
 
-  @Watch('paginationSettings')
+  @Watch('paginationSettings.total')
   onPaginationSettingsChange (): void {
+    this.lastPage = 0
     this.initializeSettings()
   }
 

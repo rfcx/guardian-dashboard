@@ -12,7 +12,6 @@
           value="includeClosedIncidents.value"
           type="checkbox"
           class="h-3 w-3 rounded bg-gray text-gray-500 focus:ring-transparent"
-          @change="getPage()"
         >
         <label
           for="includeClosedIncidents"
