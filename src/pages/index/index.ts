@@ -46,7 +46,6 @@ export default class IndexPage extends Vue {
     this.resetPaginationData()
     this.isDataValid = true
     if (!this.getStreamIdFromRouterParams()) return
-    this.isLoading = true
     void this.onUpdatePage()
   }
 
@@ -70,6 +69,7 @@ export default class IndexPage extends Vue {
 
   public async getIncidentsData (): Promise<void> {
     try {
+      this.isLoading = true
       const resp = await IncidentsService.getIncidents({
         streams: [this.getStreamIdFromRouterParams()],
         closed: this.includeClosedIncidents.checked ? undefined : false,
@@ -130,7 +130,6 @@ export default class IndexPage extends Vue {
   }
 
   public async getPage (): Promise<void> {
-    this.isLoading = true
     await this.getIncidentsData()
   }
 }
