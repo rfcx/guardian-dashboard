@@ -17,7 +17,7 @@ interface IncidentLabel extends Incident {
   eventsTitle: string | boolean
   eventsLabel: string | boolean
   responseTitle: string | boolean
-  responseLabel: string | boolean
+  responseLabel: string
   resposeSummary: string[]
 }
 interface EventItem {
@@ -169,8 +169,7 @@ export default class IncidentPage extends Vue {
   public async closeReport (): Promise<void> {
     try {
       await IncidentsService.closeIncident((this.$route.params.id as string))
-      this.isLoading = true
-      void this.getIncidentData()
+      void this.onUpdatePage()
     } catch (e) {
       this.incidentStatus = 'Error occurred'
     }
@@ -238,7 +237,7 @@ export default class IncidentPage extends Vue {
             eventsTitle: true,
             eventsLabel: true,
             responseTitle: true,
-            responseLabel: true,
+            responseLabel: '',
             resposeSummary: []
           })
           return inc
@@ -368,8 +367,12 @@ export default class IncidentPage extends Vue {
             if (response.answers.find(i => i.question.id === 5)) {
               const investigate = response.answers.find(i => i.question.id === 5)
               const arr = this.combineAnswers(investigate)
-              if (arr) {
-                this.incident.resposeSummary = this.incident.resposeSummary.concat(arr.filter(item => { return item !== 'Other' }))
+              if ((arr?.length) != null) {
+                const isPoachingEvidence: boolean = item.messages.poachingEvidence
+                const isLoggingEvidence: boolean = item.messages.loggingEvidence
+                this.incident.resposeSummary = [...new Set(this.incident.resposeSummary.concat(arr.filter(item => {
+                  return this.checkResposeSummary(item, isPoachingEvidence, isLoggingEvidence)
+                })))]
               }
             }
           }
@@ -377,6 +380,13 @@ export default class IncidentPage extends Vue {
       }
       this.incident.resposeSummary = [...new Set(this.incident.resposeSummary)]
     }
+  }
+
+  public checkResposeSummary (item: string, isPoachingEvidence: boolean, isLoggingEvidence: boolean): boolean | undefined {
+    if (item === undefined) return false
+    if (item === 'Other') return false
+    else if (item === 'Poaching' && isPoachingEvidence) return true
+    else if (item === 'Logging' && isLoggingEvidence) return true
   }
 
   public getCreatedByLabel (user: User): string {

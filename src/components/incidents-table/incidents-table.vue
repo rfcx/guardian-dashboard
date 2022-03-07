@@ -27,7 +27,7 @@
         alt=""
       >
       <div
-        class="text-sm text-secondary mb-0.2 mr-2"
+        class="text-sm text-secondary mb-0.2 mr-2 <lg:(mb-0 text-base) <md:text-sm"
         :title="incident.eventsTitle"
       >
         {{ incident.eventsLabel }}
@@ -49,14 +49,14 @@
             @error="setDefaultReportImg"
           >
           <span
-            class="text-sm text-secondary text-center"
+            class="text-sm text-secondary text-center <lg:(mb-0 text-base) <md:text-sm"
           >
             {{ event.count || '' }}
           </span>
         </div>
       </div>
     </div>
-    <div class="pr-2 flex-1 text-secondary flex justify-end items-end <sm:justify-start <sm:py-1">
+    <div class="pr-2 flex-1 text-secondary flex justify-end items-end <lg:items-center <sm:justify-start <sm:py-1">
       <img
         v-if="incident.responses.length"
         title="Response"
@@ -65,7 +65,7 @@
         alt=""
       >
       <div
-        class="text-sm mb-0.2 text-secondary w-150px"
+        class="text-sm text-secondary mb-0.2 <lg:(mb-0 text-base) <md:text-sm w-150px"
         :title="incident.responseTitle"
       >
         {{ incident.responseLabel }}
