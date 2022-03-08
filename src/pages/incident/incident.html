@@ -16,8 +16,8 @@
             <div v-if="stream && stream.tags && stream.tags.length" class="mt-1">
               <div
                 v-for="tag of stream.tags"
-                class="shadow-sm text-xs text-gray-200 tracking-wide rounded-lg leading-none mr-2 px-2 py-1 inline-block capitalize"
-                title="Tag"
+                class="shadow-sm text-xs text-gray-200 tracking-wide cursor-default rounded-lg leading-none mr-2 px-2 py-1 inline-block capitalize"
+                :title="`${tag}` + ' tag'"
                 :class="{'bg-blue-500 bg-opacity-70': tag === 'recent', 'bg-red-400 bg-opacity-70': tag === 'hot',
                   'bg-green-600 bg-opacity-70': tag === 'open'}"
               >
@@ -32,31 +32,30 @@
             </div>
           </div>
           <div class="pl-4 border-l-4 border-gray-800">
-            <div class="text-xs text-gray-500 pt-2">Events summary</div>
+            <div class="text-sm text-gray-500 pt-2">Events summary</div>
             <div class="pt-2 flex">
-              <img v-if="incident.events.length" title="Time range of events" class="h-5 w-5 inline-block mr-2" src="/src/assets/alert.svg" alt="">
-              <div class="text-sm text-gray-200 inline-block" :title="incident.eventsTitle">{{ incident.eventsLabel }}</div>
+              <img v-if="incident.events.length" title="Time range of events" class="h-5 w-5 cursor-default inline-block mr-2" src="/src/assets/alert.svg" alt="">
+              <div class="text-sm text-gray-200 cursor-default inline-block" :title="incident.eventsTitle">{{ incident.eventsLabel }}</div>
             </div>
-            <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center pt-2 mr-3" :title="getIconTitle(event.count, event.value)">
+            <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center cursor-default pt-2 mr-3" :title="getIconTitle(event.count, event.value)">
               <img class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300" :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`" alt="" @error="setDefaultReportImg">
               <span class="text-sm text-center inline-block">{{ getIconTitle(event.count, event.title) }}</span>
             </div>
           </div>
           <div class="pl-4 border-l-4 border-gray-800">
-            <div class="text-xs text-gray-500 pt-2">Response summary</div>
+            <div class="text-sm text-gray-500 pt-2">Response summary</div>
             <div v-if="incident.resposeSummary.length">
               <div v-for="response in incident.resposeSummary">
                 <p class="text-lg text-gray-200 pt-1">{{ response }} confirmed</p>
               </div>
             </div>
             <span v-if="!incident.resposeSummary.length" class="text-lg text-gray-200 pt-2">-</span>
-            <div class="text-xs text-gray-500 pt-2 flex items-center">
+            <div class="text-sm text-gray-500 pt-2 flex items-center">
               Response time
-              <img title="Duration between the first event and the first response" class="h-3 w-3 self-center ml-1 cursor-default" src="/src/assets/info.svg" alt="i">
+              <img title="Duration between the first event and the first response" class="h-4.5 w-4.5 self-center ml-1 cursor-default" src="/src/assets/info.svg" alt="i">
             </div>
-            <div class="pt-2">
-              <img v-if="incident.responseLabel === true" class="animate-spin bg-mirage-grey h-5 w-5" src="/src/assets/spinner.svg">
-              <span v-else class="text-lg text-gray-200" :title="incident.responseTitle">{{ incident.responseLabel }}</span>
+            <div v-if="incident.responseLabel" class="pt-1">
+              <span class="text-lg text-gray-200 cursor-default" :title="incident.responseTitle">{{ incident.responseLabel }}</span>
             </div>
           </div>
           <div class="flex justify-center items-center">
@@ -68,7 +67,6 @@
       <div v-if="!incident.items.length" class="px-4 py-5">
         No responses and events data
       </div>
-
       <div class="mx-auto px-2 py-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:grid grid-cols-12 text-gray-50">
           <div v-for="item in incident.items" class="flex md:contents">
@@ -77,9 +75,9 @@
                 <div class="h-full w-1 bg-gray-500 pointer-events-none"></div>
               </div>
               <div class="w-7 h-7 absolute top-1/2 -mt-3 rounded-full shadow text-center" :class="{'bg-red-700': item.type === 'event', 'bg-green-700': item.type === 'response'}">
-                <img v-if="item.type === 'event'" class="flex-shrink-0 mt-1 ml-1 h-5 w-5 text-gray-300" title="Event" :src="`https://static.rfcx.org/img/guardian/ic_${item.classification.value}.svg`" @error="setDefaultReportImg" alt="">
+                <img v-if="item.type === 'event'" class="flex-shrink-0 mt-1 ml-1 h-5 w-5" title="Event" :src="`https://static.rfcx.org/img/guardian/ic_${item.classification.value}.svg`" @error="setDefaultReportImg" alt="">
                 <div title="Response">
-                  <svg v-if="item.type === 'response'" title="Response" class="flex-shrink-0 ml-1 mt-1 h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <svg v-if="item.type === 'response'" title="Response" class="flex-shrink-0 ml-1 mt-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#979faa" aria-hidden="true">
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
                     <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                   </svg>
@@ -117,21 +115,20 @@
                   <span v-for="message in item.messages.actions" class="bg-gray-600 bg-opacity-70 rounded-lg ml-2 px-2 py-1 <sm:mt-1">{{message}}</span>
                 </div>
               </div>
-              <div class="text-xs mt-3">
-                <div v-if="item.audioObject !== undefined && item.audioObject.src" class="audio-tag flex flex-row justify-start items-center <sm:(mt-2 flex-col items-start)">
-                  <span class="text-gray-500 mr-2 <sm:(mr-0 mb-2)">Additional evidence</span>
+              <div>
+                <div v-if="item.audioObject !== undefined && item.audioObject.src" class="audio-tag flex flex-row justify-start items-center mt-3 <sm:(mt-2 flex-col items-start)">
+                  <span class="text-gray-500 text-xs mr-2 <sm:(mr-0 mb-2)">Additional evidence</span>
                   <ranger-player-component :audio-prop="item.audioObject" />
                 </div>
-                <div class="my-8 flex flex-row justify-start items-center h-70px">
-                  <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-6.5 px-2 inline cursor-pointer mr-2" @click="toggleNotes(item, true)">&nbsp;[Notes]&nbsp;</div>
+                <div class="flex flex-row justify-start items-center mt-2 py-2">
+                  <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-pointer mr-2" @click="toggleNotes(item, true)">&nbsp;[notes]&nbsp;</div>
                   <ranger-notes v-if="item.showNotes !== undefined && item.showNotes === true" :notes="item.notesData" @close-notes="toggleNotes(item, false)"/>
-                  <div v-for="image in item.sliderData" class="inline mr-2" :style="{'background': 'center / contain no-repeat url(' + image.src + ')'}">
-                    <img class="max-h-70px max-w-70px inline-block cursor-pointer" :src="image.src" alt="" @click="toggleSlider(item, true, image)">
+                  <div v-for="image in item.sliderData" class="inline mt-1 mr-2">
+                    <div class="h-60px w-60px inline-block cursor-pointer" :style="{'background': 'url(' + image.src + ') repeat center'}" @click="toggleSlider(item, true, image)"></div>
                   </div>
                   <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
-                  <div v-if="item.trackData" class="cursor-pointer inline w-100px" @click="toggleTrack(item, true)">
-                    <map-component :zoom="item.trackData.settings.zoom" :center="item.trackData.settings.center" :width="'h-70px'"/>
-                  </div>
+                  <div v-if="item.trackData" class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-pointer mr-2 h-60px w-80px" @click="toggleTrack(item, true)">&nbsp;[map]&nbsp;</div>
+                  <div v-else class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-default mr-2 inline h-60px" title="Map unavailable">&nbsp;[map n/a]&nbsp;</div>
                   <ranger-track-modal-component v-if="item.showTrack !== undefined && item.showTrack === true && item.trackData.features" :raw-ranger-track="item.trackData" @close-ranger-track="toggleTrack(item, false)" />
                   <a v-if="((item.sliderData && item.sliderData.length) || item.audioObject)"
                       class="cursor-pointer btn py-0.5 bg-transparent hover:bg-transparent ml-auto shadow-transparent inline" :class="{'opacity-50 cursor-not-allowed disabled': item.isDownloading || item.isError}" @click="downloadAssets(item)"
