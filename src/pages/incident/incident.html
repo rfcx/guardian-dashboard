@@ -121,10 +121,10 @@
                   <ranger-player-component :audio-prop="item.audioObject" />
                 </div>
                 <div class="flex flex-row justify-start items-center mt-2 py-2">
-                  <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-pointer mr-2" @click="toggleNotes(item, true)">&nbsp;[notes]&nbsp;</div>
+                  <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-pointer h-60px mr-2" @click="toggleNotes(item, true)">&nbsp;[notes]&nbsp;</div>
                   <ranger-notes v-if="item.showNotes !== undefined && item.showNotes === true" :notes="item.notesData" @close-notes="toggleNotes(item, false)"/>
-                  <div v-for="image in item.sliderData" class="inline mt-1 mr-2">
-                    <div class="h-60px w-60px inline-block cursor-pointer" :style="{'background': 'url(' + image.src + ') repeat center'}" @click="toggleSlider(item, true, image)"></div>
+                  <div v-for="image in item.sliderData" class="inline mr-2">
+                    <img class="h-60px w-60px object-cover inline-block cursor-pointer" :src="image.src" alt="" @click="toggleSlider(item, true, image)">
                   </div>
                   <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
                   <div v-if="item.trackData" class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-pointer mr-2 h-60px w-80px" @click="toggleTrack(item, true)">&nbsp;[map]&nbsp;</div>
