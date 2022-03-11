@@ -154,10 +154,6 @@ export default class IncidentPage extends Vue {
     response.showTrack = open
   }
 
-  public toggleNotes (response: ResponseExtended, open: boolean): void {
-    response.showNotes = open
-  }
-
   public toggleSlider (response: ResponseExtended, open: boolean, image?: RawImageItem): void {
     response.showSlider = open
     if (!open && response !== undefined && response.sliderData) {

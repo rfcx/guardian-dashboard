@@ -21,3 +21,12 @@
 </template>
 
 <script src="./map.ts" lang="ts" />
+
+<style lang="scss">
+  .mapboxgl-ctrl-logo {
+    display: none !important;
+  }
+  .mapboxgl-ctrl-bottom-right {
+    display: none !important;
+  }
+</style>
