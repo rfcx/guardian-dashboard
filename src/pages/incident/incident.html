@@ -39,7 +39,7 @@
             </div>
             <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center cursor-default pt-2 mr-3" :title="getIconTitle(event.count, event.value)">
               <img class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300" :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`" alt="" @error="setDefaultReportImg">
-              <span class="text-sm text-center inline-block">{{ getIconTitle(event.count, event.title) }}</span>
+              <span class="text-sm text-left inline-block">{{ getIconTitle(event.count, event.title) }}</span>
             </div>
           </div>
           <div class="pl-4 border-l-4 border-gray-800">
@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="flex justify-center items-center">
-            <div v-if="!stream" class="text-xs text-gray-500 my-3 py-12 text-center">[Map]</div>
+            <div v-if="!stream" class="text-xs text-gray-500 my-3 py-12 text-center">map n/a</div>
             <map-component v-if="stream && mapData && mapData.center && mapData.center" :zoom="mapData.zoom" :center="mapData.center" :width="'h-140px'"/>
           </div>
         </div>
@@ -121,14 +121,18 @@
                   <ranger-player-component :audio-prop="item.audioObject" />
                 </div>
                 <div class="flex flex-row justify-start items-center mt-2 py-2 <sm:flex-wrap">
-                  <div v-if="item.notesData" class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-pointer h-60px mr-2 <sm:mt-1" @click="toggleNotes(item, true)">&nbsp;[notes]&nbsp;</div>
+                  <div v-if="item.notesData" title="Notes" class="inline cursor-pointer mr-2 <sm:mt-1" @click="toggleNotes(item, true)">
+                    <img class="h-65px inline-block" src="/src/assets/notes.svg" alt="">
+                  </div>
                   <ranger-notes v-if="item.showNotes !== undefined && item.showNotes === true" :notes="item.notesData" @close-notes="toggleNotes(item, false)"/>
                   <div v-for="image in item.sliderData" class="inline mr-2 <sm:mt-1">
-                    <img class="h-60px w-60px min-w-40px object-cover inline-block cursor-pointer" :src="image.src" alt="" @click="toggleSlider(item, true, image)">
+                    <img class="h-60px w-60px min-w-40px rounded object-cover inline-block cursor-pointer" title="Image" :src="image.src" alt="image" @click="toggleSlider(item, true, image)">
                   </div>
                   <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
-                  <div v-if="item.trackData" class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-pointer mr-2 h-60px w-80px <sm:mt-1" @click="toggleTrack(item, true)">&nbsp;[map]&nbsp;</div>
-                  <div v-else class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-default mr-2 inline h-60px <sm:mt-1" title="Map unavailable">&nbsp;[map n/a]&nbsp;</div>
+                  <div v-if="item.trackData" class="h-60px w-80px <sm:mt-1 rounded cursor-pointer inline" title="Map" @click="toggleTrack(item, true)">
+                    <map-component :zoom="item.trackData.settings.zoom" :center="item.trackData.settings.center" :classes="'h-60px rounded'"/>
+                  </div>
+                  <div v-if="!isAssetsLoading && !item.trackData" class="bg-gray-600 text-gray-500 text-center py-5.1 px-2 inline cursor-default mr-2 inline rounded h-60px <sm:mt-1" title="Map unavailable">&nbsp;map n/a&nbsp;</div>
                   <ranger-track-modal-component v-if="item.showTrack !== undefined && item.showTrack === true && item.trackData.features" :raw-ranger-track="item.trackData" @close-ranger-track="toggleTrack(item, false)" />
                   <a v-if="((item.sliderData && item.sliderData.length) || item.audioObject)"
                       class="cursor-pointer btn py-0.5 bg-transparent hover:bg-transparent ml-auto shadow-transparent inline <sm:mt-1" :class="{'opacity-50 cursor-not-allowed disabled': item.isDownloading || item.isError}" @click="downloadAssets(item)"

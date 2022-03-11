@@ -250,14 +250,13 @@ export default class IncidentPage extends Vue {
   }
 
   public async getAssets (): Promise<void> {
-    this.isAssetsLoading = true
     await this.getResponsesAssets()
     await this.getResposeDetails()
-    this.isAssetsLoading = false
   }
 
   public async getResponsesAssets (): Promise<void> {
     if (this.incident !== undefined) {
+      this.isAssetsLoading = true
       const items = (this.incident.items.filter(i => i.type === 'response')) as ResponseExtended[]
       for (const item of items) {
         item.assetsData = await IncidentsService.getResposesAssets(item.id)
@@ -312,6 +311,7 @@ export default class IncidentPage extends Vue {
           })
         }
       }
+      this.isAssetsLoading = false
     }
   }
 
@@ -338,6 +338,7 @@ export default class IncidentPage extends Vue {
 
   public async getResposeDetails (): Promise<void> {
     if (this.incident !== undefined) {
+      this.isAssetsLoading = true
       const items = (this.incident.items.filter(i => i.type === 'response')) as ResponseExtended[]
       for (const item of items) {
         if (item.type === 'response') {
@@ -379,6 +380,7 @@ export default class IncidentPage extends Vue {
         }
       }
       this.incident.resposeSummary = [...new Set(this.incident.resposeSummary)]
+      this.isAssetsLoading = false
     }
   }
 

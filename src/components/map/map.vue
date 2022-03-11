@@ -2,7 +2,7 @@
   <div
     v-if="!isLoading && !isError"
     :id="'map' + mapIndex"
-    :class="width"
+    :class="classes"
   />
   <div>
     <img

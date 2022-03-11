@@ -12,7 +12,7 @@ export default class MapComponent extends Vue {
   zoom!: number
 
   @Prop({ default: '' })
-  width!: string
+  classes!: string
 
   public mapbox?: Mapbox.Map
   public mapIndex = Math.floor(Math.random() * 1000)
