@@ -246,8 +246,8 @@ export default class IncidentPage extends Vue {
   }
 
   public async getAssets (): Promise<void> {
-    await this.getResponsesAssets()
     await this.getResposeDetails()
+    await this.getResponsesAssets()
   }
 
   public async getResponsesAssets (): Promise<void> {
