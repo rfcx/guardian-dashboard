@@ -2,7 +2,7 @@
   <div
     v-if="!isLoading && !isError"
     :id="'map' + mapIndex"
-    :class="width"
+    :class="classes"
   />
   <div>
     <img
@@ -21,3 +21,12 @@
 </template>
 
 <script src="./map.ts" lang="ts" />
+
+<style lang="scss">
+  .mapboxgl-ctrl-logo {
+    display: none !important;
+  }
+  .mapboxgl-ctrl-bottom-right {
+    display: none !important;
+  }
+</style>

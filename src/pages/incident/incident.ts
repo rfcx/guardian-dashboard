@@ -154,10 +154,6 @@ export default class IncidentPage extends Vue {
     response.showTrack = open
   }
 
-  public toggleNotes (response: ResponseExtended, open: boolean): void {
-    response.showNotes = open
-  }
-
   public toggleSlider (response: ResponseExtended, open: boolean, image?: RawImageItem): void {
     response.showSlider = open
     if (!open && response !== undefined && response.sliderData) {
@@ -250,14 +246,13 @@ export default class IncidentPage extends Vue {
   }
 
   public async getAssets (): Promise<void> {
-    this.isAssetsLoading = true
-    await this.getResponsesAssets()
     await this.getResposeDetails()
-    this.isAssetsLoading = false
+    await this.getResponsesAssets()
   }
 
   public async getResponsesAssets (): Promise<void> {
     if (this.incident !== undefined) {
+      this.isAssetsLoading = true
       const items = (this.incident.items.filter(i => i.type === 'response')) as ResponseExtended[]
       for (const item of items) {
         item.assetsData = await IncidentsService.getResposesAssets(item.id)
@@ -312,6 +307,7 @@ export default class IncidentPage extends Vue {
           })
         }
       }
+      this.isAssetsLoading = false
     }
   }
 
@@ -338,6 +334,7 @@ export default class IncidentPage extends Vue {
 
   public async getResposeDetails (): Promise<void> {
     if (this.incident !== undefined) {
+      this.isAssetsLoading = true
       const items = (this.incident.items.filter(i => i.type === 'response')) as ResponseExtended[]
       for (const item of items) {
         if (item.type === 'response') {
@@ -379,6 +376,7 @@ export default class IncidentPage extends Vue {
         }
       }
       this.incident.resposeSummary = [...new Set(this.incident.resposeSummary)]
+      this.isAssetsLoading = false
     }
   }
 
