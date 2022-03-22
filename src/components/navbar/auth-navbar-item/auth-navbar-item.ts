@@ -1,4 +1,5 @@
 import { Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 
 import { VuexService } from '@/services'
 import { Auth0Option, Auth0User } from '@/types'
@@ -12,6 +13,12 @@ export default class AuthNavbarItemComponent extends Vue {
   public user!: Auth0User | undefined
 
   public isMenuOpen = false
+
+  data (): Record<string, unknown> {
+    return {
+      t: useI18n()
+    }
+  }
 
   public get userImage (): string {
     return this.user?.picture ?? ''

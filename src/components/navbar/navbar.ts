@@ -1,4 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 
 import { ROUTES_NAME } from '@/router'
 import { VuexService } from '@/services'
@@ -32,9 +33,19 @@ export default class NavigationBarComponent extends Vue {
     this.getSelectedProject()
   }
 
+  data (): Record<string, unknown> {
+    return {
+      languages: [
+        { flag: '🇺🇸  ', value: 'en', title: 'English' },
+        { flag: '🇮🇩  ', value: 'in', title: 'bahasa Indonesia' }
+      ],
+      t: useI18n()
+    }
+  }
+
   public get selectedProjectName (): string {
     this.getSelectedProject()
-    return this.selectedProject?.name ?? 'Select Project'
+    return this.selectedProject?.name ?? `${this.$t('Select Project')}`
   }
 
   public get navMenus (): NavMenu[] {

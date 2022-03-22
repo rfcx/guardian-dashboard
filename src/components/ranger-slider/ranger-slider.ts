@@ -1,4 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
@@ -32,6 +33,12 @@ export default class RangerSliderComponent extends Vue {
   @Emit('closeSlider')
   public closeSlider (): boolean {
     return true
+  }
+
+  data (): Record<string, unknown> {
+    return {
+      t: useI18n()
+    }
   }
 
   mounted (): void {

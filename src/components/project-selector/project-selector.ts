@@ -1,4 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Emit } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
@@ -28,7 +29,8 @@ export default class ProjectSelectorComponent extends Vue {
   data (): Record<string, unknown> {
     return {
       componentProjects: this.componentProjects,
-      selectedProject: this.selectedProject
+      selectedProject: this.selectedProject,
+      t: useI18n()
     }
   }
 

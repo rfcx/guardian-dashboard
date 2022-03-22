@@ -1,5 +1,6 @@
 import Mapbox from 'mapbox-gl'
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
 
 import { OnClickOutside } from '@vueuse/components'
@@ -30,6 +31,12 @@ export default class RangerTrackModalComponent extends Vue {
   onRawRangerTrackChange (): void {
     this.isLoading = true
     void this.createMap()
+  }
+
+  data (): Record<string, unknown> {
+    return {
+      t: useI18n()
+    }
   }
 
   mounted (): void {
