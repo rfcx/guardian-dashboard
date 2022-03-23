@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: incident-center-service
+  name: guardian-dashboard-service
   namespace: staging
   labels:
-    app: incident-center
+    app: guardian-dashboard
 spec:
   selector:
-    app: incident-center
+    app: guardian-dashboard
   type: ClusterIP
   ports:
     - name: node
