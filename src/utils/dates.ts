@@ -5,6 +5,10 @@ import isYesterday from 'dayjs/plugin/isYesterday'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import i18n from '@/locals/i18n'
+
+const { t } = i18n.global
+
 dayjs.extend(isToday)
 dayjs.extend(isYesterday)
 dayjs.extend(utc)
@@ -26,23 +30,23 @@ export const formatDateRange = (start: dayjs.Dayjs, end: dayjs.Dayjs): string =>
 
 export const formatDateTimeRange = (start: string, end: string, timezone: string = 'UTC'): string => {
   if (isDateToday(start, timezone) && isDateToday(end, timezone)) {
-    return `Today, ${formatTime(start, timezone)} - ${formatTime(end, timezone)}`
+    return `${t('Today')}, ${formatTime(start, timezone)} - ${formatTime(end, timezone)}`
   }
   // yesterday - today => Yesterday X - Today Y
   if (isDateYesterday(start, timezone) && isDateToday(end, timezone)) {
-    return `Yesterday ${formatTime(start, timezone)} - Today ${formatTime(end, timezone)}`
+    return `${t('Yesterday')} ${formatTime(start, timezone)} - ${t('Today')} ${formatTime(end, timezone)}`
   }
   // yesterday - yesterday => Yesterday X-Y
   if (isDateYesterday(start, timezone) && isDateYesterday(end, timezone)) {
-    return `Yesterday, ${formatTime(start, timezone)} - ${formatTime(end, timezone)}`
+    return `${t('Yesterday')}, ${formatTime(start, timezone)} - ${formatTime(end, timezone)}`
   }
   // other - today => 10 Dec - Today, Y
   if (isDateToday(end, timezone)) {
-    return `${getDayAndMonth(start, timezone)} - Today, ${formatTime(end, timezone)}`
+    return `${getDayAndMonth(start, timezone)} - ${t('Today')}, ${formatTime(end, timezone)}`
   }
   // other - yesterday => 10 Dec - Yesterday, Y
   if (isDateYesterday(end, timezone)) {
-    return `${getDayAndMonth(start, timezone)} - Yesterday, ${formatTime(end, timezone)}`
+    return `${getDayAndMonth(start, timezone)} - ${t('Yesterday')}, ${formatTime(end, timezone)}`
   }
   // other
   if (getDayAndMonth(start, timezone) === getDayAndMonth(end, timezone)) {
@@ -63,7 +67,8 @@ export const formatDateTimeWithoutYear = (label: string | any, timezone: string 
 }
 
 export const getDayAndMonth = (date: any, timezone: string = 'UTC'): string => {
-  return dayjs(date).tz(timezone).format('DD MMM')
+  const item = dayjs(date).tz(timezone).format('DD MMM')
+  return `${item.substring(0, (item.length - 3))} ${t(item.substr(item.length - 3))}`
 }
 
 export const formatDayWithoutTime = (date: any, timezone: string = 'UTC'): string => {
@@ -145,8 +150,8 @@ function combineLabel (dateDiff: duration.Duration, excludeHours?: boolean): str
 // ----------------------------
 
 function getEndLabel (count: number, item: string): string {
-  if (count === 1) return item.substring(0, (item.length - 1))
-  return item
+  if (count === 1) return t(item.substring(0, (item.length - 1)))
+  return t(item)
 }
 
 export const getPlayerTime = (label: number): string => {

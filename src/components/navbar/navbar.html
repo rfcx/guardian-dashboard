@@ -29,6 +29,7 @@
           </div>
         </div>
         <div class="flex items-center mx-4 sm:hidden">
+          <language-selector-component/>
           <auth-navbar-item-component/>
         </div>
       </div>
@@ -40,17 +41,11 @@
             class="navbar-item navbar-menu-item divide-solid divide-x <sm:(h-10 justify-start pl-4)"
             @click="hasToggledMobileMenu = false"
           >
-            {{ item.label }}
+            {{ $t(item.label) }}
         </router-link>
       </div>
-      <div class="flex items-center mx-4 relative">
-        <select v-model="$i18n.locale" class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer focus:shadow-none outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm w-30 flex items-center mr-2 <sm:mb-2">
-          <option v-for="(lang, i) in languages" :key="`lang${i}`" :value="lang.value">
-            <span :title="lang.title">{{ lang.flag }} {{ lang.title }}</span>
-          </option>
-        </select>
-      </div>
       <div class="flex items-center mx-4 <sm:hidden">
+        <language-selector-component/>
         <auth-navbar-item-component/>
       </div>
     </div>

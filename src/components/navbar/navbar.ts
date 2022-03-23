@@ -7,10 +7,12 @@ import { Auth0User, Project } from '@/types'
 import { NavMenu } from '@/types/Navbar'
 import ProjectSelectorComponent from '../project-selector/project-selector.vue'
 import AuthNavbarItemComponent from './auth-navbar-item/auth-navbar-item.vue'
+import LanguageSelectorComponent from './language-selector/language-selector.vue'
 import MobileMenuToggleButton from './mobile-menu-toggle-button/mobile-menu-toggle-button.vue'
 
 @Options({
   components: {
+    LanguageSelectorComponent,
     MobileMenuToggleButton,
     ProjectSelectorComponent,
     AuthNavbarItemComponent
@@ -35,10 +37,6 @@ export default class NavigationBarComponent extends Vue {
 
   data (): Record<string, unknown> {
     return {
-      languages: [
-        { flag: '🇺🇸  ', value: 'en', title: 'English' },
-        { flag: '🇮🇩  ', value: 'in', title: 'bahasa Indonesia' }
-      ],
       t: useI18n()
     }
   }

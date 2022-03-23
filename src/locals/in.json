@@ -21,6 +21,7 @@
   "Page": "Halaman",
   "of": "dari",
   "Incident": "Kejadian",
+  "Incidents": "Kejadian",
   "Mark as closed": "Tandai sudah selesai",
   "Events summary": "Ringkasan kejadian",
   "Events": "Eejadian",
@@ -117,5 +118,8 @@
   "Confiscated equipment": "Peralatan yang disita",
   "Damaged machinery": "Mesin rusak",
   "Small": "Kecil",
-  "Large": "Besar"
+  "Large": "Besar",
+  "Sign out": "Keluar",
+  "Sign In": "Masuk",
+  "Difference between a first event start time and a first response was submitted in the Guardian App": "Perbedaan antara waktu mulai acara pertama dan tanggapan pertama dikirimkan di Aplikasi Guardian"
 }
