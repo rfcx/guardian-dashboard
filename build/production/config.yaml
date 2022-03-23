@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: incident-center-config
-  namespace: production
-data:
-  VITE_APP_RANGER_API_HOST: https://ranger-api.rfcx.org
