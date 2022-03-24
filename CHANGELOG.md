@@ -1,5 +1,7 @@
 # Guardian Dashboard Release Notes
 
+* **bug:** Fixed text in the events summary lable ([#127](https://github.com/rfcx/guardian-dashboard/issues/127))
+
 ## 0.0.8 (2022-02-XX)
 
 * **bug:** Timezone abbreviation is displayed ([#110](https://github.com/rfcx/guardian-dashboard/issues/110))
