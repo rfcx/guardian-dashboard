@@ -1,12 +1,20 @@
 import { Vue } from 'vue-class-component'
 
+interface LangItem {
+  flag: string
+  value: string
+  title: string
+}
+
 export default class LanguageSelectorComponent extends Vue {
+  public languages: LangItem[] = [
+    { flag: '🇺🇸', value: 'en', title: 'English' },
+    { flag: '🇮🇩', value: 'in', title: 'Bahasa Indonesia' }
+  ]
+
   data (): Record<string, unknown> {
     return {
-      languages: [
-        { flag: '🇺🇸', value: 'en', title: 'English' },
-        { flag: '🇮🇩', value: 'in', title: 'Bahasa Indonesia' }
-      ]
+      languages: this.languages
     }
   }
 

@@ -6,8 +6,8 @@
       @change="onLangChange($i18n.locale)"
     >
       <option
-        v-for="(lang, i) in languages"
-        :key="`lang${i}`"
+        v-for="lang in languages"
+        :key="`lang_${lang.value}`"
         :value="lang.value"
       >
         <span
