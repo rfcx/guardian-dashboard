@@ -68,7 +68,7 @@ export const formatDateTimeWithoutYear = (label: string | any, timezone: string 
 
 export const getDayAndMonth = (date: any, timezone: string = 'UTC'): string => {
   const item = dayjs(date).tz(timezone).format('DD MMM')
-  return `${item.substring(0, (item.length - 3))} ${t(item.substr(item.length - 3))}`
+  return `${item.substring(0, (item.length - 3))}${t(item.substr(item.length - 3))}`
 }
 
 export const formatDayWithoutTime = (date: any, timezone: string = 'UTC'): string => {

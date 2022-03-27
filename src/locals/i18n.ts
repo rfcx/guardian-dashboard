@@ -5,21 +5,24 @@ import ind from './in.json'
 
 type MessageSchema = typeof en
 
-const checkLocalLang = (): string | null => {
-  try {
-    const lang = localStorage.getItem('GDLang')
-    if (!lang && ['in_ID', 'in'].includes(navigator.language)) {
-      return 'in'
-    } else if (!lang) return 'en'
-    else return lang
-  } catch (e) {
-    console.log(e)
-    return null
+let localStorage: Storage
+
+export const getLocalLang = (): string | null => {
+  if (localStorage === undefined) {
+    return 'en'
   }
+  const lang = localStorage.getItem('GDLang')
+  if (lang !== null) {
+    return lang
+  }
+  if (['in_ID', 'in'].includes(navigator.language)) {
+    return 'in'
+  }
+  return 'en'
 }
 
 const i18n = createI18n<I18nOptions, [MessageSchema], 'en', 'in'>({
-  locale: checkLocalLang() ?? 'en',
+  locale: getLocalLang() ?? 'en',
   messages: {
     en: en,
     in: ind

@@ -4,4 +4,4 @@ metadata:
   name: incident-center-config
   namespace: staging
 data:
-  VITE_APP_RANGER_API_HOST: https://staging-ranger-api.rfcx.org
+  VITE_APP_RANGER_API_HOST: https://staging-guardian-api.rfcx.org
