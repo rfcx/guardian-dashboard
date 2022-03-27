@@ -16,7 +16,7 @@
           <div>
             <div class="flex flex-row justify-between content-center pt-4 pb-2 px-4 border-b-1">
               <h1 class="text-xl text-white">
-                Ranger Track
+                {{ $t('Ranger Track') }}
               </h1>
               <a
                 class="cursor-pointer"

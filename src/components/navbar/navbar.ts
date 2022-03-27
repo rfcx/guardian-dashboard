@@ -1,4 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 
 import { ROUTES_NAME } from '@/router'
 import { VuexService } from '@/services'
@@ -6,10 +7,12 @@ import { Auth0User, Project } from '@/types'
 import { NavMenu } from '@/types/Navbar'
 import ProjectSelectorComponent from '../project-selector/project-selector.vue'
 import AuthNavbarItemComponent from './auth-navbar-item/auth-navbar-item.vue'
+import LanguageSelectorComponent from './language-selector/language-selector.vue'
 import MobileMenuToggleButton from './mobile-menu-toggle-button/mobile-menu-toggle-button.vue'
 
 @Options({
   components: {
+    LanguageSelectorComponent,
     MobileMenuToggleButton,
     ProjectSelectorComponent,
     AuthNavbarItemComponent
@@ -32,9 +35,15 @@ export default class NavigationBarComponent extends Vue {
     this.getSelectedProject()
   }
 
+  data (): Record<string, unknown> {
+    return {
+      t: useI18n()
+    }
+  }
+
   public get selectedProjectName (): string {
     this.getSelectedProject()
-    return this.selectedProject?.name ?? 'Select Project'
+    return this.selectedProject?.name ?? `${this.$t('Select Project')}`
   }
 
   public get navMenus (): NavMenu[] {

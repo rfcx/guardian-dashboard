@@ -1,10 +1,13 @@
 # Guardian Dashboard Release Notes
 
-* **bug:** Fixed text in the events summary lable ([#127](https://github.com/rfcx/guardian-dashboard/issues/127))
+## 0.0.9 (2022-03-28)
 
-## 0.0.8 (2022-02-XX)
+* **feature:** Support Indonesian language ([#121](https://github.com/rfcx/guardian-dashboard/issues/121))
+* * **bug:** Fixed text in the events summary lable ([#127](https://github.com/rfcx/guardian-dashboard/issues/127))
 
-* **bug:** Timezone abbreviation is displayed ([#110](https://github.com/rfcx/guardian-dashboard/issues/110))
+## 0.0.8 (2022-03-06)
+
+* **feature:** Timezone abbreviation is displayed ([#110](https://github.com/rfcx/guardian-dashboard/issues/110))
 * **bug:** Do not include closed incidents on the load more incidents if the checkbox is not selected ([#110](https://github.com/rfcx/guardian-dashboard/issues/110))
 * **bug:** Return the audio player to the initial state once the audio is ended
 

@@ -1,4 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/solid'
@@ -27,6 +28,12 @@ export default class PaginationComponent extends Vue {
   onPaginationSettingsChange (): void {
     this.lastPage = 0
     this.initializeSettings()
+  }
+
+  data (): Record<string, unknown> {
+    return {
+      t: useI18n()
+    }
   }
 
   mounted (): void {

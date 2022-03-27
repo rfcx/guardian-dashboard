@@ -1,4 +1,5 @@
 import { Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Prop, Watch } from 'vue-property-decorator'
 
 import { getPlayerTime } from '@/utils'
@@ -21,6 +22,12 @@ export default class RangerPlayerComponent extends Vue {
     this.isError = false
     if (this.audioProp.src !== undefined) {
       this.initializeAudio()
+    }
+  }
+
+  data (): Record<string, unknown> {
+    return {
+      t: useI18n()
     }
   }
 

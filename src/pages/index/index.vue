@@ -15,14 +15,14 @@
         >
         <label
           for="includeClosedIncidents"
-          class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap"
+          class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap truncate"
         >
-          {{ includeClosedIncidents.label }}
+          {{ $t(includeClosedIncidents.label) }}
         </label>
       </div>
       <div class="mt-5 px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-6 mb-5 bg-steel-grey rounded-md">
         <div
-          title="Stream"
+          :title="$t('Stream')"
           class="flex justify-start items-center whitespace-nowrap"
         >
           <img
@@ -46,12 +46,12 @@
               class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
               :class="{'bg-blue-500 bg-opacity-70': tag === 'recent', 'bg-red-400 bg-opacity-70': tag === 'hot', 'bg-green-600 bg-opacity-70': tag === 'open'}"
             >
-              {{ tag }}
+              {{ $t(tag) }}
             </div>
           </div>
         </div>
         <div class="justify-self-end <sm:hidden">
-          <span class="text-secondary text-sm font-medium">Response time</span>
+          <span class="text-secondary text-sm font-medium">{{ $t('Response time') }}</span>
         </div>
         <div class="col-span-3 flex flex-col">
           <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

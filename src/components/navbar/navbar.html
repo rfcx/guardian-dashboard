@@ -12,7 +12,7 @@
                 alt="Rainforest connection"
               >
               <div class="font-semibold text-primary ml-2 <md:hidden">
-                Guardian Dashboard
+                {{ $t('Guardian Dashboard') }}
               </div>
             </div>
           </router-link>
@@ -29,6 +29,7 @@
           </div>
         </div>
         <div class="flex items-center mx-4 sm:hidden">
+          <language-selector-component/>
           <auth-navbar-item-component/>
         </div>
       </div>
@@ -40,10 +41,11 @@
             class="navbar-item navbar-menu-item divide-solid divide-x <sm:(h-10 justify-start pl-4)"
             @click="hasToggledMobileMenu = false"
           >
-            {{ item.label }}
+            {{ $t(item.label) }}
         </router-link>
       </div>
       <div class="flex items-center mx-4 <sm:hidden">
+        <language-selector-component/>
         <auth-navbar-item-component/>
       </div>
     </div>

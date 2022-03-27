@@ -7,7 +7,7 @@
             v-model="searchLabel"
             type="text"
             class="search px-1 py-0 text-white text-sm font-medium bg-steel-grey focus:steel-grey focus:outline-none outline-none border-none w-full focus:ring-transparent"
-            placeholder="Filter by keyword"
+            :placeholder="$t('Filter by keyword')"
             @keyup="searchStream()"
           >
         </div>
@@ -20,10 +20,10 @@
             @click="toggleStatusMenu()"
           >
             <span class="block truncate">
-              Status:
+              {{ $t('Status') }}:
             </span>
             <span class="ml-3 block truncate">
-              {{ getSelectedStatus() }}
+              {{ $t(getSelectedStatus()) }}
             </span>
             <span class="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -42,7 +42,7 @@
             >
               <div class="flex items-center">
                 <span class="font-normal block truncate text-white sm:text-sm w-30">
-                  {{ status.label }}
+                  {{ $t(status.label) }}
                 </span>
                 <span v-if="status.checked" class="text-white flex items-center px-2">
                   <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -53,19 +53,19 @@
             </li>
           </ul>
         </div>
-        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey w-60 <sm:mb-2">
+        <div class="inline-flex items-center px-4 py-2 rounded-md shadow-sm bg-steel-grey <sm:mb-2">
           <input id="includeClosedIncidents" name="includeClosedIncidents" value="includeClosedIncidents.value" v-model="includeClosedIncidents.checked" type="checkbox" class="h-3 w-3 rounded bg-gray text-gray-500 focus:ring-transparent" @change="getPage($event)" />
-          <label for="includeClosedIncidents" class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap">
-            {{ includeClosedIncidents.label }}
+          <label for="includeClosedIncidents" class="ml-3 min-w-0 flex-1 text-white text-sm font-medium whitespace-nowrap truncate">
+            {{ $t(includeClosedIncidents.label) }}
           </label>
         </div>
       </div>
       <img v-if="isLoading" class="animate-spin bg-mirage-grey mt-50 h-10 w-10 mx-auto" src="/src/assets/spinner.svg">
       <div v-if="streamsData && !streamsData.length && !isLoading" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-white">
-        No streams data
+        {{ $t('No streams data') }}
       </div>
       <div v-if="!isLoading && errorMessage" class="px-4 py-10 text-sm font-medium whitespace-nowrap text-danger">
-        {{ errorMessage }}
+        {{ $t(errorMessage) }}
       </div>
       <div
       v-if="streamsData && streamsData.length && !isLoading"
@@ -81,24 +81,24 @@
               <span class="text-secondary text-xl self-end mr-2 truncate" :title="getStreamName(stream.id)">{{ getStreamName(stream.id) }}</span>
             </router-link>
             <div v-if="['cell','satellite'].includes(stream.guardianType)" class="flex items-center mr-4">
-              <img class="h-6 w-6 inline-block self-center mr-1" :src="`https://static.rfcx.org/img/guardian/ic_${stream.guardianType}.svg`" :title="`${stream.guardianType}` + ' type'" alt="">
-              <span class="text-secondary capitalize inline-block self-end text-lg" :title="`${stream.guardianType}` + ' type'">{{ stream.guardianType === 'satellite' ? 'Sat' : stream.guardianType }}</span>
+              <img class="h-6 w-6 inline-block self-center mr-1" :src="`https://static.rfcx.org/img/guardian/ic_${stream.guardianType}.svg`" :title="`${$t(stream.guardianType)} ` + $t('type')" alt="">
+              <span class="text-secondary capitalize inline-block self-end text-lg" :title="`${$t(stream.guardianType)} ` + $t('type')">{{ stream.guardianType === 'satellite' ? $t('Sat') : $t(stream.guardianType) }}</span>
             </div>
             <div v-if="stream.tags && stream.tags.length" class="flex justify-start items-center">
               <div
                 v-for="tag of stream.tags"
                 class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
                 :class="{'bg-blue-500 bg-opacity-70': tag === 'recent', 'bg-red-400 bg-opacity-70': tag === 'hot', 'bg-green-600 bg-opacity-70': tag === 'open'}"
-                :title="`${tag}` + ' tag'"
+                :title="`${$t(tag)} ` + $t('tag')"
               >
-                {{ tag }}
+                {{ $t(tag) }}
               </div>
             </div>
           </div>
           <div class="flex items-center justify-self-end text-secondary text-sm font-medium <sm:hidden">
-            Response time
+            {{ $t('Response time') }}
             <img
-              title="Duration between the first event and the first response"
+              :title="$t('Duration between the first event and the first response')"
               class="h-4.5 w-4.5 self-top ml-1 cursor-default"
               src="/src/assets/info.svg"
               alt="i"
@@ -112,14 +112,14 @@
                   <router-link v-if="stream.incidents && stream.incidents.total && stream.incidents.total > 3" class="grid grid-cols-1 gap-2 cursor-pointer hover:bg-gray-300 hover:bg-opacity-5 border-t border-gray-700 py-2 <sm:(flex flex-col)"
                     :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id, name: streams, query: { includeClosedIncidents: includeClosedIncidents.checked } }" tag="tr">
                     <div class="pr-2 flex flex-nowrap items-center justify-start flex-1 text-sm text-secondary <sm:py-1">
-                      + {{ stream.incidents.total - 3 }} more incidents
+                      + {{ stream.incidents.total - 3 }} {{ $t('more incidents')}}
                     </div>
                   </router-link>
                   <div v-if="stream.incidents !== undefined && !stream.incidents.items.length && !stream.loading" class="flex justify-start items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
-                    <span class="text-xl text-secondary">None</span>
+                    <span class="text-xl text-secondary">{{ $t('None') }}</span>
                   </div>
                 </div>
               </div>
@@ -135,10 +135,10 @@
     >
       <div class="lg:text-center">
         <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
-          Guardian Dashboard
+          {{ $t('Guardian Dashboard') }}
         </p>
         <p class="mt-4 max-w-2xl text-xl leading-relaxed text-white lg:mx-auto">
-          A dashboard for incidents and responses monitoring
+          {{ $t('A dashboard for incidents and responses monitoring') }}
         </p>
       </div>
     </div>

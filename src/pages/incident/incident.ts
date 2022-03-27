@@ -1,5 +1,6 @@
 import Mapbox from 'mapbox-gl'
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Watch } from 'vue-property-decorator'
 
 import InvalidPageStateComponent from '@/components/invalid-page-state/invalid-page-state.vue'
@@ -52,7 +53,8 @@ export default class IncidentPage extends Vue {
     return {
       incident: this.incident,
       stream: this.stream,
-      timerSub: this.timerSub
+      timerSub: this.timerSub,
+      t: useI18n()
     }
   }
 
@@ -81,7 +83,7 @@ export default class IncidentPage extends Vue {
   }
 
   public getIconTitle (count: number, title: string): string {
-    return `${count} ${title} ${count > 1 ? 'events' : 'event'}`
+    return `${count} ${this.$t(title)} ${count > 1 ? this.$t('events') : this.$t('event')}`
   }
 
   public setDefaultReportImg (e: Event): void {

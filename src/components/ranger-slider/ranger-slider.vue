@@ -17,7 +17,7 @@
             <div>
               <div class="flex flex-row justify-between content-center pt-4 pb-2 px-4 border-b-1">
                 <h1 class="text-xl text-white">
-                  Attachments
+                  {{ $t('Attachments') }}
                 </h1>
                 <a
                   class="cursor-pointer"
@@ -74,7 +74,7 @@
               <a
                 v-if="images.length > 1"
                 class="cursor-pointer"
-                title="Previous Image"
+                :title="$t('Previous Image')"
                 @click="getPrevImage()"
               >
                 <svg
@@ -127,14 +127,14 @@
                   src="/src/assets/download.svg"
                   alt=""
                 >
-                Download
+                {{ $t('Download') }}
               </button>
               <span
                 v-else
                 class="text-sm font-medium text-white px-3 py-2.5"
                 :class="{'text-danger': isError}"
               >
-                Error occurred
+                {{ $t('Error occured') }}
               </span>
             </div>
           </div>

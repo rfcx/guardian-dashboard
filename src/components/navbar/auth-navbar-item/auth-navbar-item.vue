@@ -4,7 +4,7 @@
     class="btn btn-primary"
     @click="login"
   >
-    Sign In
+    {{ $t('Sign In') }}
   </button>
   <div
     v-else
@@ -38,7 +38,7 @@
           class="p-4 rounded-b-md hover:(bg-box-grey cursor-pointer)"
           @click="logout"
         >
-          Sign out
+          {{ $t('Sign out') }}
         </li>
       </ul>
     </div>

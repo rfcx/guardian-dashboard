@@ -107,6 +107,7 @@ interface Auth0PluginOptions {
   clientId?: string
   audience?: string
   redirectUri: string
+  ui_locales?: string
 }
 
 async function init (options: Auth0PluginOptions): Promise<{Auth0Plugin: Plugin, redirectAfterAuth: string}> {
@@ -117,7 +118,8 @@ async function init (options: Auth0PluginOptions): Promise<{Auth0Plugin: Plugin,
     client_id: clientId,
     audience: audience,
     redirect_uri: options.redirectUri,
-    theme: 'dark'
+    theme: 'dark',
+    ui_locales: 'en id'
   })
 
   let redirectAfterAuth = null

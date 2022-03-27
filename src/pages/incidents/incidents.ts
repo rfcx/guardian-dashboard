@@ -1,4 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Watch } from 'vue-property-decorator'
 
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
@@ -58,7 +59,8 @@ export default class IncidentsPage extends Vue {
     return {
       incidentsStatus: this.incidentsStatus,
       streamsData: this.streamsData,
-      errorMessage: this.errorMessage
+      errorMessage: this.errorMessage,
+      t: useI18n()
     }
   }
 

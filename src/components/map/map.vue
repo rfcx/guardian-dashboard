@@ -9,8 +9,8 @@
       v-if="isError"
       class="h-9 <sm:h-7 h-min-7"
       src="/src/assets/error.svg"
-      title="Error getting a map"
-      alt="Error getting a map"
+      :title="$t('Error getting a map')"
+      :alt="$t('Error getting a map')"
     >
     <img
       v-if="isLoading"
