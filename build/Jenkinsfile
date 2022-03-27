@@ -24,7 +24,7 @@ pipeline {
     }
   }
   environment {
-    APP = "incident-center"
+    APP = "guardian-dashboard"
     K8S_NAMESPACE = k8sNamespace(BRANCH_NAME)
     ECR_HOST = "887044485231.dkr.ecr.eu-west-1.amazonaws.com"
     ECR_REPO = ecrRepoName(BRANCH_NAME)
@@ -72,9 +72,9 @@ pipeline {
 
 def ecrRepoName(branch) {
   script {
-    repo = "incident-center/staging"
+    repo = "guardian-dashboard/staging"
     if (branch == "master") {
-      repo = "incident-center"
+      repo = "guardian-dashboard"
     }
   }
   return repo

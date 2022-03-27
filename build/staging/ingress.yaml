@@ -7,15 +7,15 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: '600'
     nginx.ingress.kubernetes.io/backend-protocol: 'http'
     nginx.ingress.kubernetes.io/enable-cors: 'false'
-  name: incident-center-ingress
+  name: guardian-dashboard-ingress
   namespace: staging
   labels:
-    app: incident-center
+    app: guardian-dashboard
 spec:
   rules:
     - host: staging-guardian.rfcx.org
       http:
         paths:
           - backend:
-              serviceName: incident-center-service
+              serviceName: guardian-dashboard-service
               servicePort: 80

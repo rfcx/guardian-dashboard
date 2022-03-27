@@ -25,7 +25,7 @@ Requires Docker.
 
 ## Kubernetes configuration
 
-Each sub-folder matches the name of a namespace in Kubernetes. The app name is `incident-center` in each namespace. For each namespace folder:
+Each sub-folder matches the name of a namespace in Kubernetes. The app name is `guardian-dashboard` in each namespace. For each namespace folder:
 
 - deployment.yaml - set the resources
 - config.yaml - environment variables (non secret configuration)
