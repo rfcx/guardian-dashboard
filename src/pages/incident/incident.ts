@@ -15,9 +15,9 @@ import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWit
 import icons from '../../assets/index'
 
 interface IncidentLabel extends Incident {
-  eventsTitle: string | boolean
-  eventsLabel: string | boolean
-  responseTitle: string | boolean
+  eventsTitle: string
+  eventsLabel: string
+  responseTitle: string
   responseLabel: string
   resposeSummary: string[]
 }
@@ -68,7 +68,6 @@ export default class IncidentPage extends Vue {
   }
 
   async onUpdatePage (): Promise<void> {
-    this.isLoading = true
     await this.getIncidentData()
     await this.getStreamData()
       .then(() => {
@@ -225,6 +224,7 @@ export default class IncidentPage extends Vue {
   }
 
   public async getIncidentData (): Promise<void> {
+    this.isLoading = true
     try {
       const incidentId = this.$route.params.id as string
       if (!incidentId) return
@@ -232,9 +232,9 @@ export default class IncidentPage extends Vue {
         .then(async (incident: Incident) => {
           IncidentsService.combineIncidentItems(incident)
           const inc: IncidentItem<IncidentLabel> = Object.assign(incident, {
-            eventsTitle: true,
-            eventsLabel: true,
-            responseTitle: true,
+            eventsTitle: '',
+            eventsLabel: '',
+            responseTitle: '',
             responseLabel: '',
             resposeSummary: []
           })
@@ -261,7 +261,7 @@ export default class IncidentPage extends Vue {
         item.sliderData = []
         for (const a of item.assetsData) {
           if (isDefined(a) && isNotDefined(a.mimeType)) return
-          const asset = await IncidentsService.getFiles(a.id)
+          const asset = await IncidentsService.getFiles(a.id, a.mimeType.includes('audio') === true ? a.mimeType : null)
           if (a.mimeType.includes('audio') === true && isDefined(asset)) {
             item.audioObject = {
               src: asset,

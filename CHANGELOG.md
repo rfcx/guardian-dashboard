@@ -1,8 +1,9 @@
 # Guardian Dashboard Release Notes
 
-## 0.0.9 (2022-03-XX)
+## 0.0.9 (2022-03-28)
 
 * **feature:** Support Indonesian language ([#121](https://github.com/rfcx/guardian-dashboard/issues/121))
+* * **bug:** Fixed text in the events summary lable ([#127](https://github.com/rfcx/guardian-dashboard/issues/127))
 
 ## 0.0.8 (2022-03-06)
 
