@@ -5,12 +5,7 @@ import ind from './in.json'
 
 type MessageSchema = typeof en
 
-let localStorage: Storage
-
 export const getLocalLang = (): string | null => {
-  if (localStorage === undefined) {
-    return 'en'
-  }
   const lang = localStorage.getItem('GDLang')
   if (lang !== null) {
     return lang
