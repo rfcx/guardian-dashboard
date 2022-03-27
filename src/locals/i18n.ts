@@ -5,20 +5,20 @@ import ind from './in.json'
 
 type MessageSchema = typeof en
 
-let localStorage: Storage
-
 export const getLocalLang = (): string | null => {
-  if (localStorage === undefined) {
+  try {
+    const lang = localStorage.getItem('GDLang')
+    if (lang !== null) {
+      return lang
+    }
+    if (['in_ID', 'in'].includes(navigator.language)) {
+      return 'in'
+    }
     return 'en'
+  } catch (e) {
+    console.log(e)
+    return null
   }
-  const lang = localStorage.getItem('GDLang')
-  if (lang !== null) {
-    return lang
-  }
-  if (['in_ID', 'in'].includes(navigator.language)) {
-    return 'in'
-  }
-  return 'en'
 }
 
 const i18n = createI18n<I18nOptions, [MessageSchema], 'en', 'in'>({
