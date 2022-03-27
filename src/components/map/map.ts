@@ -1,5 +1,6 @@
 import Mapbox, { LngLatLike } from 'mapbox-gl'
 import { Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Prop, Watch } from 'vue-property-decorator'
 
 import MapboxSettings from '../../../config/map.json'
@@ -26,6 +27,12 @@ export default class MapComponent extends Vue {
   onMapDataChange (): void {
     this.isLoading = true
     void this.createMap()
+  }
+
+  data (): Record<string, unknown> {
+    return {
+      t: useI18n()
+    }
   }
 
   mounted (): void {

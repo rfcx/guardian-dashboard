@@ -13,7 +13,7 @@
         v-if="incident.closedAt"
         class="px-3 shadow-sm inline-block mr-2 flex self-center items-center text-sm tracking-wide btn-tag leading-none bg-gray-600 bg-opacity-70"
       >
-        Closed
+        {{ $t('Closed') }}
       </div>
     </div>
     <div
@@ -21,7 +21,7 @@
     >
       <img
         v-if="incident.events.length"
-        title="Events"
+        :title="$t('Events')"
         class="h-5 w-5 self-center mr-2"
         src="/src/assets/alert.svg"
         alt=""
@@ -59,7 +59,7 @@
     <div class="pr-2 flex-1 text-secondary flex justify-end items-end <lg:items-center <sm:justify-start <sm:py-1">
       <img
         v-if="incident.responses.length"
-        title="Response"
+        :title="$t('Response')"
         class="h-5 w-5 self-center mr-2"
         src="/src/assets/response.svg"
         alt=""
@@ -73,12 +73,12 @@
     </div>
     <div
       class="pr-2  flex-1 flex justify-end items-center <sm:justify-start <sm:py-1"
-      title="Difference between a first event start time and a first response was submitted in the Guardian App"
+      :title="$t('Difference between a first event start time and a first response was submitted in the Guardian App')"
     >
       <div class="text-secondary text-sm font-medium mr-3 sm:hidden flex items-center">
-        Response time
+        {{ $t('Response time') }}
         <img
-          title="Duration between the first event and the first response"
+          :title="$t('Duration between the first event and the first response')"
           class="h-4 w-4 self-center ml-1 cursor-default"
           src="/src/assets/info.svg"
           alt="i"

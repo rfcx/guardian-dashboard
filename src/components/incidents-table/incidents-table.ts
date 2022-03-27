@@ -1,4 +1,5 @@
 import { Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Prop, Watch } from 'vue-property-decorator'
 
 import { Event as Ev, EventExtended, Incident, Response, ResponseExtended } from '@/types'
@@ -28,6 +29,12 @@ export default class IncidentsTableRows extends Vue {
   @Watch('items')
   onItemsChange (): void {
     this.combineItemsTitles(this.items)
+  }
+
+  data (): Record<string, unknown> {
+    return {
+      t: useI18n()
+    }
   }
 
   mounted (): void {
@@ -73,7 +80,7 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public getIconTitle (count: number, value: string): string {
-    return `${count} ${value} ${count > 1 ? 'events' : 'event'}`
+    return `${count} ${this.$t(value)} ${count > 1 ? this.$t('events') : this.$t('event')}`
   }
 
   public getEventsLabel (events: Ev[]): string {
@@ -100,10 +107,10 @@ export default class IncidentsTableRows extends Vue {
     const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
     if (!firstResponse) return '-'
     if (isDateToday(firstResponse.submittedAt, this.timezone)) {
-      return `Today, ${formatTime(firstResponse.submittedAt, this.timezone)}`
+      return `${this.$t('Today')}, ${formatTime(firstResponse.submittedAt, this.timezone)}`
     }
     if (isDateYesterday(firstResponse.submittedAt, this.timezone)) {
-      return `Yesterday, ${formatTime(firstResponse.submittedAt, this.timezone)}`
+      return `${this.$t('Yesterday')}, ${formatTime(firstResponse.submittedAt, this.timezone)}`
     } else return `${getDayAndMonth(firstResponse.submittedAt, this.timezone)}`
   }
 

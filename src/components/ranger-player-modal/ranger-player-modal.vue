@@ -5,7 +5,7 @@
   >
     <button
       class="cursor-pointer relative z-1 focus:outline-none mr-2"
-      :title="isPlaying? 'Stop' : 'Play'"
+      :title="isPlaying? $t('Stop') : $t('Play')"
       @click="toggleSound()"
     >
       <img
@@ -45,7 +45,7 @@
       v-if="isError"
       class="w-100px text-xs px-2"
     >
-      Error occured
+      {{ $t('Error occured') }}
     </div>
   </div>
 </template>

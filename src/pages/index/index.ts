@@ -1,4 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
+import { useI18n } from 'vue-i18n'
 import { Watch } from 'vue-property-decorator'
 
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
@@ -37,7 +38,8 @@ export default class IndexPage extends Vue {
   data (): Record<string, unknown> {
     return {
       incidents: this.incidents,
-      stream: this.stream
+      stream: this.stream,
+      t: useI18n()
     }
   }
 

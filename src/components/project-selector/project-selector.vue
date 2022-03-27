@@ -16,7 +16,7 @@
           <div class="bg-steel-grey px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <on-click-outside @trigger="closeProjectSelector">
               <div class="text-white text-xl pb-2">
-                Select Project
+                {{ $t('Select Project') }}
               </div>
               <div
                 v-if="componentProjects !== undefined"
@@ -27,7 +27,7 @@
                     v-model="searchLabel"
                     type="text"
                     class="search px-0 flex justify-between text-white bg-steel-grey-dark md:focus:steel-grey focus:outline-none md:focus:outline-none outline-none border-none w-full"
-                    placeholder="Filter by keyword"
+                    :placeholder="$t('Filter by keyword')"
                     @keyup="searchProject()"
                   >
                 </div>
@@ -51,13 +51,13 @@
                   class="btn mr-2"
                   @click="closeProjectSelector"
                 >
-                  Cancel
+                  {{ $t('Cancel') }}
                 </button>
                 <button
                   class="btn btn-primary ${updating ? 'opacity-50 cursor-not-allowed' : '' }"
                   @click="confirmedSelectedProject()"
                 >
-                  Select
+                  {{ $t('Select') }}
                 </button>
               </div>
             </on-click-outside>
