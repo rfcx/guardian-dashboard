@@ -13,6 +13,7 @@ interface IncidentItem extends Ev, Incident, Response {
   responseLabel: string
 }
 interface EventItem {
+  title: string
   value: string
   count: number
 }
@@ -79,8 +80,8 @@ export default class IncidentsTableRows extends Vue {
     return `${formatDateTime(start, this.timezone)} - ${formatDateTime(end, this.timezone)}`
   }
 
-  public getIconTitle (count: number, value: string): string {
-    return `${count} ${this.$t(value)} ${count > 1 ? this.$t('events') : this.$t('event')}`
+  public getIconTitle (count: number, title: string): string {
+    return `${count} ${this.$t(title)} ${count > 1 ? this.$t('events') : this.$t('event')}`
   }
 
   public getEventsLabel (events: Ev[]): string {
@@ -128,6 +129,7 @@ export default class IncidentsTableRows extends Vue {
     events.forEach((e: Ev) => {
       if (rows[e.classification.value] === undefined) {
         rows[e.classification.value] = {
+          title: e.classification.title,
           value: e.classification.value,
           count: 1
         }
