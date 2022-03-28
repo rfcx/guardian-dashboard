@@ -40,7 +40,7 @@
           v-for="event in getEventsCount(incident.events)"
           :key="event.value"
           class="text-sm text-secondary mb-0.2 mr-3"
-          :title="getIconTitle(event.count, event.value)"
+          :title="getIconTitle(event.count, event.title)"
         >
           <img
             class="h-5 w-5 inline-block self-start mr-1"

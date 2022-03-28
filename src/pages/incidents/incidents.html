@@ -80,9 +80,9 @@
             tag="tr">
               <span class="text-secondary text-xl self-end mr-2 truncate" :title="getStreamName(stream.id)">{{ getStreamName(stream.id) }}</span>
             </router-link>
-            <div v-if="['cell','satellite'].includes(stream.guardianType)" class="flex items-center mr-4">
+            <div v-if="['cell','satellite'].includes(stream.guardianType)" class="flex items-center mr-4" :class="{ '<lg:max-w-2/5': ['cell','satellite'].includes(stream.guardianType) && stream.tags.length }">
               <img class="h-6 w-6 inline-block self-center mr-1" :src="`https://static.rfcx.org/img/guardian/ic_${stream.guardianType}.svg`" :title="`${$t(stream.guardianType)} ` + $t('type')" alt="">
-              <span class="text-secondary capitalize inline-block self-end text-lg" :title="`${$t(stream.guardianType)} ` + $t('type')">{{ stream.guardianType === 'satellite' ? $t('Sat') : $t(stream.guardianType) }}</span>
+              <span class="text-secondary capitalize inline-block self-end text-lg truncate" :title="`${$t(stream.guardianType)} ` + $t('type')">{{ stream.guardianType === 'satellite' ? $t('Sat') : $t(stream.guardianType) }}</span>
             </div>
             <div v-if="stream.tags && stream.tags.length" class="flex justify-start items-center">
               <div

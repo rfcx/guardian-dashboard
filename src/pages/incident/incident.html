@@ -34,7 +34,7 @@
           <div class="pl-4 border-l-4 border-gray-800">
             <div class="text-sm text-gray-500 pt-2">{{ $t('Events summary') }}</div>
             <div class="pt-2 flex">
-              <img v-if="incident.events.length" title="Time range of events" class="h-5 w-5 cursor-default inline-block mr-2" src="/src/assets/alert.svg" alt="">
+              <img v-if="incident.events.length" :title="$t('Time range of events')" class="h-5 w-5 cursor-default inline-block mr-2" src="/src/assets/alert.svg" alt="">
               <div class="text-sm text-gray-200 cursor-default inline-block" :title="incident.eventsTitle">{{ incident.eventsLabel }}</div>
             </div>
             <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center cursor-default pt-2 mr-3" :title="getIconTitle(event.count, event.value)">

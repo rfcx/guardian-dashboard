@@ -27,6 +27,7 @@
   "Events": "Eejadian",
   "events": "kejadian",
   "event": "kejadian",
+  "Event": "Kejadian",
   "Logging": "Penebangan",
   "Poaching": "Perburuan",
   "confirmed": "dikonfirmasi",
@@ -72,6 +73,7 @@
   "human voice": "suara manusia",
   "Bark": "Gonggongan anjing",
   "bark": "gonggongan anjing",
+  "dog bark": "gonggongan anjing",
   "Elephant": "Gajah",
   "elephant": "gajah",
   "None": "Tidak ada",
@@ -121,5 +123,7 @@
   "Large": "Besar",
   "Sign out": "Keluar",
   "Sign In": "Masuk",
-  "Difference between a first event start time and a first response was submitted in the Guardian App": "Perbedaan antara waktu mulai acara pertama dan tanggapan pertama dikirimkan di Aplikasi Guardian"
+  "Difference between a first event start time and a first response was submitted in the Guardian App": "Perbedaan antara waktu mulai acara pertama dan tanggapan pertama dikirimkan di Aplikasi Guardian",
+  "Closed on": "Tutup pada",
+  "Time range of events": "Rentang waktu acara"
 }

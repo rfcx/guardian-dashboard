@@ -182,7 +182,7 @@ export default class IncidentPage extends Vue {
 
   public getIncidentStatus (): void {
     if (this.incident !== undefined) {
-      this.incidentStatus = this.incident.closedAt ? `Closed on ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
     }
   }
 
