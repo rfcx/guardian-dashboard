@@ -80,6 +80,7 @@
             tag="tr">
               <span class="text-secondary text-xl self-end mr-2 truncate" :title="getStreamName(stream.id)">{{ getStreamName(stream.id) }}</span>
             </router-link>
+            <span v-else class="text-secondary text-xl self-end mr-2 truncate" :title="getStreamName(stream.id)">{{ getStreamName(stream.id) }}</span>
             <div v-if="['cell','satellite'].includes(stream.guardianType)" class="flex items-center mr-4" :class="{ '<lg:max-w-2/5': ['cell','satellite'].includes(stream.guardianType) && stream.tags.length }">
               <img class="h-6 w-6 inline-block self-center mr-1" :src="`https://static.rfcx.org/img/guardian/ic_${stream.guardianType}.svg`" :title="`${$t(stream.guardianType)} ` + $t('type')" alt="">
               <span class="text-secondary capitalize inline-block self-end text-lg truncate" :title="`${$t(stream.guardianType)} ` + $t('type')">{{ stream.guardianType === 'satellite' ? $t('Sat') : $t(stream.guardianType) }}</span>
@@ -115,7 +116,7 @@
                       + {{ stream.incidents.total - 3 }} {{ $t('more incidents')}}
                     </div>
                   </router-link>
-                  <div v-if="stream.incidents !== undefined && !stream.incidents.items.length && !stream.loading" class="flex justify-start items-center">
+                  <div v-if="stream.incidents !== undefined && !stream.incidents.items.length && !stream.loading" class="flex justify-start items-center py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
