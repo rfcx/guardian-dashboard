@@ -103,7 +103,7 @@ export default class IncidentPage extends Vue {
 
   public getItemDatetime (item: Response | Ev, first: boolean): string {
     const itemIsEvent = (item as Ev).start !== undefined
-    return itemIsEvent ? (first ? (item as Ev).start : (item as Ev).end) : (item as Response).submittedAt
+    return itemIsEvent ? (first ? (item as Ev).start : (item as Ev).end) : (item as Response).investigatedAt
   }
 
   public getEventsTitle (): string {
@@ -141,14 +141,14 @@ export default class IncidentPage extends Vue {
   public getResponseTitle (): string {
     if (this.incident === undefined) return '-'
     if (this.incident !== undefined && !this.incident.responses.length) return '-'
-    const firstResponse = (this.getFirstOrLastItem(this.incident.responses, true) as Response).submittedAt
+    const firstResponse = (this.getFirstOrLastItem(this.incident.responses, true) as Response).investigatedAt
     return formatDateTime(firstResponse, this.stream?.timezone)
   }
 
   public getResponseLabel (): string {
     if (this.incident === undefined) return '-'
     if (!this.incident.responses.length || !this.incident.events.length) return '-'
-    return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem(this.incident.events, true) as Ev).start, (this.getFirstOrLastItem(this.incident.responses, true) as Response).submittedAt, true) as string)}`
+    return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem(this.incident.events, true) as Ev).start, (this.getFirstOrLastItem(this.incident.responses, true) as Response).investigatedAt, true) as string)}`
   }
 
   public toggleTrack (response: ResponseExtended, open: boolean): void {

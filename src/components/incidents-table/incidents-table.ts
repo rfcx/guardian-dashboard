@@ -71,7 +71,7 @@ export default class IncidentsTableRows extends Vue {
 
   public getItemDatetime (item: Response | Ev, first: boolean): string {
     const itemIsEvent = (item as Ev).start !== undefined
-    return itemIsEvent ? (first ? (item as Ev).start : (item as Ev).end) : (item as Response).submittedAt
+    return itemIsEvent ? (first ? (item as Ev).start : (item as Ev).end) : (item as Response).investigatedAt
   }
 
   public getEventsTitle (events: Ev[]): string {
@@ -100,19 +100,19 @@ export default class IncidentsTableRows extends Vue {
     if (!incident.responses.length) return '-'
     const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
     if (!firstResponse) return '-'
-    return formatDateTime(firstResponse.submittedAt, this.timezone)
+    return formatDateTime(firstResponse.investigatedAt, this.timezone)
   }
 
   public getResponseLabel (incident: IncidentItem): string {
     if (!incident.responses.length) return '-'
     const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
     if (!firstResponse) return '-'
-    if (isDateToday(firstResponse.submittedAt, this.timezone)) {
-      return `${this.$t('Today')}, ${formatTime(firstResponse.submittedAt, this.timezone)}`
+    if (isDateToday(firstResponse.investigatedAt, this.timezone)) {
+      return `${this.$t('Today')}, ${formatTime(firstResponse.investigatedAt, this.timezone)}`
     }
-    if (isDateYesterday(firstResponse.submittedAt, this.timezone)) {
-      return `${this.$t('Yesterday')}, ${formatTime(firstResponse.submittedAt, this.timezone)}`
-    } else return `${getDayAndMonth(firstResponse.submittedAt, this.timezone)}`
+    if (isDateYesterday(firstResponse.investigatedAt, this.timezone)) {
+      return `${this.$t('Yesterday')}, ${formatTime(firstResponse.investigatedAt, this.timezone)}`
+    } else return `${getDayAndMonth(firstResponse.investigatedAt, this.timezone)}`
   }
 
   public getFirstResponse (responses: Response[], firstResponseId: string): Response | undefined {
@@ -121,7 +121,7 @@ export default class IncidentsTableRows extends Vue {
 
   public getResponseTime (incident: IncidentItem): string {
     if (!incident.responses.length || !incident.events.length) return '-'
-    return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem((incident.events as EventExtended[]), true) as Ev).start, (this.getFirstOrLastItem((incident.responses as ResponseExtended[]), true) as Response).submittedAt, true) as string)}`
+    return `${(twoDateDiffExcludeHours((this.getFirstOrLastItem((incident.events as EventExtended[]), true) as Ev).start, (this.getFirstOrLastItem((incident.responses as ResponseExtended[]), true) as Response).investigatedAt, true) as string)}`
   }
 
   public getEventsCount (events: Ev[]): EventItem[] {
