@@ -62,10 +62,6 @@ export const formatDateTime = (label: string, timezone: string = 'UTC'): string 
   return dayjs(label).tz(timezone).format('MMM DD, YYYY HH:mm')
 }
 
-export const formatDateTimeCommaAfterDate = (label: string, timezone: string = 'UTC'): string => {
-  return dayjs(label).tz(timezone).format('DD MMM YYYY, HH:mm')
-}
-
 export const formatDateTimeWithoutYear = (label: string | any, timezone: string = 'UTC'): string => {
   return dayjs(label).tz(timezone).format('MMM DD, HH:mm')
 }

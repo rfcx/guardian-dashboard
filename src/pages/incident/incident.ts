@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
 import Mapbox from 'mapbox-gl'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
@@ -11,8 +13,10 @@ import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService } from '@/services'
 import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, RawImageItem, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
-import { downloadContext, formatDateTime, formatDateTimeCommaAfterDate, formatDateTimeRange, formatDateTimeWithoutYear, formatDayWithoutTime, formatTime, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, twoDateDiffExcludeHours } from '@/utils'
+import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatDayWithoutTime, formatTime, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
+
+dayjs.extend(timezone)
 
 interface IncidentLabel extends Incident {
   eventsTitle: string
@@ -126,7 +130,8 @@ export default class IncidentPage extends Vue {
     if (formatDayWithoutTime(start, this.stream?.timezone) === formatDayWithoutTime(end, this.stream?.timezone)) {
       return `${formatDayWithoutTime(start, this.stream?.timezone)}, ${formatTime(start, this.stream?.timezone)}-${formatTime(end, this.stream?.timezone)}`
     } else {
-      return `${formatDateTimeCommaAfterDate(start, this.stream?.timezone)} - ${formatDateTimeCommaAfterDate(end, this.stream?.timezone)}`
+      const format = 'DD MMM YYYY, HH:mm'
+      return `${dayjs(start).tz(this.stream?.timezone).format(format)} - ${dayjs(end).tz(this.stream?.timezone).format(format)}`
     }
   }
 
