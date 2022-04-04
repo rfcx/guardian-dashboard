@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { Prop, Watch } from 'vue-property-decorator'
 
 import { Event as Ev, EventExtended, Incident, Response, ResponseExtended } from '@/types'
-import { formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatTime, getDayAndMonth, isDateToday, isDateYesterday, twoDateDiffExcludeHours } from '@/utils'
+import { formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, getDayAndMonth, isDateToday, isDateYesterday, toTimeStr, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
 
 interface IncidentItem extends Ev, Incident, Response {
@@ -57,7 +57,7 @@ export default class IncidentsTableRows extends Vue {
   }
 
   public timeFormatted (date: string): string {
-    return formatTime(date, this.timezone)
+    return toTimeStr(date, this.timezone)
   }
 
   public getFirstOrLastItem (items: Response[] | Ev[], firstItem: boolean): Response | Ev {
@@ -108,10 +108,10 @@ export default class IncidentsTableRows extends Vue {
     const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
     if (!firstResponse) return '-'
     if (isDateToday(firstResponse.investigatedAt, this.timezone)) {
-      return `${this.$t('Today')}, ${formatTime(firstResponse.investigatedAt, this.timezone)}`
+      return `${this.$t('Today')}, ${toTimeStr(firstResponse.investigatedAt, this.timezone)}`
     }
     if (isDateYesterday(firstResponse.investigatedAt, this.timezone)) {
-      return `${this.$t('Yesterday')}, ${formatTime(firstResponse.investigatedAt, this.timezone)}`
+      return `${this.$t('Yesterday')}, ${toTimeStr(firstResponse.investigatedAt, this.timezone)}`
     } else return `${getDayAndMonth(firstResponse.investigatedAt, this.timezone)}`
   }
 

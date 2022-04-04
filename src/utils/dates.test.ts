@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { describe, expect, test } from 'vitest'
 
-import { formatDateRange, formatDateTime, formatDateTimeRange, formatTime, formatTwoDateDiff, getDayAndMonth, getPlayerTime, getTzAbbr, twoDateDiffExcludeHours } from './dates'
+import { formatDateRange, formatDateTime, formatDateTimeRange, formatTwoDateDiff, getDayAndMonth, getPlayerTime, getTzAbbr, toTimeStr, twoDateDiffExcludeHours } from './dates'
 
 // ----------------------------
 // Format Date Range
@@ -72,7 +72,7 @@ describe('formatDateTime', () => {
   })
 })
 
-describe('formatTime', () => {
+describe('toTimeStr', () => {
   const examples = [
     ['2021-09-06T18:51:19.707Z', '01:51', '18:51'],
     ['2021-08-26T21:28:46.606Z', '04:28', '21:28']
@@ -80,13 +80,13 @@ describe('formatTime', () => {
 
   test('Test different time with site timezone', () => {
     examples.forEach(([label, expected]) => {
-      expect(formatTime(label, 'Asia/Bangkok')).toEqual(expected)
+      expect(toTimeStr(label, 'Asia/Bangkok')).toEqual(expected)
     })
   })
 
   test('Test different time with UTC timezone', () => {
     examples.forEach(([label, notExpected, expected]) => {
-      expect(formatTime(label)).toEqual(expected)
+      expect(toTimeStr(label)).toEqual(expected)
     })
   })
 })

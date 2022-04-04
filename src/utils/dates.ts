@@ -30,23 +30,23 @@ export const formatDateRange = (start: dayjs.Dayjs, end: dayjs.Dayjs): string =>
 
 export const formatDateTimeRange = (start: string, end: string, timezone: string = 'UTC'): string => {
   if (isDateToday(start, timezone) && isDateToday(end, timezone)) {
-    return `${t('Today')}, ${formatTime(start, timezone)} - ${formatTime(end, timezone)}`
+    return `${t('Today')}, ${toTimeStr(start, timezone)} - ${toTimeStr(end, timezone)}`
   }
   // yesterday - today => Yesterday X - Today Y
   if (isDateYesterday(start, timezone) && isDateToday(end, timezone)) {
-    return `${t('Yesterday')} ${formatTime(start, timezone)} - ${t('Today')} ${formatTime(end, timezone)}`
+    return `${t('Yesterday')} ${toTimeStr(start, timezone)} - ${t('Today')} ${toTimeStr(end, timezone)}`
   }
   // yesterday - yesterday => Yesterday X-Y
   if (isDateYesterday(start, timezone) && isDateYesterday(end, timezone)) {
-    return `${t('Yesterday')}, ${formatTime(start, timezone)} - ${formatTime(end, timezone)}`
+    return `${t('Yesterday')}, ${toTimeStr(start, timezone)} - ${toTimeStr(end, timezone)}`
   }
   // other - today => 10 Dec - Today, Y
   if (isDateToday(end, timezone)) {
-    return `${getDayAndMonth(start, timezone)} - ${t('Today')}, ${formatTime(end, timezone)}`
+    return `${getDayAndMonth(start, timezone)} - ${t('Today')}, ${toTimeStr(end, timezone)}`
   }
   // other - yesterday => 10 Dec - Yesterday, Y
   if (isDateYesterday(end, timezone)) {
-    return `${getDayAndMonth(start, timezone)} - ${t('Yesterday')}, ${formatTime(end, timezone)}`
+    return `${getDayAndMonth(start, timezone)} - ${t('Yesterday')}, ${toTimeStr(end, timezone)}`
   }
   // other
   if (getDayAndMonth(start, timezone) === getDayAndMonth(end, timezone)) {
@@ -71,7 +71,7 @@ export const getDayAndMonth = (date: any, timezone: string = 'UTC'): string => {
   return `${item.substring(0, (item.length - 3))}${t(item.substr(item.length - 3))}`
 }
 
-export const formatDayWithoutTime = (date: any, timezone: string = 'UTC'): string => {
+export const toDateStr = (date: any, timezone: string = 'UTC'): string => {
   return dayjs(date).tz(timezone).format('DD MMM YYYY')
 }
 
@@ -80,7 +80,7 @@ export const formatDiffFromNow = (label: string, timezone: string = 'UTC'): any 
   return combineLabel(dateDiff)
 }
 
-export const formatTime = (label: string, timezone: string = 'UTC'): string => {
+export const toTimeStr = (label: string, timezone: string = 'UTC'): string => {
   return dayjs(label).tz(timezone).format('HH:mm')
 }
 
