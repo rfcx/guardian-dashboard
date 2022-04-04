@@ -85,7 +85,7 @@
               </div>
             </div>
             <div v-if="item.type === 'event'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">
-              <span class="mr-2">{{ formatDayWithoutTime(item.start) }}, {{ timeFormatted(item.start) }}-{{ timeFormatted(item.end) }} {{ getTzAbbrFormat(item.createdAt) || '' }}</span>
+              <span class="mr-2">{{ getEventLabel(item.start, item.end) }} {{ getTzAbbrFormat(item.createdAt) || '' }}</span>
               <span class="font-semibold">{{ $t(item.classification.title) }}</span>
             </div>
             <div v-if="item.type === 'response'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">

@@ -11,7 +11,7 @@ import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService } from '@/services'
 import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, RawImageItem, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
-import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatDayWithoutTime, formatTime, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, twoDateDiffExcludeHours } from '@/utils'
+import { downloadContext, formatDateTime, formatDateTimeCommaAfterDate, formatDateTimeRange, formatDateTimeWithoutYear, formatDayWithoutTime, formatTime, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
 
 interface IncidentLabel extends Incident {
@@ -122,6 +122,14 @@ export default class IncidentPage extends Vue {
     return formatDateTimeRange(start, end, this.stream?.timezone)
   }
 
+  public getEventLabel (start: string, end: string): string {
+    if (formatDayWithoutTime(start, this.stream?.timezone) === formatDayWithoutTime(end, this.stream?.timezone)) {
+      return `${formatDayWithoutTime(start, this.stream?.timezone)}, ${formatTime(start, this.stream?.timezone)}-${formatTime(end, this.stream?.timezone)}`
+    } else {
+      return `${formatDateTimeCommaAfterDate(start, this.stream?.timezone)} - ${formatDateTimeCommaAfterDate(end, this.stream?.timezone)}`
+    }
+  }
+
   public getEventsCount (events: Ev[]): EventItem[] {
     const rows: Record<string, EventItem> = {}
     events.forEach((e: Ev) => {
@@ -190,17 +198,9 @@ export default class IncidentPage extends Vue {
     return formatDateTimeWithoutYear(date, this.stream?.timezone ?? 'UTC')
   }
 
-  public formatDayWithoutTime (date: string): string {
-    return formatDayWithoutTime(date, this.stream?.timezone ?? 'UTC')
-  }
-
   public getTzAbbrFormat (date: string): string | undefined {
     const label = getTzAbbr(date, this.stream?.timezone ?? 'UTC')
     if (label) return `(${label})`
-  }
-
-  public timeFormatted (date: string): string {
-    return formatTime(date, this.stream?.timezone ?? 'UTC')
   }
 
   public hoursDiffFormatted (from: string, to: string): string {
