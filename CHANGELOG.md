@@ -1,5 +1,7 @@
 # Guardian Dashboard Release Notes
 
+* * **bug:** Use investigated time in response labels
+
 ## 0.0.9 (2022-03-28)
 
 * **feature:** Support Indonesian language ([#121](https://github.com/rfcx/guardian-dashboard/issues/121))
