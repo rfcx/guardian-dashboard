@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
 import Mapbox from 'mapbox-gl'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
@@ -11,8 +13,10 @@ import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService } from '@/services'
 import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, RawImageItem, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
-import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatDayWithoutTime, formatTime, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, twoDateDiffExcludeHours } from '@/utils'
+import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, toDateStr, toTimeStr, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
+
+dayjs.extend(timezone)
 
 interface IncidentLabel extends Incident {
   eventsTitle: string
@@ -111,7 +115,8 @@ export default class IncidentPage extends Vue {
     if (this.incident !== undefined && !this.incident.events.length) return '-'
     const start = (this.getFirstOrLastItem(this.incident.events, true) as Ev).start
     const end = (this.getFirstOrLastItem(this.incident.events, false) as Ev).end
-    return `${formatDateTime(start, this.stream?.timezone)} - ${formatDateTime(end, this.stream?.timezone)}`
+    const tz = this.stream?.timezone
+    return `${formatDateTime(start, tz)} - ${formatDateTime(end, tz)}`
   }
 
   public getEventsLabel (): string {
@@ -120,6 +125,19 @@ export default class IncidentPage extends Vue {
     const start = (this.getFirstOrLastItem(this.incident.events, true) as Ev).start
     const end = (this.getFirstOrLastItem(this.incident.events, false) as Ev).end
     return formatDateTimeRange(start, end, this.stream?.timezone)
+  }
+
+  public getEventLabel (start: string, end: string): string {
+    const tz = this.stream?.timezone
+    if (toDateStr(start, tz) === toDateStr(end, tz)) {
+      return `${toDateStr(start, tz)}, ${toTimeStr(start, tz)}-${toTimeStr(end, tz)}`
+    } else {
+      return `${this.toDateTimeStr(start, tz)} - ${this.toDateTimeStr(end, tz)}`
+    }
+  }
+
+  public toDateTimeStr (dateStr: string, tz = 'UTC'): string {
+    return dayjs(dateStr).tz(tz).format('DD MMM YYYY, HH:mm')
   }
 
   public getEventsCount (events: Ev[]): EventItem[] {
@@ -182,7 +200,7 @@ export default class IncidentPage extends Vue {
 
   public getIncidentStatus (): void {
     if (this.incident !== undefined) {
-      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : formatDayWithoutTime)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
     }
   }
 
@@ -190,17 +208,9 @@ export default class IncidentPage extends Vue {
     return formatDateTimeWithoutYear(date, this.stream?.timezone ?? 'UTC')
   }
 
-  public formatDayWithoutTime (date: string): string {
-    return formatDayWithoutTime(date, this.stream?.timezone ?? 'UTC')
-  }
-
   public getTzAbbrFormat (date: string): string | undefined {
     const label = getTzAbbr(date, this.stream?.timezone ?? 'UTC')
     if (label) return `(${label})`
-  }
-
-  public timeFormatted (date: string): string {
-    return formatTime(date, this.stream?.timezone ?? 'UTC')
   }
 
   public hoursDiffFormatted (from: string, to: string): string {
