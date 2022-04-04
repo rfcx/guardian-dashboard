@@ -130,9 +130,12 @@ export default class IncidentPage extends Vue {
     if (formatDayWithoutTime(start, this.stream?.timezone) === formatDayWithoutTime(end, this.stream?.timezone)) {
       return `${formatDayWithoutTime(start, this.stream?.timezone)}, ${formatTime(start, this.stream?.timezone)}-${formatTime(end, this.stream?.timezone)}`
     } else {
-      const format = 'DD MMM YYYY, HH:mm'
-      return `${dayjs(start).tz(this.stream?.timezone).format(format)} - ${dayjs(end).tz(this.stream?.timezone).format(format)}`
+      return `${this.toDateTimeStr(start, this.stream?.timezone)} - ${this.toDateTimeStr(end, this.stream?.timezone)}`
     }
+  }
+
+  public toDateTimeStr (dateStr: string, tz = 'UTC'): string {
+    return dayjs(dateStr).tz(tz).format('DD MMM YYYY, HH:mm')
   }
 
   public getEventsCount (events: Ev[]): EventItem[] {
