@@ -125,7 +125,7 @@
                     <img class="h-60px w-60px min-w-40px rounded object-cover inline-block cursor-pointer" :title="$t('Image')" :src="image.src" alt="image" @click="toggleSlider(item, true, image)">
                   </div>
                   <ranger-slider-component v-if="item.showSlider !== undefined && item.showSlider === true" :images-props="item.sliderData" @close-slider="toggleSlider(item, false)" />
-                  <div v-if="item.trackData" class="h-60px w-80px <sm:mt-1 rounded cursor-pointer inline" :title="$t('Map')" @click="toggleTrack(item, true)">
+                  <div v-if="item.trackData && item.trackData.settings && item.trackData.settings.center" class="h-60px w-80px <sm:mt-1 rounded cursor-pointer inline" :title="$t('Map')" @click="toggleTrack(item, true)">
                     <map-component :zoom="item.trackData.settings.zoom" :center="item.trackData.settings.center" :marker="true" :classes="'h-60px rounded'"/>
                   </div>
                   <ranger-track-modal-component v-if="item.showTrack !== undefined && item.showTrack === true && item.trackData.features" :raw-ranger-track="item.trackData" @close-ranger-track="toggleTrack(item, false)" />

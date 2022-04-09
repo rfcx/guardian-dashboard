@@ -310,7 +310,9 @@ export default class IncidentPage extends Vue {
                     center: new Mapbox.LngLat(item.trackData.features[0].geometry.coordinates[0][0], item.trackData.features[0].geometry.coordinates[0][1]),
                     zoom: 8
                   }
-                } catch (e) {}
+                } catch (e) {
+                  console.log(e)
+                }
               }
               resolve(contents)
             })
