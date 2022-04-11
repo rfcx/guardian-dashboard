@@ -1,6 +1,8 @@
 # Guardian Dashboard Release Notes
 
-* * **bug:** Use investigated time in response labels
+## 0.0.10 (2022-04-13)
+
+* * **bug:** UX of language switcher is improved ([#140](https://github.com/rfcx/guardian-dashboard/issues/140))
 
 ## 0.0.9 (2022-03-28)
 

@@ -1,19 +1,19 @@
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 
+import AuthNavbarItemComponent from '@/components/navbar/auth-navbar-item/auth-navbar-item.vue'
+import MobileMenuToggleButton from '@/components/navbar/mobile-menu-toggle-button/mobile-menu-toggle-button.vue'
+import NavbarDropdownComponent from '@/components/navbar/navbar-dropdown/navbar-dropdown.vue'
+import ProjectSelectorComponent from '@/components/project-selector/project-selector.vue'
 import { ROUTES_NAME } from '@/router'
 import { VuexService } from '@/services'
-import { Auth0User, Project } from '@/types'
+import { Auth0User, DropdownItem, Project } from '@/types'
 import { NavMenu } from '@/types/Navbar'
-import ProjectSelectorComponent from '../project-selector/project-selector.vue'
-import AuthNavbarItemComponent from './auth-navbar-item/auth-navbar-item.vue'
-import LanguageSelectorComponent from './language-selector/language-selector.vue'
-import MobileMenuToggleButton from './mobile-menu-toggle-button/mobile-menu-toggle-button.vue'
 
 @Options({
   components: {
-    LanguageSelectorComponent,
     MobileMenuToggleButton,
+    NavbarDropdownComponent,
     ProjectSelectorComponent,
     AuthNavbarItemComponent
   }
@@ -31,8 +31,14 @@ export default class NavigationBarComponent extends Vue {
   public hasToggledMobileMenu = false
   public hasOpenedProjectSelector = false
 
+  public languages: DropdownItem[] = [
+    { value: 'en', label: 'English language', checked: false },
+    { value: 'in', label: 'Bahasa Indonesia', checked: false }
+  ]
+
   updated (): void {
     this.getSelectedProject()
+    this.checkDefaultLanguage()
   }
 
   data (): Record<string, unknown> {
@@ -64,6 +70,20 @@ export default class NavigationBarComponent extends Vue {
 
   public removeSelectedProject (): void {
     delete this.$route.params.projectId
+  }
+
+  public checkDefaultLanguage (): void {
+    const defaultLang = localStorage.getItem('GDLang')
+    if (!defaultLang) return
+    const l = this.languages.find(lang => {
+      return lang.value === defaultLang
+    })
+    if (l) l.checked = true
+  }
+
+  public onLangChanged (item: string): void {
+    this.$i18n.locale = item
+    localStorage.setItem('GDLang', item)
   }
 
   // Menu

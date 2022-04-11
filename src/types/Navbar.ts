@@ -5,3 +5,9 @@ export interface NavMenu {
   destination: RouteLocationRaw
   role?: string[]
 }
+
+export interface DropdownItem {
+  value: string
+  label: string
+  checked: boolean
+}
