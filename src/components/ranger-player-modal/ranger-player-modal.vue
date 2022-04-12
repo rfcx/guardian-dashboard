@@ -9,27 +9,22 @@
       @click="toggleSound()"
     >
       <img
-        v-if="!isLoading && isPlaying"
-        class="inline-block"
+        v-show="isPlaying === true"
+        class="inline-block cursor-pointer"
         src="/src/assets/pause.svg"
         alt=""
       >
       <img
-        v-if="!isLoading && !isPlaying"
-        class="inline-block"
+        v-show="isPlaying === false"
+        class="inline-block cursor-pointer"
         src="/src/assets/play.svg"
         alt=""
       >
-      <img
-        v-if="isLoading"
-        class="h-2.5 w-2.5 animate-spin bg-mirage-grey text-white"
-        src="/src/assets/spinner.svg"
-      >
     </button>
     <div class="text-gray-500 mr-2">
-      <span class="text-xs">{{ audioProp.current }}</span>
+      <span class="text-xs">{{ playerTimestamp.current }}</span>
       /
-      <span class="text-xs">{{ audioProp.total }}</span>
+      <span class="text-xs">{{ playerTimestamp.total }}</span>
     </div>
     <div
       v-if="!isError"

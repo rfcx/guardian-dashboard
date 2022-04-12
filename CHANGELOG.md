@@ -1,6 +1,8 @@
 # Guardian Dashboard Release Notes
 
 * * **bug:** Use investigated time in response labels
+* * **bug:** Fixed an issue with displaying coordinates of one point
+* * **bug:** Fixed an issue with a width of the player row
 
 ## 0.0.9 (2022-03-28)
 

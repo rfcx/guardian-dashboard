@@ -1,6 +1,6 @@
 import { Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
-import { Prop, Watch } from 'vue-property-decorator'
+import { Prop } from 'vue-property-decorator'
 
 import { getPlayerTime } from '@/utils'
 
@@ -9,21 +9,16 @@ export default class RangerPlayerComponent extends Vue {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   audioProp!: any
 
-  public isLoading = false
   public isPlaying = false
   public isError = false
   public progress?: number = 0
+  public playerTimestamp = {
+    current: '0.00',
+    total: '0.00'
+  }
+
   public audio: HTMLAudioElement | null | undefined
   public timeupdateInterval?: NodeJS.Timer
-
-  @Watch('audioProp')
-  onAudioPropChange (): void {
-    this.isLoading = true
-    this.isError = false
-    if (this.audioProp.src !== undefined) {
-      this.initializeAudio()
-    }
-  }
 
   data (): Record<string, unknown> {
     return {
@@ -32,7 +27,6 @@ export default class RangerPlayerComponent extends Vue {
   }
 
   mounted (): void {
-    this.isLoading = true
     if (this.audioProp.src !== undefined) {
       this.initializeAudio()
     }
@@ -51,13 +45,11 @@ export default class RangerPlayerComponent extends Vue {
     source.src = window.URL.createObjectURL(this.audioProp.src)
     this.audio.load()
     this.bindEvents(this.audio)
-    this.isLoading = false
   }
 
   public bindEvents (audio: HTMLAudioElement): void {
     audio.addEventListener('loadedmetadata', () => {
       this.calculateTotalDuration()
-      this.audioProp.current = '0:00'
     })
     audio.addEventListener('play', () => {
       this.startTimeUpdateInterval()
@@ -72,7 +64,7 @@ export default class RangerPlayerComponent extends Vue {
       this.isPlaying = false
       this.progress = 0
       this.calculateTotalDuration()
-      this.audioProp.current = '0:00'
+      this.playerTimestamp.current = '0.00'
     })
   }
 
@@ -104,14 +96,14 @@ export default class RangerPlayerComponent extends Vue {
 
   public calculateTotalDuration (): void {
     if (this.audio?.duration === undefined) return
-    this.audioProp.total = getPlayerTime(this.audio.duration)
+    this.playerTimestamp.total = getPlayerTime(this.audio.duration)
   }
 
   public onTimeUpdate (): void {
     if (!this.audio) return
     if (!this.audio.currentTime) return
     this.recalculateProgress()
-    this.audioProp.current = getPlayerTime(this.audio.currentTime)
+    this.playerTimestamp.current = getPlayerTime(this.audio.currentTime)
   }
 
   public onProgressClicked (event: MouseEvent): void {
