@@ -125,7 +125,9 @@
   "Large": "Besar",
   "Sign out": "Keluar",
   "Sign In": "Masuk",
-  "Difference between a first event start time and a first response was submitted in the Guardian App": "Perbedaan antara waktu mulai acara pertama dan tanggapan pertama dikirimkan di Aplikasi Guardian",
+  "Difference between a first event start time and a first response was submitted in the Guardian App": "Perbedaan antara waktu mulai kejadian pertama dan tanggapan pertama dikirimkan di Aplikasi Guardian",
   "Closed on": "Tutup pada",
-  "Time range of events": "Rentang waktu acara"
+  "Language selector": "Pemilih bahasa",
+  "Selected language": "Terpilih bahasa",
+  "Time range of events": "Rentang waktu kejadian"
 }

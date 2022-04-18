@@ -1,8 +1,11 @@
 # Guardian Dashboard Release Notes
 
+## 0.0.10 (2022-04-18)
+
 * * **bug:** Use investigated time in response labels
 * * **bug:** Fixed an issue with displaying coordinates of one point
 * * **bug:** Fixed an issue with a width of the player row
+* * **bug:** UX of language switcher is improved ([#140](https://github.com/rfcx/guardian-dashboard/issues/140))
 
 ## 0.0.9 (2022-03-28)
 
