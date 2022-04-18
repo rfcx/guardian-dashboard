@@ -32,7 +32,7 @@ export default class NavigationBarComponent extends Vue {
   public hasOpenedProjectSelector = false
 
   public languages: DropdownItem[] = [
-    { value: 'en', label: 'English language', checked: false },
+    { value: 'en', label: 'English', checked: false },
     { value: 'in', label: 'Bahasa Indonesia', checked: false }
   ]
 
