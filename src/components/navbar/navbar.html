@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="flex items-center mx-4 sm:hidden">
-          <navbar-dropdown-component :items="languages" :dropdownImageTitle="'Language selector'" :dropdownImage="'/src/assets/globe.svg'" :customStyle="'top: 52px; right: 20px'" @selected-item="onLangChanged" />
+          <navbar-dropdown-component :items="languages" :dropdownImageTitle="'Language selector'" :dropdownImage="globeIcon" :customStyle="'top: 52px; right: 20px'" @selected-item="onLangChanged" />
           <auth-navbar-item-component/>
         </div>
       </div>
@@ -45,7 +45,7 @@
         </router-link>
       </div>
       <div class="flex items-center mx-4 <sm:hidden">
-        <navbar-dropdown-component :items="languages" :dropdownImageTitle="'Language selector'" :dropdownImage="'/src/assets/globe.svg'" :customStyle="'top: 52px; right: 20px'" @selected-item="onLangChanged" />
+        <navbar-dropdown-component :items="languages" :dropdownImageTitle="'Language selector'" :dropdownImage="globeIcon" :customStyle="'top: 52px; right: 20px'" @selected-item="onLangChanged" />
         <auth-navbar-item-component/>
       </div>
     </div>
