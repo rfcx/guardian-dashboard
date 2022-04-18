@@ -61,29 +61,40 @@ export default class RangerTrackModalComponent extends Vue {
       })
       this.isLoading = false
       this.mapbox.on('load', () => {
-        this.mapbox.addSource('track',
-          {
-            type: 'geojson',
-            data: this.rawRangerTrack
-          }
-        )
-        this.mapbox.addLayer({
-          id: 'track',
-          type: 'line',
-          source: 'track',
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round'
-          },
-          paint: {
-            'line-color': this.rawRangerTrack.features[0].properties.color,
-            'line-width': 2
-          }
+        const arr = this.rawRangerTrack.features[0].geometry.coordinates
+        const isOnePoint = arr.length === 1
+        const point = isOnePoint ? arr[0] : arr[arr.length - 1]
+        new Mapbox.Marker({
+          draggable: false,
+          color: '#bf0000'
         })
-        const source = this.mapbox.getSource('track')
-        console.log('mapbox source', source)
-        this.mapbox.getCanvas().style.height = 'auto'
-        this.mapbox.getCanvas().style.width = '100%'
+          .setLngLat(point)
+          .addTo(this.mapbox)
+        if (!isOnePoint) {
+          this.mapbox.addSource('track',
+            {
+              type: 'geojson',
+              data: this.rawRangerTrack
+            }
+          )
+          this.mapbox.addLayer({
+            id: 'track',
+            type: 'line',
+            source: 'track',
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            paint: {
+              'line-color': '#bf0000',
+              'line-width': 2
+            }
+          })
+          const source = this.mapbox.getSource('track')
+          console.log('mapbox source', source)
+          this.mapbox.getCanvas().style.height = 'auto'
+          this.mapbox.getCanvas().style.width = '100%'
+        }
       })
     } catch (err) {
       console.log('err', err)

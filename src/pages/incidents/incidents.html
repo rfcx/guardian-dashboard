@@ -72,7 +72,7 @@
       class="mt-5 <sm:mt-4"
       >
         <div class="px-4 py-4 sm:grid sm:grid-cols-2 sm:gap-1 sm:px-6 mb-5 bg-steel-grey rounded-md" v-for="stream of streamsData">
-          <div class="flex justify-start content-end whitespace-nowrap <sm:whitespace-normal">
+          <div class="flex justify-start content-end whitespace-nowrap mb-2 <sm:whitespace-normal">
             <router-link v-if="stream.incidents && stream.incidents.items && stream.incidents.items.length"
             :to="{ path: '/project/' + stream.project.id + '/streams/'+ stream.id, name: streams, query: { includeClosedIncidents: includeClosedIncidents.checked } }"
             class="flex items-end"
@@ -96,7 +96,7 @@
               </div>
             </div>
           </div>
-          <div class="flex items-center justify-self-end text-secondary text-sm font-medium <sm:hidden">
+          <div class="flex items-center justify-self-end text-secondary text-sm  mb-2 font-medium <sm:hidden">
             {{ $t('Response time') }}
             <img
               :title="$t('Duration between the first event and the first response')"
