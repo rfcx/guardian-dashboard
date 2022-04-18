@@ -61,14 +61,16 @@ export default class RangerTrackModalComponent extends Vue {
       })
       this.isLoading = false
       this.mapbox.on('load', () => {
-        if (this.rawRangerTrack.features[0].geometry.coordinates.length === 1) {
-          new Mapbox.Marker({
-            draggable: false,
-            color: '#bf0000'
-          })
-            .setLngLat(this.rawRangerTrack.features[0].geometry.coordinates[0])
-            .addTo(this.mapbox)
-        } else {
+        const arr = this.rawRangerTrack.features[0].geometry.coordinates
+        const isOnePoint = arr.length === 1
+        const point = isOnePoint ? arr[0] : arr[arr.length - 1]
+        new Mapbox.Marker({
+          draggable: false,
+          color: '#bf0000'
+        })
+          .setLngLat(point)
+          .addTo(this.mapbox)
+        if (!isOnePoint) {
           this.mapbox.addSource('track',
             {
               type: 'geojson',
@@ -84,7 +86,7 @@ export default class RangerTrackModalComponent extends Vue {
               'line-cap': 'round'
             },
             paint: {
-              'line-color': this.rawRangerTrack.features[0].properties.color,
+              'line-color': '#bf0000',
               'line-width': 2
             }
           })
