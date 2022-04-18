@@ -30,6 +30,7 @@ export default class NavigationBarComponent extends Vue {
 
   public hasToggledMobileMenu = false
   public hasOpenedProjectSelector = false
+  public globeIcon = 'https://static.rfcx.org/img/guardian/ic_globe.svg'
 
   public languages: DropdownItem[] = [
     { value: 'en', label: 'English', checked: false },
@@ -78,7 +79,7 @@ export default class NavigationBarComponent extends Vue {
     const l = this.languages.find(lang => {
       return lang.value === defaultLang
     })
-    if (l) l.checked = true
+    if (l !== undefined) l.checked = true
   }
 
   public onLangChanged (item: string): void {
