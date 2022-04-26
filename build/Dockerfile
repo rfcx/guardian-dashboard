@@ -10,10 +10,11 @@ COPY package*.json .
 RUN npm ci --production=false
 
 COPY . .
-RUN npm run build
+ARG mode=production
+RUN vue-tsc --project tsconfig.build.json --noEmit && vite build --mode ${mode}
 
 # production state
-FROM nginx
+FROM nginx as guardian-dashboard
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
