@@ -11,7 +11,7 @@ RUN npm ci --production=false
 
 COPY . .
 ARG mode=production
-RUN vue-tsc --project tsconfig.build.json --noEmit && vite build --mode ${mode}
+RUN npm run build -- --mode ${mode}
 
 # production state
 FROM nginx as guardian-dashboard
