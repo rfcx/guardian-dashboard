@@ -44,7 +44,7 @@ jobs:
       targets: "[\"guardian-dashboard\"]"
       build-args: |
         mode=${{ needs.configure.outputs.namespace }}
-      tag: ${{ needs.configure.outputs.namespace }}
+      tag-environment: ${{ needs.configure.outputs.namespace }}
       tag-latest: ${{ needs.configure.outputs.namespace == 'production' }}
     secrets:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -55,7 +55,7 @@ jobs:
     needs: [build, configure]
     uses: rfcx/cicd/.github/workflows/k8s-deploy.yaml@master
     with:
-      tag: ${{ needs.build.outputs.short-sha }}
+      tag: ${{ needs.build.outputs.unique-tag }}
       namespace: ${{ needs.configure.outputs.namespace }}
     secrets:
       kube-config: ${{ secrets.KUBE_CONFIG_SUPER }}
