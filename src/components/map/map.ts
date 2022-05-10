@@ -12,9 +12,6 @@ export default class MapComponent extends Vue {
   @Prop({ default: 8 })
   zoom!: number
 
-  @Prop({ default: false })
-  marker!: boolean
-
   @Prop({ default: '' })
   classes!: string
 
@@ -50,7 +47,7 @@ export default class MapComponent extends Vue {
         center: this.center,
         zoom: this.zoom
       })
-      if (this.marker && this.center !== undefined) {
+      if (this.center !== undefined) {
         new Mapbox.Marker({ color: 'red', scale: 0.5 })
           .setLngLat(this.center)
           .addTo(this.mapbox)
