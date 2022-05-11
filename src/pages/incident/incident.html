@@ -91,7 +91,7 @@
             <div v-if="item.type === 'response'" class="bg-steel-grey col-span-11 px-4 py-2 rounded-lg my-2 mr-auto">
               <div>
                 <span class="mr-2">{{ dateFormatted(item.investigatedAt) || '' }} {{ getTzAbbrFormat(item.investigatedAt) || '' }}</span>
-                <span class="font-semibold">{{ $t('Response') }}</span> {{ $t('by') }} {{ getCreatedByLabel(item.createdBy) }}
+                <span class="font-semibold">{{ $t('Response') }} {{ $t('by') }}</span> {{ getCreatedByLabel(item.createdBy) }}
               </div>
               <div v-if="item.messages">
                 <div v-if="item.messages.loggingEvidence" class="text-xs mt-3 flex flex-row flex-wrap justify-start items-center">
