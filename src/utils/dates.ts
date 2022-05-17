@@ -59,20 +59,29 @@ export const formatDateTimeRange = (start: string, end: string, timezone: string
 // ----------------------------
 
 export const formatDateTime = (label: string, timezone: string = 'UTC'): string => {
-  return dayjs(label).tz(timezone).format('MMM DD, YYYY HH:mm')
+  const month = t(dayjs(label).tz(timezone).format('MMM'))
+  const date = dayjs(label).tz(timezone).format('DD, YYYY HH:mm')
+  return `${month} ${date}`
 }
 
 export const formatDateTimeWithoutYear = (label: string | any, timezone: string = 'UTC'): string => {
-  return dayjs(label).tz(timezone).format('MMM DD, HH:mm')
+  const month = t(dayjs(label).tz(timezone).format('MMM'))
+  const date = dayjs(label).tz(timezone).format('DD, HH:mm')
+  return `${month} ${date}`
 }
 
 export const getDayAndMonth = (date: any, timezone: string = 'UTC'): string => {
-  const item = dayjs(date).tz(timezone).format('DD MMM')
+  const day = dayjs(date).tz(timezone).format('DD')
+  const month = t(dayjs(date).tz(timezone).format('MMM'))
+  const item = `${day} ${month}`
   return `${item.substring(0, (item.length - 3))}${t(item.substr(item.length - 3))}`
 }
 
 export const toDateStr = (date: any, timezone: string = 'UTC'): string => {
-  return dayjs(date).tz(timezone).format('DD MMM YYYY')
+  const day = dayjs(date).tz(timezone).format('DD')
+  const month = t(dayjs(date).tz(timezone).format('MMM'))
+  const year = dayjs(date).tz(timezone).format('YYYY')
+  return `${day} ${month} ${year}`
 }
 
 export const formatDiffFromNow = (label: string, timezone: string = 'UTC'): any => {

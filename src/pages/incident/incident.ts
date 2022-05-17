@@ -137,7 +137,10 @@ export default class IncidentPage extends Vue {
   }
 
   public toDateTimeStr (dateStr: string, tz = 'UTC'): string {
-    return dayjs(dateStr).tz(tz).format('DD MMM YYYY, HH:mm')
+    const day = dayjs(dateStr).tz(tz).format('DD')
+    const month = this.$t(dayjs(dateStr).tz(tz).format('MMM'))
+    const date = dayjs(dateStr).tz(tz).format('YYYY, HH:mm')
+    return `${day} ${month} ${date}`
   }
 
   public getEventsCount (events: Ev[]): EventItem[] {
