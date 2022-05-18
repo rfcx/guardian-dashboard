@@ -71,6 +71,11 @@ export default class IncidentsPage extends Vue {
     void this.onUpdatePage()
   }
 
+  @Watch('$i18n.locale')
+  onLocaleChange (): void {
+    void this.onUpdatePage()
+  }
+
   mounted (): void {
     this.getSelectedProject()
   }
