@@ -43,7 +43,8 @@
           :title="getIconTitle(event.count, event.title)"
         >
           <img
-            class="h-5 w-5 inline-block self-start mr-1 custom-gray"
+            class="h-5 w-5 inline-block self-start mr-1"
+            :class="{ 'custom-gray': event.value == 'fire' }"
             :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`"
             alt=""
             @error="setDefaultReportImg"

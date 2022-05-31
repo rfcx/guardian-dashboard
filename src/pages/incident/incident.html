@@ -38,7 +38,10 @@
               <div class="text-sm text-gray-200 cursor-default inline-block" :title="incident.eventsTitle">{{ incident.eventsLabel }}</div>
             </div>
             <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center cursor-default pt-2 mr-3" :title="getIconTitle(event.count, event.value)">
-              <img class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300" :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`" alt="" @error="setDefaultReportImg">
+              <img class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300"
+              :class="{ 'custom-gray': event.value == 'fire' }"
+              :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`" 
+              alt="" @error="setDefaultReportImg">
               <span class="text-sm text-left inline-block">{{ getIconTitle(event.count, event.title) }}</span>
             </div>
           </div>
@@ -75,7 +78,7 @@
                 <div class="h-full w-1 bg-gray-500 pointer-events-none"></div>
               </div>
               <div class="w-7 h-7 absolute top-1/2 -mt-3 rounded-full shadow text-center" :class="{'bg-red-700': item.type === 'event', 'bg-green-700': item.type === 'response'}">
-                <img v-if="item.type === 'event'" class="flex-shrink-0 mt-1 ml-1 h-5 w-5" :title="$t('Event')" :src="`https://static.rfcx.org/img/guardian/ic_${item.classification.value}.svg`" @error="setDefaultReportImg" alt="">
+                <img v-if="item.type === 'event'" class="flex-shrink-0 mt-1 ml-1 h-5 w-5" :class="{ 'custom-gray': item.classification.value == 'fire' }" :title="$t('Event')" :src="`https://static.rfcx.org/img/guardian/ic_${item.classification.value}.svg`" @error="setDefaultReportImg" alt="">
                 <div :title="$t('Response')">
                   <svg v-if="item.type === 'response'" :title="$t('Response')" class="flex-shrink-0 ml-1 mt-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#979faa" aria-hidden="true">
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
