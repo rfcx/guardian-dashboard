@@ -92,10 +92,6 @@ export default defineConfig({
       'border-radius': '0.5rem',
       color: '#dcdee2',
       height: '22px'
-    },
-
-    'custom-gray': {
-      filter: 'invert(77%) sepia(6%) saturate(505%) hue-rotate(175deg) brightness(81%) contrast(87%)'
     }
   }
 })
