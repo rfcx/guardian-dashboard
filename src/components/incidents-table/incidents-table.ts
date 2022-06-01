@@ -32,6 +32,11 @@ export default class IncidentsTableRows extends Vue {
     this.combineItemsTitles(this.items)
   }
 
+  @Watch('$i18n.locale')
+  onLocaleChange (): void {
+    this.combineItemsTitles(this.items)
+  }
+
   data (): Record<string, unknown> {
     return {
       t: useI18n()
