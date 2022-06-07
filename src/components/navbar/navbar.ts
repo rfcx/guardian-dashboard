@@ -61,6 +61,10 @@ export default class NavigationBarComponent extends Vue {
           {
             label: 'Incidents',
             destination: { name: ROUTES_NAME.incidents }
+          },
+          {
+            label: 'Analytics',
+            destination: { name: ROUTES_NAME.analytics }
           }
         ]
       : []
