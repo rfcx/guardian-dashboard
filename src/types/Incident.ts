@@ -96,6 +96,12 @@ export interface EventExtended extends Event {
   type: string
 }
 
+export interface EventType {
+  type: string
+  label: string
+  checked: boolean
+}
+
 export interface AssetsStatus {
   isDownloading: boolean
   isError: boolean
