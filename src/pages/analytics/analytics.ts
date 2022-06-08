@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
-import { EventType, Period } from '@/types'
+import { EventType } from '@/types'
 
 @Options({
   components: {
