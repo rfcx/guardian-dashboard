@@ -124,7 +124,7 @@ export default class AnalyticsPage extends Vue {
     const x = d3.scaleBand()
       .range([0, width])
       .domain(myGroups)
-      .padding(0.01)
+      .padding(0.05)
 
     graph.append('g')
       .attr('transform', 'translate(0, ' + height.toString() + ')')
@@ -133,7 +133,7 @@ export default class AnalyticsPage extends Vue {
     const y = d3.scaleBand()
       .range([height, 0])
       .domain(myVars)
-      .padding(0.01)
+      .padding(0.05)
 
     graph.append('g')
       .call(d3.axisLeft(y))
@@ -150,9 +150,14 @@ export default class AnalyticsPage extends Vue {
           .append('rect')
           .attr('x', function (d) { return x(d?.group ?? '') ?? 100 })
           .attr('y', function (d) { return y(d.variable ?? '') ?? 100 })
+          .attr('rx', 4)
+          .attr('ry', 4)
           .attr('width', x.bandwidth())
           .attr('height', y.bandwidth())
           .style('fill', function (d) { return myColor(Number(d.value)) })
+          .style('stroke-width', 4)
+          .style('stroke', 'none')
+          .style('opacity', 0.8)
       }).catch(e => {
         console.error('Error getting data', e)
       }).finally(() => {
