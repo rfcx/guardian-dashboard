@@ -1,3 +1,4 @@
+import * as d3 from 'd3'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 
@@ -34,6 +35,7 @@ export default class AnalyticsPage extends Vue {
 
   mounted (): void {
     void this.onUpdatePage()
+    void this.buildGraph()
   }
 
   data (): Record<string, unknown> {
@@ -102,5 +104,59 @@ export default class AnalyticsPage extends Vue {
     this.streamStatus.forEach((s: StreamStatus) => { s.checked = false })
     stream.checked = true
     // TODO::Add action after selected stream
+  }
+
+  public async buildGraph (): Promise<void> {
+    const margin = { top: 30, right: 30, bottom: 30, left: 30 }
+    const width = 450 - margin.left - margin.right
+    const height = 450 - margin.top - margin.bottom
+
+    const graph = d3.select('#graphTest')
+      .append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', 'translate(' + margin.left.toString() + ',' + margin.top.toString() + ')')
+
+    const myGroups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+    const myVars = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10']
+
+    const x = d3.scaleBand()
+      .range([0, width])
+      .domain(myGroups)
+      .padding(0.01)
+
+    graph.append('g')
+      .attr('transform', 'translate(0, ' + height.toString() + ')')
+      .call(d3.axisBottom(x))
+
+    const y = d3.scaleBand()
+      .range([height, 0])
+      .domain(myVars)
+      .padding(0.01)
+
+    graph.append('g')
+      .call(d3.axisLeft(y))
+
+    const myColor = d3.scaleSequential()
+      .interpolator(d3.interpolateRainbow)
+      .domain([1, 100])
+
+    await d3.csv('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/heatmap_data.csv')
+      .then(res => {
+        graph.selectAll()
+          .data(res, function (d) { return `${d?.group ?? ''} + ':' + ${d?.variable ?? ''}` })
+          .enter()
+          .append('rect')
+          .attr('x', function (d) { return x(d?.group ?? '') ?? 100 })
+          .attr('y', function (d) { return y(d.variable ?? '') ?? 100 })
+          .attr('width', x.bandwidth())
+          .attr('height', y.bandwidth())
+          .style('fill', function (d) { return myColor(Number(d.value)) })
+      }).catch(e => {
+        console.error('Error getting data', e)
+      }).finally(() => {
+        this.isLoading = false
+      })
   }
 }
