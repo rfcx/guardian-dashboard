@@ -114,7 +114,8 @@ export default class AnalyticsPage extends Vue {
     return await ClusteredService.getClusteredEvents({
       start: '2022-06-01T06:26:11.075Z',
       end: '2022-06-14T06:26:11.075Z',
-      streams: ['75fx5x48thb8', '0zkza1k2x49p', 'hpf3y2eanftq', 'qsux48f0bcql', '0v7cy0hppg8t', 'jt4dq8r4lwxh', 'xqcth5uvwomx', 'ed9afhdxieso']
+      streams: ['75fx5x48thb8', '0zkza1k2x49p', 'hpf3y2eanftq', 'qsux48f0bcql', '0v7cy0hppg8t', 'jt4dq8r4lwxh', 'xqcth5uvwomx', 'ed9afhdxieso'],
+      interval: '1h'
     }).then(res => {
       this.clusteredData = res.data
     }).catch(e => {
