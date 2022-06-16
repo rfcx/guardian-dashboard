@@ -3,8 +3,8 @@ import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
-import { StreamService, VuexService } from '@/services'
-import { Auth0Option, EventType, Stream, StreamStatus } from '@/types'
+import { ClusteredService, StreamService, VuexService } from '@/services'
+import { Auth0Option, Clustered, EventType, Stream, StreamStatus } from '@/types'
 
 @Options({
   components: {
@@ -33,9 +33,12 @@ export default class AnalyticsPage extends Vue {
     { type: 'fire', label: 'Fire', checked: false }
   ]
 
+  public clusteredData: Clustered[] | undefined
+
   mounted (): void {
     void this.onUpdatePage()
     void this.buildGraph()
+    void this.getClusteredEventsData()
   }
 
   data (): Record<string, unknown> {
@@ -104,6 +107,21 @@ export default class AnalyticsPage extends Vue {
     this.streamStatus.forEach((s: StreamStatus) => { s.checked = false })
     stream.checked = true
     // TODO::Add action after selected stream
+  }
+
+  public async getClusteredEventsData (): Promise<void> {
+    this.isLoading = true
+    return await ClusteredService.getClusteredEvents({
+      start: '2022-06-01T06:26:11.075Z',
+      end: '2022-06-14T06:26:11.075Z',
+      streams: ['75fx5x48thb8', '0zkza1k2x49p', 'hpf3y2eanftq', 'qsux48f0bcql', '0v7cy0hppg8t', 'jt4dq8r4lwxh', 'xqcth5uvwomx', 'ed9afhdxieso']
+    }).then(res => {
+      this.clusteredData = res.data
+    }).catch(e => {
+      console.error('Error getting clustered events', e)
+    }).finally(() => {
+      this.isLoading = false
+    })
   }
 
   public async buildGraph (): Promise<void> {

@@ -38,3 +38,8 @@ export const closeIncident: Endpoint = {
   method: 'PATCH',
   url: `${rangerBaseApi}/incidents`
 }
+
+export const getClusteredEvents: Endpoint = {
+  method: 'GET',
+  url: `${rangerBaseApi}/clustered-events`
+}
