@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, EventType, Stream, StreamStatus } from '@/types'
+import { getDayAndMonth, toTimeStr } from '@/utils'
 
 @Options({
   components: {
@@ -37,7 +38,6 @@ export default class AnalyticsPage extends Vue {
 
   mounted (): void {
     void this.onUpdatePage()
-    void this.buildGraph()
     void this.getClusteredEventsData()
   }
 
@@ -118,6 +118,7 @@ export default class AnalyticsPage extends Vue {
       interval: '1h'
     }).then(res => {
       this.clusteredData = res.data
+      void this.buildGraph(this.clusteredData)
     }).catch(e => {
       console.error('Error getting clustered events', e)
     }).finally(() => {
@@ -125,10 +126,10 @@ export default class AnalyticsPage extends Vue {
     })
   }
 
-  public async buildGraph (): Promise<void> {
-    const margin = { top: 30, right: 30, bottom: 30, left: 30 }
-    const width = 450 - margin.left - margin.right
-    const height = 450 - margin.top - margin.bottom
+  public async buildGraph (clustereds: Clustered[]): Promise<void> {
+    const margin = { top: 30, right: 30, bottom: 30, left: 50 }
+    const width = 950 - margin.left - margin.right
+    const height = 650 - margin.top - margin.bottom
 
     const graph = d3.select('#graphTest')
       .append('svg')
@@ -137,12 +138,12 @@ export default class AnalyticsPage extends Vue {
       .append('g')
       .attr('transform', 'translate(' + margin.left.toString() + ',' + margin.top.toString() + ')')
 
-    const myGroups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-    const myVars = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9', 'v10']
+    const dateValue = clustereds.map(c => getDayAndMonth(c.timeBucket))
+    const timeValue = ['23:00', '22:00', '21:00', '20:00', '19:00', '18:00', '17:00', '16:00', '15:00', '14:00', '13:00', '12:00', '11:00', '10:00', '09:00', '08:00', '07:00', '06:00', '05:00', '04:00', '03:00', '02:00', '01:00', '00:00']
 
     const x = d3.scaleBand()
       .range([0, width])
-      .domain(myGroups)
+      .domain(dateValue)
       .padding(0.05)
 
     graph.append('g')
@@ -151,7 +152,7 @@ export default class AnalyticsPage extends Vue {
 
     const y = d3.scaleBand()
       .range([height, 0])
-      .domain(myVars)
+      .domain(timeValue)
       .padding(0.05)
 
     graph.append('g')
@@ -161,26 +162,19 @@ export default class AnalyticsPage extends Vue {
       .interpolator(d3.interpolateRainbow)
       .domain([1, 100])
 
-    await d3.csv('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/heatmap_data.csv')
-      .then(res => {
-        graph.selectAll()
-          .data(res, function (d) { return `${d?.group ?? ''} + ':' + ${d?.variable ?? ''}` })
-          .enter()
-          .append('rect')
-          .attr('x', function (d) { return x(d?.group ?? '') ?? 100 })
-          .attr('y', function (d) { return y(d.variable ?? '') ?? 100 })
-          .attr('rx', 4)
-          .attr('ry', 4)
-          .attr('width', x.bandwidth())
-          .attr('height', y.bandwidth())
-          .style('fill', function (d) { return myColor(Number(d.value)) })
-          .style('stroke-width', 4)
-          .style('stroke', 'none')
-          .style('opacity', 0.8)
-      }).catch(e => {
-        console.error('Error getting data', e)
-      }).finally(() => {
-        this.isLoading = false
-      })
+    graph.selectAll()
+      .data(clustereds, function (d) { return `${getDayAndMonth(d?.timeBucket)} + ':' + ${toTimeStr(d?.timeBucket ?? '')}` })
+      .enter()
+      .append('rect')
+      .attr('x', function (d) { return x(getDayAndMonth(d?.timeBucket) ?? '') ?? 100 })
+      .attr('y', function (d) { return y(toTimeStr(d?.timeBucket ?? '') ?? '') ?? 100 })
+      .attr('rx', 4)
+      .attr('ry', 4)
+      .attr('width', x.bandwidth())
+      .attr('height', y.bandwidth())
+      .style('fill', function (d) { return myColor(d.aggregatedValue) })
+      .style('stroke-width', 4)
+      .style('stroke', 'none')
+      .style('opacity', 0.8)
   }
 }
