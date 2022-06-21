@@ -2,14 +2,19 @@ import * as d3 from 'd3'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 
+import Datepicker from '@vuepic/vue-datepicker'
+
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
-import { Auth0Option, Clustered, EventType, Stream, StreamStatus } from '@/types'
+import { Auth0Option, Clustered, ClusteredRequest, EventType, Stream, StreamStatus } from '@/types'
 import { getDayAndMonth, toTimeStr } from '@/utils'
+
+import '@vuepic/vue-datepicker/dist/main.css'
 
 @Options({
   components: {
-    'nav-bar': NavigationBarComponent
+    'nav-bar': NavigationBarComponent,
+    Datepicker
   }
 })
 
@@ -24,6 +29,14 @@ export default class AnalyticsPage extends Vue {
 
   public selectedStream: string | undefined
   public typeSelected = false
+  public date: Date[] = []
+  public clusteredRequest: ClusteredRequest = {
+    start: '',
+    end: '',
+    streams: [],
+    interval: '1h'
+  }
+
   public eventType: EventType[] = [
     { type: 'chainsaw', label: 'Chainsaw', checked: true },
     { type: 'vehicle', label: 'Vehicle', checked: false },
@@ -38,7 +51,12 @@ export default class AnalyticsPage extends Vue {
 
   mounted (): void {
     void this.onUpdatePage()
-    void this.getClusteredEventsData()
+    this.clusteredRequest = {
+      start: new Date().toISOString(),
+      end: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(),
+      streams: ['75fx5x48thb8', '0zkza1k2x49p', 'hpf3y2eanftq', 'qsux48f0bcql', '0v7cy0hppg8t', 'jt4dq8r4lwxh', 'xqcth5uvwomx', 'ed9afhdxieso'],
+      interval: '1h'
+    }
   }
 
   data (): Record<string, unknown> {
@@ -46,6 +64,8 @@ export default class AnalyticsPage extends Vue {
       eventType: this.eventType,
       streamStatus: this.streamStatus,
       selectedStream: this.selectedStream,
+      date: this.date,
+      maxDate: new Date(),
       t: useI18n()
     }
   }
@@ -63,6 +83,15 @@ export default class AnalyticsPage extends Vue {
     this.eventType.forEach((e: EventType) => { e.checked = false })
     type.checked = true
     // TODO::Add action after selected type
+  }
+
+  public handleDate (modelData: Date[]): void {
+    this.date = modelData
+    if (this.clusteredRequest !== undefined) {
+      this.clusteredRequest.start = modelData[0].toISOString()
+      this.clusteredRequest.end = modelData[1].toISOString()
+    }
+    void this.getClusteredEventsData(this.clusteredRequest)
   }
 
   public async getStreamsData (projectId?: string): Promise<void> {
@@ -85,7 +114,6 @@ export default class AnalyticsPage extends Vue {
   }
 
   async onUpdatePage (): Promise<void> {
-    console.log(this.getProjectIdFromRouterParams())
     await this.getStreamsData(this.getProjectIdFromRouterParams())
   }
 
@@ -109,14 +137,9 @@ export default class AnalyticsPage extends Vue {
     // TODO::Add action after selected stream
   }
 
-  public async getClusteredEventsData (): Promise<void> {
+  public async getClusteredEventsData (request: ClusteredRequest): Promise<void> {
     this.isLoading = true
-    return await ClusteredService.getClusteredEvents({
-      start: '2022-06-01T06:26:11.075Z',
-      end: '2022-06-14T06:26:11.075Z',
-      streams: ['75fx5x48thb8', '0zkza1k2x49p', 'hpf3y2eanftq', 'qsux48f0bcql', '0v7cy0hppg8t', 'jt4dq8r4lwxh', 'xqcth5uvwomx', 'ed9afhdxieso'],
-      interval: '1h'
-    }).then(res => {
+    return await ClusteredService.getClusteredEvents(request).then(res => {
       this.clusteredData = res.data
       void this.buildGraph(this.clusteredData)
     }).catch(e => {
