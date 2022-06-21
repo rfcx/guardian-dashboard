@@ -122,9 +122,9 @@ export default class AnalyticsPage extends Vue {
     return projectId
   }
 
-  public getSelectedStream (): string | undefined {
+  public getSelectedStream (): string {
     const s = this.streamStatus.find(i => i.checked)
-    return s?.label
+    return s?.label ?? 'Please select streams'
   }
 
   public toggleStreamMenu (): void {
@@ -132,9 +132,11 @@ export default class AnalyticsPage extends Vue {
   }
 
   public toggleStream (stream: StreamStatus): void {
-    this.streamStatus.forEach((s: StreamStatus) => { s.checked = false })
-    stream.checked = true
-    // TODO::Add action after selected stream
+    stream.checked = !stream.checked
+    if (this.clusteredRequest !== undefined) {
+      this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.id)
+    }
+    void this.getClusteredEventsData(this.clusteredRequest)
   }
 
   public async getClusteredEventsData (request: ClusteredRequest): Promise<void> {
