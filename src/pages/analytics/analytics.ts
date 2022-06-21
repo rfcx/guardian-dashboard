@@ -52,9 +52,9 @@ export default class AnalyticsPage extends Vue {
   mounted (): void {
     void this.onUpdatePage()
     this.clusteredRequest = {
-      start: new Date().toISOString(),
-      end: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(),
-      streams: ['75fx5x48thb8', '0zkza1k2x49p', 'hpf3y2eanftq', 'qsux48f0bcql', '0v7cy0hppg8t', 'jt4dq8r4lwxh', 'xqcth5uvwomx', 'ed9afhdxieso'],
+      start: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+      end: new Date().toISOString(),
+      streams: [],
       interval: '1h'
     }
   }
@@ -104,8 +104,11 @@ export default class AnalyticsPage extends Vue {
     }).then(res => {
       this.streamsData = res.data
       res.data.forEach((s: Stream) => { this.streamStatus.push({ id: s.id, label: s.name, checked: false }) })
-      this.streamStatus[0].checked = true
       this.getSelectedStream()
+      if (this.clusteredRequest !== undefined) {
+        this.clusteredRequest.streams = res.data.map(i => i.id)
+      }
+      void this.getClusteredEventsData(this.clusteredRequest)
     }).catch(e => {
       console.error('Error getting streams with incidents', e)
     }).finally(() => {
