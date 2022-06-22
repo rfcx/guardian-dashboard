@@ -155,6 +155,8 @@ export default class AnalyticsPage extends Vue {
   }
 
   public async buildGraph (clustereds: Clustered[]): Promise<void> {
+    d3.select('#graphTest').selectAll('*').remove()
+
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
     const width = 950 - margin.left - margin.right
     const height = 650 - margin.top - margin.bottom
