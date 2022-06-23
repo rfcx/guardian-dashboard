@@ -34,7 +34,8 @@ export default class AnalyticsPage extends Vue {
     start: '',
     end: '',
     streams: [],
-    interval: '1h'
+    interval: '1h',
+    classifications: ''
   }
 
   public eventType: EventType[] = [
