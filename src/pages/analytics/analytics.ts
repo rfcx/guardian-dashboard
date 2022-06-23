@@ -160,6 +160,56 @@ export default class AnalyticsPage extends Vue {
     })
   }
 
+  public buildScaleGraph (): void {
+    d3.select('#divContinuous').selectAll('*').remove()
+
+    const myColor = d3.scaleLinear<string, number>()
+      .range(['#1f005c', '#FFB85C'])
+      .domain([1, 100])
+
+    const svg = d3.select('#divContinuous')
+      .append('svg')
+      .attr('width', 1000)
+      .attr('height', 150)
+      .append('g')
+      .attr('transform', 'translate(0, 0)')
+
+    const a = [{ x: '0-9', y: '1', v: 0 },
+      { x: '10-19', y: '1', v: 10 },
+      { x: '20-29', y: '1', v: 20 },
+      { x: '30', y: '1', v: 30 },
+      { x: '40', y: '1', v: 40 },
+      { x: '50', y: '1', v: 50 },
+      { x: '60', y: '1', v: 60 },
+      { x: '70', y: '1', v: 70 },
+      { x: '80', y: '1', v: 80 },
+      { x: '90', y: '1', v: 90 },
+      { x: '100', y: '1', v: 100 }
+    ]
+
+    const svgX = d3.scaleBand()
+      .range([0, 1000])
+      .domain(a.map(a => a.x))
+      .padding(0)
+
+    svg.append('g')
+      .attr('transform', 'translate(0, 30)')
+      .call(d3.axisBottom(svgX))
+
+    svg.selectAll()
+      .data(a, function (d) { return `${d?.x ?? ''} + ':' + ${d?.y ?? ''}` })
+      .enter()
+      .append('rect')
+      .attr('x', function (d) { return svgX(d?.x ?? '') ?? 0 })
+      .attr('y', function (d) { return 1 })
+      .attr('width', svgX.bandwidth())
+      .attr('height', 25)
+      .style('fill', function (d) { return myColor(d.v) })
+      .style('stroke-width', 4)
+      .style('stroke', 'none')
+      .style('opacity', 0.8)
+  }
+
   public async buildGraph (clustereds: Clustered[]): Promise<void> {
     d3.select('#graphTest').selectAll('*').remove()
 
@@ -212,5 +262,7 @@ export default class AnalyticsPage extends Vue {
       .style('stroke-width', 4)
       .style('stroke', 'none')
       .style('opacity', 0.8)
+
+    void this.buildScaleGraph()
   }
 }
