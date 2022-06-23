@@ -188,8 +188,8 @@ export default class AnalyticsPage extends Vue {
     graph.append('g')
       .call(d3.axisLeft(y))
 
-    const myColor = d3.scaleSequential()
-      .interpolator(d3.interpolateRainbow)
+    const myColor = d3.scaleLinear<string, number>()
+      .range(['#1f005c', '#FFB85C'])
       .domain([1, 100])
 
     graph.selectAll()
