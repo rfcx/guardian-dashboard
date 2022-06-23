@@ -55,7 +55,8 @@ export default class AnalyticsPage extends Vue {
       start: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
       end: new Date().toISOString(),
       streams: [],
-      interval: '1h'
+      interval: '1h',
+      classifications: ''
     }
   }
 
@@ -79,10 +80,14 @@ export default class AnalyticsPage extends Vue {
     this.typeSelected = !this.typeSelected
   }
 
-  public toggleType (type: EventType): void {
+  public toggleType (t: EventType): void {
     this.eventType.forEach((e: EventType) => { e.checked = false })
-    type.checked = true
-    // TODO::Add action after selected type
+    t.checked = true
+
+    if (this.clusteredRequest !== undefined) {
+      this.clusteredRequest.classifications = t.type
+    }
+    void this.getClusteredEventsData(this.clusteredRequest)
   }
 
   public handleDate (modelData: Date[]): void {
