@@ -38,7 +38,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public eventType: EventType[] = [
-    { type: 'chainsaw', label: 'Chainsaw', checked: true },
+    { type: 'chainsaw', label: 'Chainsaw', checked: false },
     { type: 'vehicle', label: 'Vehicle', checked: false },
     { type: 'gunshot', label: 'Gunshot', checked: false },
     { type: 'human voice', label: 'Human voice', checked: false },
@@ -72,7 +72,7 @@ export default class AnalyticsPage extends Vue {
 
   public getSelectedType (): string | undefined {
     const s = this.eventType.find(e => e.checked)
-    return s?.label
+    return s?.label ?? 'Please select type'
   }
 
   public toggleTypeMenu (): void {
