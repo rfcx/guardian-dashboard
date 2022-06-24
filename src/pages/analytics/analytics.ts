@@ -167,32 +167,35 @@ export default class AnalyticsPage extends Vue {
 
     const svg = d3.select('#divContinuous')
       .append('svg')
-      .attr('width', 1000)
-      .attr('height', 150)
+      .attr('width', 600)
+      .attr('height', 100)
       .append('g')
-      .attr('transform', 'translate(0, 0)')
+      .attr('transform', 'translate(5, 5)')
 
-    const a = [{ x: '0-9', y: '1', v: 0 },
-      { x: '10-19', y: '1', v: 10 },
-      { x: '20-29', y: '1', v: 20 },
+    const a = [{ x: '0', y: '1', v: 0 },
+      { x: '10', y: '1', v: 10 },
+      { x: '20', y: '1', v: 20 },
       { x: '30', y: '1', v: 30 },
       { x: '40', y: '1', v: 40 },
       { x: '50', y: '1', v: 50 },
       { x: '60', y: '1', v: 60 },
       { x: '70', y: '1', v: 70 },
       { x: '80', y: '1', v: 80 },
-      { x: '90', y: '1', v: 90 },
-      { x: '100', y: '1', v: 100 }
+      { x: '90', y: '1', v: 90 }
     ]
 
     const svgX = d3.scaleBand()
-      .range([0, 1000])
+      .range([0, 500])
       .domain(a.map(a => a.x))
       .padding(0)
 
+    const lineX = d3.scaleLinear()
+      .range([0, 500])
+      .domain([0, 100])
+
     svg.append('g')
       .attr('transform', 'translate(0, 30)')
-      .call(d3.axisBottom(svgX))
+      .call(d3.axisBottom(lineX))
 
     svg.selectAll()
       .data(a, function (d) { return `${d?.x ?? ''} + ':' + ${d?.y ?? ''}` })
