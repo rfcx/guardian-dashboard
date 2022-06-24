@@ -34,8 +34,7 @@ export default class AnalyticsPage extends Vue {
     start: '',
     end: '',
     streams: [],
-    interval: '1h',
-    classifications: ''
+    interval: '1h'
   }
 
   public eventType: EventType[] = [
@@ -56,8 +55,7 @@ export default class AnalyticsPage extends Vue {
       start: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
       end: new Date().toISOString(),
       streams: [],
-      interval: '1h',
-      classifications: ''
+      interval: '1h'
     }
   }
 
