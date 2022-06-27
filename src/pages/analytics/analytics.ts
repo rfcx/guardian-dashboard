@@ -26,6 +26,7 @@ export default class AnalyticsPage extends Vue {
   public streamsData: Stream[] | undefined
   public streamStatus: StreamStatus[] = []
   public streamSelected = false
+  public isHaveData = false
 
   public selectedStream: string | undefined
   public typeSelected = false
@@ -66,6 +67,7 @@ export default class AnalyticsPage extends Vue {
       selectedStream: this.selectedStream,
       date: this.date,
       maxDate: new Date(),
+      isHaveData: this.isHaveData,
       t: useI18n()
     }
   }
@@ -159,8 +161,6 @@ export default class AnalyticsPage extends Vue {
   }
 
   public buildScaleGraph (): void {
-    d3.select('#divContinuous').selectAll('*').remove()
-
     const myColor = d3.scaleLinear<string, number>()
       .range(['#1f005c', '#FFB85C'])
       .domain([1, 100])
@@ -213,6 +213,12 @@ export default class AnalyticsPage extends Vue {
 
   public async buildGraph (clustereds: Clustered[]): Promise<void> {
     d3.select('#graphTest').selectAll('*').remove()
+    d3.select('#divContinuous').selectAll('*').remove()
+
+    this.isHaveData = clustereds.length === 0
+    if (clustereds.length === 0) {
+      return
+    }
 
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
     const width = 950 - margin.left - margin.right
