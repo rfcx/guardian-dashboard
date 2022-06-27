@@ -39,6 +39,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public eventType: EventType[] = [
+    { type: 'all', label: 'All types', checked: true },
     { type: 'chainsaw', label: 'Chainsaw', checked: false },
     { type: 'vehicle', label: 'Vehicle', checked: false },
     { type: 'gunshot', label: 'Gunshot', checked: false },
@@ -74,7 +75,7 @@ export default class AnalyticsPage extends Vue {
 
   public getSelectedType (): string | undefined {
     const s = this.eventType.find(e => e.checked)
-    return s?.label ?? 'Please select type'
+    return s?.label
   }
 
   public toggleTypeMenu (): void {
@@ -84,9 +85,12 @@ export default class AnalyticsPage extends Vue {
   public toggleType (t: EventType): void {
     this.eventType.forEach((e: EventType) => { e.checked = false })
     t.checked = true
-
     if (this.clusteredRequest !== undefined) {
-      this.clusteredRequest.classifications = t.type
+      if (t.type === 'all') {
+        this.clusteredRequest.classifications = undefined
+      } else {
+        this.clusteredRequest.classifications = t.type
+      }
     }
     void this.getClusteredEventsData(this.clusteredRequest)
   }
@@ -109,6 +113,7 @@ export default class AnalyticsPage extends Vue {
       limit_incidents: 1
     }).then(res => {
       this.streamsData = res.data
+      this.streamStatus.push({ id: 'all', label: 'All streams', checked: true })
       res.data.forEach((s: Stream) => { this.streamStatus.push({ id: s.id, label: s.name, checked: false }) })
       this.getSelectedStream()
       if (this.clusteredRequest !== undefined) {
@@ -133,7 +138,7 @@ export default class AnalyticsPage extends Vue {
 
   public getSelectedStream (): string {
     const s = this.streamStatus.find(i => i.checked)
-    return s?.label ?? 'Please select streams'
+    return s?.label ?? 'All streams'
   }
 
   public toggleStreamMenu (): void {
@@ -141,8 +146,14 @@ export default class AnalyticsPage extends Vue {
   }
 
   public toggleStream (stream: StreamStatus): void {
+    this.streamStatus.push({ id: 'all', label: 'All streams', checked: true })
+
     stream.checked = !stream.checked
     if (this.clusteredRequest !== undefined) {
+      if (stream.id === 'all') {
+        this.clusteredRequest.streams = this.streamStatus.map(s => s.id)
+        return
+      }
       this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.id)
     }
     void this.getClusteredEventsData(this.clusteredRequest)
