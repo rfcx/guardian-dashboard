@@ -27,7 +27,7 @@ export default class AnalyticsPage extends Vue {
   public streamStatus: StreamStatus[] = []
   public streamSelected = false
   public isHaveData = false
-
+  public showNumberOfEvents = false
   public selectedStream: string | undefined
   public typeSelected = false
   public date: Date[] = []
@@ -69,6 +69,7 @@ export default class AnalyticsPage extends Vue {
       date: this.date,
       maxDate: new Date(),
       isHaveData: this.isHaveData,
+      showNumberOfEvents: this.showNumberOfEvents,
       t: useI18n()
     }
   }
@@ -146,13 +147,15 @@ export default class AnalyticsPage extends Vue {
   }
 
   public toggleStream (stream: StreamStatus): void {
-    this.streamStatus.push({ id: 'all', label: 'All streams', checked: true })
-
     stream.checked = !stream.checked
     if (this.clusteredRequest !== undefined) {
       if (stream.id === 'all') {
+        this.streamStatus.forEach((s: StreamStatus) => { s.checked = s.id === 'all' })
         this.clusteredRequest.streams = this.streamStatus.map(s => s.id)
+        void this.getClusteredEventsData(this.clusteredRequest)
         return
+      } else {
+        this.streamStatus[0].checked = false
       }
       this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.id)
     }
@@ -226,14 +229,18 @@ export default class AnalyticsPage extends Vue {
     d3.select('#graphTest').selectAll('*').remove()
     d3.select('#divContinuous').selectAll('*').remove()
 
+    this.showNumberOfEvents = clustereds.length !== 0
     this.isHaveData = clustereds.length === 0
     if (clustereds.length === 0) {
       return
     }
 
+    const dateValue = clustereds.map(c => getDayAndMonth(c.timeBucket))
+    const timeValue = ['23:00', '22:00', '21:00', '20:00', '19:00', '18:00', '17:00', '16:00', '15:00', '14:00', '13:00', '12:00', '11:00', '10:00', '09:00', '08:00', '07:00', '06:00', '05:00', '04:00', '03:00', '02:00', '01:00', '00:00']
+
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
-    const width = 950 - margin.left - margin.right
-    const height = 650 - margin.top - margin.bottom
+    const width = ([...new Set(dateValue)].length * 150) - margin.left - margin.right
+    const height = 600 - margin.top - margin.bottom
 
     const graph = d3.select('#graphTest')
       .append('svg')
@@ -241,9 +248,6 @@ export default class AnalyticsPage extends Vue {
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
       .attr('transform', 'translate(' + margin.left.toString() + ',' + margin.top.toString() + ')')
-
-    const dateValue = clustereds.map(c => getDayAndMonth(c.timeBucket))
-    const timeValue = ['23:00', '22:00', '21:00', '20:00', '19:00', '18:00', '17:00', '16:00', '15:00', '14:00', '13:00', '12:00', '11:00', '10:00', '09:00', '08:00', '07:00', '06:00', '05:00', '04:00', '03:00', '02:00', '01:00', '00:00']
 
     const x = d3.scaleBand()
       .range([0, width])
@@ -266,6 +270,12 @@ export default class AnalyticsPage extends Vue {
       .range(['#1f005c', '#FFB85C'])
       .domain([1, 100])
 
+    const tooltip = d3.select('body').append('div')
+      .attr('class', 'tooltip')
+      .style('position', 'absolute')
+      .style('background', '#000')
+      .style('opacity', 0)
+
     graph.selectAll()
       .data(clustereds, function (d) { return `${getDayAndMonth(d?.timeBucket)} + ':' + ${toTimeStr(d?.timeBucket ?? '')}` })
       .enter()
@@ -280,6 +290,25 @@ export default class AnalyticsPage extends Vue {
       .style('stroke-width', 4)
       .style('stroke', 'none')
       .style('opacity', 0.8)
+      .on('mousemove', (event, d) => {
+        tooltip.style('opacity', 1)
+      })
+      .on('mouseleave', (event, d) => {
+        tooltip.style('opacity', 0)
+      })
+      .on('mouseover', (event, d) => {
+        let eventText = ''
+        if (d.aggregatedValue === 1) {
+          eventText = 'event'
+        } else {
+          eventText = 'enents'
+        }
+        tooltip.text(`Have ${d.aggregatedValue} ${eventText} on ${getDayAndMonth(d?.timeBucket)} ${toTimeStr(d?.timeBucket ?? '')}`)
+        const [x, y] = d3.pointer(event)
+        tooltip.style('visibility', 'visible')
+          .style('left', (x + 50).toString() + 'px')
+          .style('top', (y + 100).toString() + 'px')
+      })
 
     void this.buildScaleGraph()
   }
