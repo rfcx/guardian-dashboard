@@ -84,8 +84,15 @@
         </li>
       </ul>
       </div>
-      <div class="mr-2 bg-steel-grey">
-        <Datepicker v-model="date" :value="date" :maxDate="maxDate" @update:modelValue="handleDate" range></Datepicker>
+      <div class="block mr-2">
+        <el-date-picker
+          v-model="dateValues"
+          type="daterange"
+          unlink-panels
+          range-separator="To"
+          start-placeholder="Start date"
+          end-placeholder="End date"
+        />
       </div>
     </div>
   </div>

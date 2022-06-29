@@ -1,20 +1,18 @@
 import * as d3 from 'd3'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
-
-import Datepicker from '@vuepic/vue-datepicker'
+import { Emit, Watch } from 'vue-property-decorator'
 
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, EventType, Stream, StreamStatus } from '@/types'
-import { getDayAndMonth, toTimeStr } from '@/utils'
+import { getDayAndMonth, toIsoStr, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
 @Options({
   components: {
-    'nav-bar': NavigationBarComponent,
-    Datepicker
+    'nav-bar': NavigationBarComponent
   }
 })
 
@@ -30,7 +28,7 @@ export default class AnalyticsPage extends Vue {
   public showNumberOfEvents = false
   public selectedStream: string | undefined
   public typeSelected = false
-  public date: Date[] = []
+  public valueDate: Date[] = []
   public clusteredRequest: ClusteredRequest = {
     start: '',
     end: '',
@@ -51,6 +49,14 @@ export default class AnalyticsPage extends Vue {
 
   public clusteredData: Clustered[] | undefined
 
+  @Emit()
+  emitDateChange (): Date[] {
+    this.dateValues = this.dateValues ?? [new Date(new Date().setDate(new Date().getDate() - 7)), new Date()]
+    return this.dateValues
+  }
+
+  dateValues: [Date, Date] = [new Date(new Date().setDate(new Date().getDate() - 7)), new Date()]
+
   mounted (): void {
     void this.onUpdatePage()
     this.clusteredRequest = {
@@ -61,15 +67,25 @@ export default class AnalyticsPage extends Vue {
     }
   }
 
+  @Watch('dateValues')
+  onDateRangeChange (): void {
+    this.emitDateChange()
+
+    if (this.clusteredRequest !== undefined) {
+      this.clusteredRequest.start = toIsoStr(this.dateValues[0])
+      this.clusteredRequest.end = toIsoStr(this.dateValues[1].setHours(23, 59))
+    }
+    void this.getClusteredEventsData(this.clusteredRequest)
+  }
+
   data (): Record<string, unknown> {
     return {
       eventType: this.eventType,
       streamStatus: this.streamStatus,
       selectedStream: this.selectedStream,
-      date: this.date,
-      maxDate: new Date(),
       isHaveData: this.isHaveData,
       showNumberOfEvents: this.showNumberOfEvents,
+      dateValues: this.dateValues,
       t: useI18n()
     }
   }
@@ -92,15 +108,6 @@ export default class AnalyticsPage extends Vue {
       } else {
         this.clusteredRequest.classifications = t.type
       }
-    }
-    void this.getClusteredEventsData(this.clusteredRequest)
-  }
-
-  public handleDate (modelData: Date[]): void {
-    this.date = modelData
-    if (this.clusteredRequest !== undefined) {
-      this.clusteredRequest.start = modelData[0].toISOString()
-      this.clusteredRequest.end = modelData[1].toISOString()
     }
     void this.getClusteredEventsData(this.clusteredRequest)
   }
