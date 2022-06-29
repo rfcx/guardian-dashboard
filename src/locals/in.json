@@ -129,5 +129,12 @@
   "Closed on": "Tutup pada",
   "Language selector": "Pemilih bahasa",
   "Selected language": "Terpilih bahasa",
-  "Time range of events": "Rentang waktu kejadian"
+  "Have": "Memiliki",
+  "on": "pada",
+  "Analytics": "Analitik",
+  "Type": "Jenis",
+  "All types": "Semua jenis",
+  "All Stream:": "Semua arus",
+  "Number of events": "Jumlah acara",
+  "Not have data": "Tidak punya data"
 }

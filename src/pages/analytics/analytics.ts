@@ -121,7 +121,7 @@ export default class AnalyticsPage extends Vue {
       limit_incidents: 1
     }).then(res => {
       this.streamsData = res.data
-      this.streamStatus.push({ id: 'all', label: 'All streams', checked: true })
+      this.streamStatus.push({ id: 'all', label: this.$t('All streams'), checked: true })
       res.data.forEach((s: Stream) => { this.streamStatus.push({ id: s.id, label: s.name, checked: false }) })
       this.getSelectedStream()
       if (this.clusteredRequest !== undefined) {
@@ -129,7 +129,7 @@ export default class AnalyticsPage extends Vue {
       }
       void this.getClusteredEventsData(this.clusteredRequest)
     }).catch(e => {
-      console.error('Error getting streams with incidents', e)
+      console.error(this.$t('Can not getting streams with incidents'), e)
     }).finally(() => {
       this.isLoading = false
     })
@@ -146,7 +146,7 @@ export default class AnalyticsPage extends Vue {
 
   public getSelectedStream (): string {
     const s = this.streamStatus.find(i => i.checked)
-    return s?.label ?? 'All streams'
+    return s?.label ?? this.$t('All streams')
   }
 
   public toggleStreamMenu (): void {
@@ -175,7 +175,7 @@ export default class AnalyticsPage extends Vue {
       this.clusteredData = res.data
       void this.buildGraph(this.clusteredData)
     }).catch(e => {
-      console.error('Error getting clustered events', e)
+      console.error(this.$t('Can not getting clustered events'), e)
     }).finally(() => {
       this.isLoading = false
     })
@@ -310,7 +310,7 @@ export default class AnalyticsPage extends Vue {
         } else {
           eventText = 'enents'
         }
-        tooltip.text(`Have ${d.aggregatedValue} ${eventText} on ${getDayAndMonth(d?.timeBucket)} ${toTimeStr(d?.timeBucket ?? '')}`)
+        tooltip.text(`${this.$t('Have')} ${d.aggregatedValue} ${eventText} ${this.$t('on')} ${getDayAndMonth(d?.timeBucket)} ${toTimeStr(d?.timeBucket ?? '')}`)
         tooltip.style('visibility', 'visible')
           .style('left', (event.pageX - 40).toString() + 'px')
           .style('top', (event.pageY - 45).toString() + 'px')
