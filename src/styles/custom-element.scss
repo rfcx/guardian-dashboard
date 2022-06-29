@@ -20,7 +20,11 @@
 }
 
 .el-date-table td.today .el-date-table-cell__text {
-  color: #31984f !important;
+  color: #31984f;
+}
+
+.el-date-table td.today.end-date .el-date-table-cell__text {
+  color: white !important;
 }
 
 .el-date-editor .el-range__icon svg,
