@@ -186,7 +186,7 @@ export default class AnalyticsPage extends Vue {
       .range(['#1f005c', '#FFB85C'])
       .domain([1, 100])
 
-    const svg = d3.select('#divContinuous')
+    const svg = d3.select('#scaleOfHeatmapGraph')
       .append('svg')
       .attr('width', 600)
       .attr('height', 100)
@@ -233,8 +233,8 @@ export default class AnalyticsPage extends Vue {
   }
 
   public async buildGraph (clustereds: Clustered[]): Promise<void> {
-    d3.select('#graphTest').selectAll('*').remove()
-    d3.select('#divContinuous').selectAll('*').remove()
+    d3.select('#heatmapGraph').selectAll('*').remove()
+    d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
 
     this.showNumberOfEvents = clustereds.length !== 0
     this.isHaveData = clustereds.length === 0
@@ -249,7 +249,7 @@ export default class AnalyticsPage extends Vue {
     const width = ([...new Set(dateValue)].length * 150) - margin.left - margin.right
     const height = 600 - margin.top - margin.bottom
 
-    const graph = d3.select('#graphTest')
+    const graph = d3.select('#heatmapGraph')
       .append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
@@ -297,10 +297,10 @@ export default class AnalyticsPage extends Vue {
       .style('stroke-width', 4)
       .style('stroke', 'none')
       .style('opacity', 0.8)
-      .on('mousemove', (event, d) => {
+      .on('mousemove', () => {
         tooltip.style('opacity', 1)
       })
-      .on('mouseleave', (event, d) => {
+      .on('mouseleave', () => {
         tooltip.style('opacity', 0)
       })
       .on('mouseover', (event, d) => {
@@ -311,10 +311,9 @@ export default class AnalyticsPage extends Vue {
           eventText = 'enents'
         }
         tooltip.text(`Have ${d.aggregatedValue} ${eventText} on ${getDayAndMonth(d?.timeBucket)} ${toTimeStr(d?.timeBucket ?? '')}`)
-        const [x, y] = d3.pointer(event)
         tooltip.style('visibility', 'visible')
-          .style('left', (x + 50).toString() + 'px')
-          .style('top', (y + 100).toString() + 'px')
+          .style('left', (event.pageX - 40).toString() + 'px')
+          .style('top', (event.pageY - 45).toString() + 'px')
       })
 
     void this.buildScaleGraph()
