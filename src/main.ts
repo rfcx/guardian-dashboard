@@ -1,3 +1,4 @@
+import ElementPlus from 'element-plus'
 import { createApp } from 'vue'
 
 import App from './App.vue'
@@ -6,6 +7,7 @@ import i18n from './locals/i18n'
 import router from './router'
 import stores from './stores'
 
+import 'element-plus/dist/index.css'
 import 'virtual:windi.css'
 import './styles/global.scss'
 
@@ -17,6 +19,7 @@ async function init (): Promise<void> {
     .use(Auth0Plugin)
     .use(stores)
     .use(router)
+    .use(ElementPlus)
     .mount('#app')
 
   if (redirectAfterAuth) await router.replace(redirectAfterAuth)
