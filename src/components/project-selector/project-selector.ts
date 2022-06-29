@@ -62,7 +62,13 @@ export default class ProjectSelectorComponent extends Vue {
 
   async confirmedSelectedProject (): Promise<void> {
     const newProjectId = this.selectedProject?.id
-    if (newProjectId !== undefined) void this.$router.push({ name: ROUTES_NAME.incidents, params: { projectId: newProjectId } })
+    if (newProjectId !== undefined) {
+      if (this.$router.currentRoute.value.name === ROUTES_NAME.analytics) {
+        void this.$router.push({ name: ROUTES_NAME.analytics, params: { projectId: newProjectId } })
+      } else {
+        void this.$router.push({ name: ROUTES_NAME.incidents, params: { projectId: newProjectId } })
+      }
+    }
     this.closeProjectSelector()
   }
 }

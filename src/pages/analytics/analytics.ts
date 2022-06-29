@@ -78,6 +78,11 @@ export default class AnalyticsPage extends Vue {
     void this.getClusteredEventsData(this.clusteredRequest)
   }
 
+  @Watch('$route.params')
+  onRouteParamsChange (): void {
+    void this.onUpdatePage()
+  }
+
   data (): Record<string, unknown> {
     return {
       eventType: this.eventType,
@@ -129,6 +134,7 @@ export default class AnalyticsPage extends Vue {
       }
       void this.getClusteredEventsData(this.clusteredRequest)
     }).catch(e => {
+      this.isLoading = false
       console.error(this.$t('Can not getting streams with incidents'), e)
     }).finally(() => {
       this.isLoading = false
@@ -171,6 +177,9 @@ export default class AnalyticsPage extends Vue {
 
   public async getClusteredEventsData (request: ClusteredRequest): Promise<void> {
     this.isLoading = true
+    d3.select('#heatmapGraph').selectAll('*').remove()
+    d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
+
     return await ClusteredService.getClusteredEvents(request).then(res => {
       this.clusteredData = res.data
       void this.buildGraph(this.clusteredData)
@@ -233,9 +242,6 @@ export default class AnalyticsPage extends Vue {
   }
 
   public async buildGraph (clustereds: Clustered[]): Promise<void> {
-    d3.select('#heatmapGraph').selectAll('*').remove()
-    d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
-
     this.showNumberOfEvents = clustereds.length !== 0
     this.isHaveData = clustereds.length === 0
     if (clustereds.length === 0) {

@@ -96,8 +96,9 @@
       </div>
     </div>
   </div>
+  <img v-if="isLoading" class="animate-spin bg-mirage-grey mt-50 h-10 w-10 mx-auto" src="/src/assets/spinner.svg">
   <div class="mt-5" id="heatmapGraph"></div>
-  <div class= "mt-5 pl-11" v-if="showNumberOfEvents">{{ $t('Number of events') }}</div>
+  <div class= "mt-5 pl-11" v-if="showNumberOfEvents && !isLoading">{{ $t('Number of events') }}</div>
   <div class="mt-1 pl-10" id="scaleOfHeatmapGraph"></div>
-  <div v-if="isHaveData">{{ $t('Not have data') }}</div>
+  <div class= "mt-10" v-if="isHaveData && !isLoading">{{ $t('Not have data') }}</div>
 </div>
