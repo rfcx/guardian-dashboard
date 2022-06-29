@@ -18,6 +18,13 @@ export default defineConfig({
       }
     ]
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@use "@/styles/element-plus.scss" as *;'
+      }
+    }
+  },
   server: {
     port: 8080,
     open: true
