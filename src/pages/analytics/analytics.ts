@@ -162,7 +162,8 @@ export default class AnalyticsPage extends Vue {
   public toggleStream (stream: StreamStatus): void {
     stream.checked = !stream.checked
     if (this.clusteredRequest !== undefined) {
-      if (stream.id === 'all') {
+      const notSelectedAnyStream = this.streamStatus.filter(s => s.checked).map(i => i.id).length === 0
+      if (stream.id === 'all' || notSelectedAnyStream) {
         this.streamStatus.forEach((s: StreamStatus) => { s.checked = s.id === 'all' })
         this.clusteredRequest.streams = this.streamStatus.map(s => s.id)
         void this.getClusteredEventsData(this.clusteredRequest)
