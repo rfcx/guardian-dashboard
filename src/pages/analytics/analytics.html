@@ -15,9 +15,7 @@
             {{ $t(getSelectedType()) }}
           </span>
           <span class="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+            <img class="h-4 w-4 ml-1" src="/src/assets/dropdown.svg">
           </span>
         </button>
         <ul v-if="eventType !== undefined && typeSelected === true" class="absolute z-10 mt-1 bg-steel-grey w-40 shadow-lg max-h-56 rounded-md overflow-y focus:outline-none"
@@ -57,9 +55,7 @@
             {{ getSelectedStream() }}
           </span>
           <span class="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+            <img class="h-4 w-4 ml-1" src="/src/assets/dropdown.svg">
           </span>
         </button>
         <ul v-if="streamStatus !== undefined && streamSelected === true" class="absolute z-10 mt-1 bg-steel-grey w-40 shadow-lg rounded-md overflow-y focus:outline-none"
