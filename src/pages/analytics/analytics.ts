@@ -307,12 +307,7 @@ export default class AnalyticsPage extends Vue {
         tooltip.style('opacity', 0)
       })
       .on('mouseover', (event, d) => {
-        let eventText = ''
-        if (d.aggregatedValue === 1) {
-          eventText = 'event'
-        } else {
-          eventText = 'enents'
-        }
+        const eventText = `event${d.aggregatedValue > 1 ? 's' : ''}`
         tooltip.text(`${this.$t('Have')} ${d.aggregatedValue} ${eventText} ${this.$t('on')} ${getDayAndMonth(d?.timeBucket)} ${toTimeStr(d?.timeBucket ?? '')}`)
         tooltip.style('visibility', 'visible')
           .style('left', (event.pageX - 40).toString() + 'px')
