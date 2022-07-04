@@ -18,4 +18,5 @@ export interface ClusteredRequest {
   streams: string[]
   interval: string
   classifications?: string
+  limit: number
 }

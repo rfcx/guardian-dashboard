@@ -7,7 +7,7 @@ import { Emit, Watch } from 'vue-property-decorator'
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, EventType, Stream, StreamStatus } from '@/types'
-import { getDayAndMonth, toIsoStr, toTimeStr } from '@/utils'
+import { getDayAndMonth, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -31,10 +31,11 @@ export default class AnalyticsPage extends Vue {
   public typeSelected = false
   public valueDate: Date[] = []
   public clusteredRequest: ClusteredRequest = {
-    start: new Date(dayjs(new Date()).add(-7, 'day').toDate()).toISOString(),
-    end: new Date().toISOString(),
+    start: dayjs.utc().subtract(7, 'days').startOf('day').toISOString(),
+    end: dayjs.utc().endOf('day').toISOString(),
     streams: [],
-    interval: '1h'
+    interval: '1h',
+    limit: 1000
   }
 
   public eventType: EventType[] = [
@@ -51,13 +52,11 @@ export default class AnalyticsPage extends Vue {
   public clusteredData: Clustered[] | undefined
 
   @Emit()
-  emitDateChange (): Date[] {
-    const date = new Date()
-    this.dateValues = this.dateValues ?? [dayjs(date).add(-7, 'day'), date]
-    return this.dateValues
+  emitDateChange (): string[] {
+    return this.dateValues ?? [dayjs().utc().subtract(7, 'days').format('YYYY-MM-DD'), dayjs.utc().format('YYYY-MM-DD')]
   }
 
-  dateValues: [Date, Date] = [dayjs(new Date()).add(-7, 'day').toDate(), new Date()]
+  dateValues: [string, string] = [dayjs.utc().subtract(7, 'days').format('YYYY-MM-DD'), dayjs.utc().format('YYYY-MM-DD')]
 
   mounted (): void {
     void this.onUpdatePage()
@@ -68,8 +67,8 @@ export default class AnalyticsPage extends Vue {
     this.emitDateChange()
 
     if (this.clusteredRequest !== undefined) {
-      this.clusteredRequest.start = toIsoStr(this.dateValues[0])
-      this.clusteredRequest.end = toIsoStr(this.dateValues[1].setHours(23, 59))
+      this.clusteredRequest.start = `${this.dateValues[0]}T00:00:00.000Z`
+      this.clusteredRequest.end = `${this.dateValues[1]}T23:59:59.999Z`
     }
     void this.getClusteredEventsData(this.clusteredRequest)
   }
@@ -177,7 +176,7 @@ export default class AnalyticsPage extends Vue {
     d3.select('#heatmapGraph').selectAll('*').remove()
     d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
 
-    return await ClusteredService.getClusteredEvents(request).then(res => {
+    return await ClusteredService.getClusteredDetections(request).then(res => {
       this.clusteredData = res.data
       void this.buildGraph(this.clusteredData)
     }).catch(e => {
@@ -249,7 +248,8 @@ export default class AnalyticsPage extends Vue {
     const timeValue = ['23:00', '22:00', '21:00', '20:00', '19:00', '18:00', '17:00', '16:00', '15:00', '14:00', '13:00', '12:00', '11:00', '10:00', '09:00', '08:00', '07:00', '06:00', '05:00', '04:00', '03:00', '02:00', '01:00', '00:00']
 
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
-    const width = ([...new Set(dateValue)].length * 150) - margin.left - margin.right
+    const container = document.querySelector('#analytics-page') as HTMLElement
+    const width = container.offsetWidth
     const height = 600 - margin.top - margin.bottom
 
     const graph = d3.select('#heatmapGraph')
@@ -307,7 +307,7 @@ export default class AnalyticsPage extends Vue {
         tooltip.style('opacity', 0)
       })
       .on('mouseover', (event, d) => {
-        const eventText = `event${d.aggregatedValue > 1 ? 's' : ''}`
+        const eventText = `detection${d.aggregatedValue > 1 ? 's' : ''}`
         tooltip.text(`${this.$t('Have')} ${d.aggregatedValue} ${eventText} ${this.$t('on')} ${getDayAndMonth(d?.timeBucket)} ${toTimeStr(d?.timeBucket ?? '')}`)
         tooltip.style('visibility', 'visible')
           .style('left', (event.pageX - 40).toString() + 'px')

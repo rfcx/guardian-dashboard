@@ -77,13 +77,14 @@
       </ul>
       </div>
       <div class="block mr-2">
-        <el-date-picker 
+        <el-date-picker
           class="relative w-full bg-steel-grey rounded-md"
           v-model="dateValues"
           type="daterange"
           range-separator="To"
           start-placeholder="Start date"
           end-placeholder="End date"
+          value-format="YYYY-MM-DD"
         />
       </div>
     </div>

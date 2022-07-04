@@ -14,3 +14,16 @@ export async function getClusteredEvents (params?: ClusteredRequest): Promise<{ 
     return await Promise.reject(error)
   }
 }
+
+export async function getClusteredDetections (params?: ClusteredRequest): Promise<{ data: Clustered[], headers: any }> {
+  try {
+    const resp = await ApiClient.request<Clustered[]>({
+      method: Endpoints.getClusteredDetections.method,
+      url: Endpoints.getClusteredDetections.url,
+      config: { params: params }
+    })
+    return resp
+  } catch (error) {
+    return await Promise.reject(error)
+  }
+}
