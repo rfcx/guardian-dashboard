@@ -193,7 +193,7 @@ export default class AnalyticsPage extends Vue {
 
   public buildScaleGraph (): void {
     const myColor = d3.scaleLinear<string, number>()
-      .range(['#1f005c', '#FFB85C'])
+      .range(['#ffffff', '#015a32'])
       .domain([1, 100])
 
     const svg = d3.select('#scaleOfHeatmapGraph')
@@ -281,7 +281,7 @@ export default class AnalyticsPage extends Vue {
       .call(d3.axisLeft(y))
 
     const myColor = d3.scaleLinear<string, number>()
-      .range(['#1f005c', '#FFB85C'])
+      .range(['#ffffff', '#015a32'])
       .domain([1, 100])
 
     const tooltip = d3.select('body').append('div')
