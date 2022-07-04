@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+import dayjs from 'dayjs'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 import { Emit, Watch } from 'vue-property-decorator'
@@ -30,8 +31,8 @@ export default class AnalyticsPage extends Vue {
   public typeSelected = false
   public valueDate: Date[] = []
   public clusteredRequest: ClusteredRequest = {
-    start: '',
-    end: '',
+    start: new Date(dayjs(new Date()).add(-7, 'day').toDate()).toISOString(),
+    end: new Date().toISOString(),
     streams: [],
     interval: '1h'
   }
@@ -51,20 +52,15 @@ export default class AnalyticsPage extends Vue {
 
   @Emit()
   emitDateChange (): Date[] {
-    this.dateValues = this.dateValues ?? [new Date(new Date().setDate(new Date().getDate() - 7)), new Date()]
+    const date = new Date()
+    this.dateValues = this.dateValues ?? [dayjs(date).add(-7, 'day'), date]
     return this.dateValues
   }
 
-  dateValues: [Date, Date] = [new Date(new Date().setDate(new Date().getDate() - 7)), new Date()]
+  dateValues: [Date, Date] = [dayjs(new Date()).add(-7, 'day').toDate(), new Date()]
 
   mounted (): void {
     void this.onUpdatePage()
-    this.clusteredRequest = {
-      start: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
-      end: new Date().toISOString(),
-      streams: [],
-      interval: '1h'
-    }
   }
 
   @Watch('dateValues')
