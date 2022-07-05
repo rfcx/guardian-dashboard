@@ -100,14 +100,20 @@ export default class AnalyticsPage extends Vue {
   }
 
   public toggleType (t: EventType): void {
-    this.eventType.forEach((e: EventType) => { e.checked = false })
-    t.checked = true
+    t.checked = !t.checked
     if (this.clusteredRequest !== undefined) {
-      if (t.type === 'all') {
-        this.clusteredRequest.classifications = undefined
+      const notSelectedAnyType = this.eventType.filter(e => e.checked).map(s => s.type).length === 0
+      if (t.type === 'all' || notSelectedAnyType) {
+        this.eventType.forEach((e: EventType) => { e.checked = e.type === 'all' })
+        const types = this.eventType.map(e => e.type)
+        types.shift()
+        this.clusteredRequest.classifications = types
+        void this.getClusteredEventsData(this.clusteredRequest)
+        return
       } else {
-        this.clusteredRequest.classifications = t.type
+        this.eventType[0].checked = false
       }
+      this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.type)
     }
     void this.getClusteredEventsData(this.clusteredRequest)
   }
@@ -166,7 +172,9 @@ export default class AnalyticsPage extends Vue {
       const notSelectedAnyStream = this.streamStatus.filter(s => s.checked).map(i => i.id).length === 0
       if (stream.id === 'all' || notSelectedAnyStream) {
         this.streamStatus.forEach((s: StreamStatus) => { s.checked = s.id === 'all' })
-        this.clusteredRequest.streams = this.streamStatus.map(s => s.id)
+        const streams = this.streamStatus.map(s => s.id)
+        streams.shift()
+        this.clusteredRequest.streams = streams
         void this.getClusteredEventsData(this.clusteredRequest)
         return
       } else {
