@@ -39,8 +39,13 @@ export default class DropdownCheckboxes extends Vue {
   }
 
   public onItemChanged (item: DropdownItem): void {
-    // this.items.forEach((i: DropdownItem) => { i.checked = false })
-    item.checked = !item.checked
+    const selectedAll = this.items.find(item => item.value === 'all')
+    if (selectedAll && item.value !== 'all') selectedAll.checked = false
+    if (item.value === 'all') {
+      this.items.forEach((d: DropdownItem) => { d.checked = (d.value === 'all') })
+    } else {
+      item.checked = !item.checked
+    }
     this.getSelectedItem()
   }
 

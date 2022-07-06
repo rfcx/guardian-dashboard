@@ -4,16 +4,18 @@ import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 import { Emit, Watch } from 'vue-property-decorator'
 
+import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkboxes.vue'
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
-import { Auth0Option, Clustered, ClusteredRequest, EventType, Stream, StreamStatus } from '@/types'
+import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream, StreamStatus } from '@/types'
 import { getDayAndMonth, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
 @Options({
   components: {
-    'nav-bar': NavigationBarComponent
+    'nav-bar': NavigationBarComponent,
+    DropdownCheckboxes
   }
 })
 
@@ -38,15 +40,15 @@ export default class AnalyticsPage extends Vue {
     limit: 1000
   }
 
-  public eventType: EventType[] = [
-    { type: 'all', label: 'All types', checked: true },
-    { type: 'chainsaw', label: 'Chainsaw', checked: false },
-    { type: 'vehicle', label: 'Vehicle', checked: false },
-    { type: 'gunshot', label: 'Gunshot', checked: false },
-    { type: 'human voice', label: 'Human voice', checked: false },
-    { type: 'bark', label: 'Bark', checked: false },
-    { type: 'elephant', label: 'Elephant', checked: false },
-    { type: 'fire', label: 'Fire', checked: false }
+  public eventType: DropdownItem[] = [
+    { value: 'all', label: 'All types', checked: true },
+    { value: 'chainsaw', label: 'Chainsaw', checked: false },
+    { value: 'vehicle', label: 'Vehicle', checked: false },
+    { value: 'gunshot', label: 'Gunshot', checked: false },
+    { value: 'human voice', label: 'Human voice', checked: false },
+    { value: 'bark', label: 'Bark', checked: false },
+    { value: 'elephant', label: 'Elephant', checked: false },
+    { value: 'fire', label: 'Fire', checked: false }
   ]
 
   public clusteredData: Clustered[] | undefined
@@ -99,22 +101,19 @@ export default class AnalyticsPage extends Vue {
     this.typeSelected = !this.typeSelected
   }
 
-  public toggleType (t: EventType): void {
-    t.checked = !t.checked
-    if (this.clusteredRequest !== undefined) {
-      const notSelectedAnyType = this.eventType.filter(e => e.checked).map(s => s.type).length === 0
-      if (t.type === 'all' || notSelectedAnyType) {
-        this.eventType.forEach((e: EventType) => { e.checked = e.type === 'all' })
-        const types = this.eventType.map(e => e.type)
-        types.shift()
-        this.clusteredRequest.classifications = types
-        void this.getClusteredEventsData(this.clusteredRequest)
-        return
-      } else {
-        this.eventType[0].checked = false
-      }
-      this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.type)
+  public toggleType (t: DropdownItem[]): void {
+    if (t[0].value === 'all') {
+      this.eventType.forEach((e: DropdownItem) => { e.checked = (e.value === 'all') })
+      const types = this.eventType.map(e => e.value)
+      types.shift()
+
+      this.clusteredRequest.classifications = types
+      void this.getClusteredEventsData(this.clusteredRequest)
+      return
+    } else {
+      this.eventType[0].checked = false
     }
+    this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.value)
     void this.getClusteredEventsData(this.clusteredRequest)
   }
 

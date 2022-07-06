@@ -2,41 +2,9 @@
   <div class="bg-gray overflow-hidden <sm:pt-0">
     <div class="mt-1 flex flex-row items-center <sm:(flex-wrap flex-col items-start)">
       <div class="mr-2">
-        <button
-          type="button"
-          class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm flex items-center mr-2 <sm:mb-2"
-          aria-expanded="false" aria-labelledby="listbox-label" aria-haspopup="true" id="type-button"
-          @click="toggleTypeMenu()"
-        >
-          <span class="block truncate">
-            {{ $t('Type') }}:
-          </span>
-          <span class="ml-3 block truncate">
-            {{ $t(getSelectedType()) }}
-          </span>
-          <span class="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-            <img class="h-4 w-4 ml-1" src="/src/assets/dropdown.svg">
-          </span>
-        </button>
-        <ul v-if="eventType !== undefined && typeSelected === true" class="absolute z-10 mt-1 bg-steel-grey w-40 shadow-lg max-h-56 rounded-md overflow-y focus:outline-none"
-        role="menu" aria-labelledby="type-button" @mouseleave="typeSelected = false">
-        <li
-          v-for="(type, i) in eventType"
-          class="text-gray-900 cursor-pointer select-none relative pl-3 py-1 hover:bg-box-grey"
-          :id="'listbox-option-' + i"
-          role="option"
-          @click="toggleType(type)"
-        >
-          <div class="flex items-center">
-            <span class="font-normal block truncate text-white sm:text-sm w-30">
-              {{ $t(type.label) }}
-            </span>
-            <span v-if="type.checked" class="text-white flex items-center px-2">
-              <img class="h-4 w-4" src="/src/assets/checked.svg">
-            </span>
-          </div>
-        </li>
-      </ul>
+        <div class="block mr-2">
+          <dropdown-checkboxes :items="eventType" :dropdownValue="$t(getSelectedType())" :dropdownTitle="$t('Type')" @selected-item="toggleType"></dropdown-checkboxes>
+        </div>
       </div>
       <div class="mr-2">
         <button
