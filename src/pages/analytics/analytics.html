@@ -7,42 +7,7 @@
         </div>
       </div>
       <div class="mr-2">
-        <button
-          v-if ="getSelectedStream() !== undefined"
-          type="button"
-          class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm flex items-center mr-2 <sm:mb-2"
-          aria-expanded="false" aria-labelledby="listbox-label" aria-haspopup="true" id="type-button"
-          @click="toggleStreamMenu()"
-        >
-          <span class="block truncate">
-            {{ $t('Stream') }}:
-          </span>
-          <span class="ml-3 block truncate">
-            {{ getSelectedStream() }}
-          </span>
-          <span class="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-            <img class="h-4 w-4 ml-1" src="/src/assets/dropdown.svg">
-          </span>
-        </button>
-        <ul v-if="streamStatus !== undefined && streamSelected === true" class="absolute z-10 mt-1 bg-steel-grey w-40 shadow-lg rounded-md overflow-y focus:outline-none"
-        role="menu" aria-labelledby="type-button" @mouseleave="streamSelected = false">
-        <li
-          v-for="(stream, i) in streamStatus"
-          class="text-gray-900 cursor-pointer select-none relative pl-3 py-1 hover:bg-box-grey"
-          :id="'listbox-option-' + i"
-          role="option"
-          @click="toggleStream(stream)"
-        >
-          <div class="flex items-center">
-            <span class="font-normal block truncate text-white sm:text-sm w-30">
-              {{ $t(stream.label) }}
-            </span>
-            <span v-if="stream.checked" class="text-white flex items-center px-2">
-              <img class="h-4 w-4" src="/src/assets/checked.svg">
-            </span>
-          </div>
-        </li>
-      </ul>
+        <dropdown-checkboxes :items="streamStatus" :dropdownValue="$t(getSelectedStream())" :dropdownTitle="$t('Stream')" @selected-item="toggleStream"></dropdown-checkboxes>
       </div>
       <div class="block mr-2">
         <el-date-picker

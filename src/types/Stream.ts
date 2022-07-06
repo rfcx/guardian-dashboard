@@ -12,12 +12,6 @@ export interface Stream {
   tags?: string[]
 }
 
-export interface StreamStatus {
-  id: string
-  label: string
-  checked: boolean
-}
-
 export interface IncidentsObject {
   items: Incident[]
   total: number

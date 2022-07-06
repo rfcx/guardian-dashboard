@@ -7,7 +7,7 @@ import { Emit, Watch } from 'vue-property-decorator'
 import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkboxes.vue'
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
-import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream, StreamStatus } from '@/types'
+import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
 import { getDayAndMonth, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -25,12 +25,10 @@ export default class AnalyticsPage extends Vue {
 
   public isLoading = true
   public streamsData: Stream[] | undefined
-  public streamStatus: StreamStatus[] = []
-  public streamSelected = false
+  public streamStatus: DropdownItem[] = []
   public isHaveData = false
   public showNumberOfEvents = false
   public selectedStream: string | undefined
-  public typeSelected = false
   public valueDate: Date[] = []
   public clusteredRequest: ClusteredRequest = {
     start: dayjs.utc().subtract(7, 'days').startOf('day').toISOString(),
@@ -84,7 +82,6 @@ export default class AnalyticsPage extends Vue {
     return {
       eventType: this.eventType,
       streamStatus: this.streamStatus,
-      selectedStream: this.selectedStream,
       isHaveData: this.isHaveData,
       showNumberOfEvents: this.showNumberOfEvents,
       dateValues: this.dateValues,
@@ -95,10 +92,6 @@ export default class AnalyticsPage extends Vue {
   public getSelectedType (): string | undefined {
     const s = this.eventType.find(e => e.checked)
     return s?.label
-  }
-
-  public toggleTypeMenu (): void {
-    this.typeSelected = !this.typeSelected
   }
 
   public toggleType (t: DropdownItem[]): void {
@@ -128,8 +121,8 @@ export default class AnalyticsPage extends Vue {
       this.streamsData = []
       this.streamStatus = []
       this.streamsData = res.data
-      this.streamStatus.push({ id: 'all', label: this.$t('All streams'), checked: true })
-      res.data.forEach((s: Stream) => { this.streamStatus.push({ id: s.id, label: s.name, checked: false }) })
+      this.streamStatus.push({ value: 'all', label: this.$t('All streams'), checked: true })
+      res.data.forEach((s: Stream) => { this.streamStatus.push({ value: s.id, label: s.name, checked: false }) })
       this.getSelectedStream()
       this.refreshClusteredEvents()
     }).catch(e => {
@@ -161,25 +154,20 @@ export default class AnalyticsPage extends Vue {
     return s?.label ?? this.$t('All streams')
   }
 
-  public toggleStreamMenu (): void {
-    this.streamSelected = !this.streamSelected
-  }
-
-  public toggleStream (stream: StreamStatus): void {
-    stream.checked = !stream.checked
+  public toggleStream (streams: DropdownItem[]): void {
     if (this.clusteredRequest !== undefined) {
-      const notSelectedAnyStream = this.streamStatus.filter(s => s.checked).map(i => i.id).length === 0
-      if (stream.id === 'all' || notSelectedAnyStream) {
-        this.streamStatus.forEach((s: StreamStatus) => { s.checked = s.id === 'all' })
-        const streams = this.streamStatus.map(s => s.id)
+      if (streams[0].value === 'all') {
+        this.streamStatus.forEach((s: DropdownItem) => { s.checked = (s.value === 'all') })
+        const streams = this.streamStatus.map(s => s.value)
         streams.shift()
+
         this.clusteredRequest.streams = streams
         void this.getClusteredEventsData(this.clusteredRequest)
         return
       } else {
         this.streamStatus[0].checked = false
       }
-      this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.id)
+      this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.value)
     }
     void this.getClusteredEventsData(this.clusteredRequest)
   }
