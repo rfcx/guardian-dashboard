@@ -35,7 +35,8 @@ export default class NavigationBarComponent extends Vue {
   public languages: DropdownItem[] = [
     { value: 'en', label: 'English', checked: false },
     { value: 'in', label: 'Bahasa Indonesia', checked: false },
-    { value: 'ms', label: 'Malay', checked: false }
+    { value: 'ms', label: 'Malay', checked: false },
+    { value: 'pt', label: 'Portuguese', checked: false }
   ]
 
   updated (): void {
