@@ -27,6 +27,13 @@
   color: white !important;
 }
 
+.el-picker-panel__icon-btn {
+  color: white !important;
+  &:hover {
+    color: #31984f !important;
+  }
+}
+
 .el-date-editor .el-range__icon svg,
 .el-date-editor .el-range-separator,
 .el-date-editor .el-range-input,
