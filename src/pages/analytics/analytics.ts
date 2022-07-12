@@ -187,6 +187,17 @@ export default class AnalyticsPage extends Vue {
     })
   }
 
+  public getDomainArray = function (maxNum: number): Item[] {
+    const arr = []
+    const minusWith = maxNum <= 100 ? 10 : maxNum >= 1000 ? 100 : 50
+    let loop = maxNum - minusWith
+    while (loop >= 0) {
+      arr.push({ x: loop, y: 1, value: loop })
+      loop -= minusWith
+    }
+    return arr.sort((a, b) => (a.x < b.x ? -1 : 1))
+  }
+
   public buildScaleGraph (max: number): void {
     const myColor = d3.scaleLinear<string, number>()
       .range(['#ffffff', '#015a32'])
@@ -199,21 +210,10 @@ export default class AnalyticsPage extends Vue {
       .append('g')
       .attr('transform', 'translate(5, 5)')
 
-    const a = [{ x: (max / 10) * 0, y: '1', v: (max / 10) * 0 },
-      { x: (max / 10) * 1, y: '1', v: (max / 10) * 1 },
-      { x: (max / 10) * 2, y: '1', v: (max / 10) * 2 },
-      { x: (max / 10) * 3, y: '1', v: (max / 10) * 3 },
-      { x: (max / 10) * 4, y: '1', v: (max / 10) * 4 },
-      { x: (max / 10) * 5, y: '1', v: (max / 10) * 5 },
-      { x: (max / 10) * 6, y: '1', v: (max / 10) * 6 },
-      { x: (max / 10) * 7, y: '1', v: (max / 10) * 7 },
-      { x: (max / 10) * 8, y: '1', v: (max / 10) * 8 },
-      { x: (max / 10) * 9, y: '1', v: (max / 10) * 9 }
-    ]
-
+    const domain = this.getDomainArray(max)
     const svgX = d3.scaleBand()
       .range([0, 500])
-      .domain(a.map(a => a.x.toString()))
+      .domain(domain.map(i => i.x.toString()))
       .padding(0)
 
     const lineX = d3.scaleLinear()
@@ -225,14 +225,14 @@ export default class AnalyticsPage extends Vue {
       .call(d3.axisBottom(lineX))
 
     svg.selectAll()
-      .data(a, function (d) { return `${d?.x ?? ''} + ':' + ${d?.y ?? ''}` })
+      .data(domain, function (d) { return `${d?.x ?? ''} + ':' + ${d?.y ?? ''}` })
       .enter()
       .append('rect')
       .attr('x', function (d) { return svgX(d?.x.toString() ?? '') ?? 0 })
       .attr('y', function (d) { return 1 })
       .attr('width', svgX.bandwidth())
       .attr('height', 25)
-      .style('fill', function (d) { return myColor(d.v) })
+      .style('fill', function (d) { return myColor(d.value) })
       .style('stroke-width', 4)
       .style('stroke', 'none')
       .style('opacity', 0.8)
@@ -338,6 +338,12 @@ export default class AnalyticsPage extends Vue {
   }
 
   public roundnum (num: number): number {
-    return Math.round(num / 50) * 50
+    return Math.round(Math.round(num / 25) / 2) * 50
   }
+}
+
+interface Item {
+  x: number
+  y: number
+  value: number
 }
