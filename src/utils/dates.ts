@@ -102,6 +102,12 @@ export const getLast6HoursLabel = (): string => {
   return dayjs(now - 21600000).toISOString()
 }
 
+export const getUTCDate = (date: string): Date => {
+  const d = new Date(date)
+  const utcDate = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+  return utcDate
+}
+
 // ----------------------------
 // Boolean
 // ----------------------------

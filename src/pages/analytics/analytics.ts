@@ -8,7 +8,7 @@ import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkb
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
-import { getDayAndMonth, toTimeStr } from '@/utils'
+import { getDayAndMonth, getUTCDate, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -179,7 +179,7 @@ export default class AnalyticsPage extends Vue {
 
     return await ClusteredService.getClusteredDetections(request).then(res => {
       this.clusteredData = res.data
-      void this.buildGraph(this.clusteredData)
+      void this.buildGraph(this.clusteredData, request)
     }).catch(e => {
       console.error(this.$t('Can not getting clustered events'), e)
     }).finally(() => {
@@ -238,14 +238,24 @@ export default class AnalyticsPage extends Vue {
       .style('opacity', 0.8)
   }
 
-  public async buildGraph (clustereds: Clustered[]): Promise<void> {
+  public getDateArray = function (start: Date, end: Date): Date[] {
+    const arr = []
+    let loop = start
+    while (loop <= end) {
+      arr.push(loop)
+      const newDate = loop.setDate(loop.getDate() + 1)
+      loop = new Date(newDate)
+    }
+    return arr
+  }
+
+  public async buildGraph (clustereds: Clustered[], request: ClusteredRequest): Promise<void> {
     this.showNumberOfEvents = clustereds.length !== 0
     this.isHaveData = clustereds.length === 0
     if (clustereds.length === 0) {
       return
     }
-
-    const dateValue = clustereds.map(c => getDayAndMonth(c.timeBucket))
+    const dateValue = this.getDateArray(getUTCDate(request.start), getUTCDate(request.end)).map(c => getDayAndMonth(c))
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
     const container = document.querySelector('#analytics-page') as HTMLElement
     const width = container.offsetWidth
