@@ -9,7 +9,7 @@
       <div class="mr-2">
         <dropdown-checkboxes :items="streamStatus" :dropdownValue="$t(getSelectedStream())" :dropdownTitle="$t('Stream')" @selected-item="toggleStream"></dropdown-checkboxes>
       </div>
-      <div class="block mr-2">
+      <div class="block mr-2" v-if="dateValues">
         <el-date-picker
           class="relative w-full bg-steel-grey rounded-md"
           v-model="dateValues"

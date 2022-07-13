@@ -1,8 +1,8 @@
 import * as d3 from 'd3'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs, { Dayjs, utc } from 'dayjs'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
-import { Emit, Watch } from 'vue-property-decorator'
+import { Watch } from 'vue-property-decorator'
 
 import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkboxes.vue'
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
@@ -11,6 +11,8 @@ import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '
 import { getDayAndMonth, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
+
+dayjs.extend(utc as any)
 
 @Options({
   components: {
@@ -31,13 +33,8 @@ export default class AnalyticsPage extends Vue {
   public selectedStream: string | undefined
   public valueDate: Date[] = []
   public timezone = 'UTC'
-  public clusteredRequest: ClusteredRequest = {
-    start: dayjs.utc().subtract(7, 'days').startOf('day').toISOString(),
-    end: dayjs.utc().endOf('day').toISOString(),
-    streams: [],
-    interval: '1h',
-    limit: 1000
-  }
+  public timezoneOffsetMins = 0
+  public clusteredRequest: ClusteredRequest | undefined
 
   public eventType: DropdownItem[] = [
     { value: 'all', label: 'All types', checked: true },
@@ -52,12 +49,7 @@ export default class AnalyticsPage extends Vue {
 
   public clusteredData: Clustered[] | undefined
 
-  @Emit()
-  emitDateChange (): string[] {
-    return this.dateValues ?? [dayjs().utc().subtract(7, 'days').format('YYYY-MM-DD'), dayjs.utc().format('YYYY-MM-DD')]
-  }
-
-  dateValues: [string, string] = [dayjs.utc().subtract(7, 'days').format('YYYY-MM-DD'), dayjs.utc().format('YYYY-MM-DD')]
+  dateValues: [string, string] | undefined
 
   mounted (): void {
     void this.onUpdatePage()
@@ -65,13 +57,13 @@ export default class AnalyticsPage extends Vue {
 
   @Watch('dateValues')
   onDateRangeChange (): void {
-    this.emitDateChange()
-
-    if (this.clusteredRequest !== undefined) {
-      this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').toISOString()
-      this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').toISOString()
+    if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
+      this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+      this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
     }
-    void this.getClusteredEventsData(this.clusteredRequest)
+    if (this.clusteredRequest !== undefined) {
+      void this.getClusteredEventsData(this.clusteredRequest)
+    }
   }
 
   @Watch('$route.params')
@@ -101,14 +93,31 @@ export default class AnalyticsPage extends Vue {
       const types = this.eventType.map(e => e.value)
       types.shift()
 
-      this.clusteredRequest.classifications = types
-      void this.getClusteredEventsData(this.clusteredRequest)
+      if (this.clusteredRequest !== undefined) {
+        this.clusteredRequest.classifications = types
+        void this.getClusteredEventsData(this.clusteredRequest)
+      }
       return
     } else {
       this.eventType[0].checked = false
     }
-    this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.value)
-    void this.getClusteredEventsData(this.clusteredRequest)
+    if (this.clusteredRequest !== undefined) {
+      this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.value)
+      void this.getClusteredEventsData(this.clusteredRequest)
+    }
+  }
+
+  public initFilterOptions (): void {
+    const utcStart = dayjs.utc().subtract(7, 'days').startOf('day')
+    const utcEnd = dayjs.utc().endOf('day')
+    this.clusteredRequest = {
+      start: utcStart.subtract(this.timezoneOffsetMins, 'minutes').toISOString(),
+      end: utcEnd.subtract(this.timezoneOffsetMins, 'minutes').toISOString(),
+      streams: [],
+      interval: '1h',
+      limit: 1000
+    }
+    this.dateValues = [utcStart.format('YYYY-MM-DD'), utcEnd.format('YYYY-MM-DD')]
   }
 
   public async getStreamsData (projectId?: string): Promise<void> {
@@ -123,6 +132,8 @@ export default class AnalyticsPage extends Vue {
       this.streamStatus = []
       this.streamsData = res.data
       this.timezone = res.data.length > 0 ? res.data[0].timezone : this.timezone
+      this.timezoneOffsetMins = dayjs.tz(Date.now(), this.timezone).utcOffset()
+      this.initFilterOptions()
       this.streamStatus.push({ value: 'all', label: this.$t('All streams'), checked: true })
       res.data.forEach((s: Stream) => { this.streamStatus.push({ value: s.id, label: s.name, checked: false }) })
       this.getSelectedStream()
@@ -139,7 +150,9 @@ export default class AnalyticsPage extends Vue {
     if (this.clusteredRequest !== undefined && this.streamsData !== undefined) {
       this.clusteredRequest.streams = this.streamsData.map(i => i.id)
     }
-    void this.getClusteredEventsData(this.clusteredRequest)
+    if (this.clusteredRequest !== undefined) {
+      void this.getClusteredEventsData(this.clusteredRequest)
+    }
   }
 
   async onUpdatePage (): Promise<void> {
@@ -171,7 +184,9 @@ export default class AnalyticsPage extends Vue {
       }
       this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.value)
     }
-    void this.getClusteredEventsData(this.clusteredRequest)
+    if (this.clusteredRequest !== undefined) {
+      void this.getClusteredEventsData(this.clusteredRequest)
+    }
   }
 
   public async getClusteredEventsData (request: ClusteredRequest): Promise<void> {
@@ -180,7 +195,10 @@ export default class AnalyticsPage extends Vue {
     d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
 
     return await ClusteredService.getClusteredDetections(request).then(res => {
-      this.clusteredData = res.data
+      this.clusteredData = res.data.map(i => {
+        i.timeBucket = dayjs.utc(i.timeBucket).add(this.timezoneOffsetMins, 'minutes').toISOString()
+        return i
+      })
       void this.buildGraph(this.clusteredData, request)
     }).catch(e => {
       console.error(this.$t('Can not getting clustered events'), e)
@@ -255,8 +273,9 @@ export default class AnalyticsPage extends Vue {
     if (clustereds.length === 0) {
       return
     }
-    const tz = this.timezone
-    const dateValue = this.getDateArray(dayjs.utc(request.start), dayjs.utc(request.end)).map(c => getDayAndMonth(c))
+    const utcGlobalStart = dayjs.utc(request.start).add(this.timezoneOffsetMins, 'minutes')
+    const utcGlobalEnd = dayjs.utc(request.end).add(this.timezoneOffsetMins, 'minutes')
+    const dateValue = this.getDateArray(utcGlobalStart, utcGlobalEnd).map(c => getDayAndMonth(c))
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
     const container = document.querySelector('#analytics-page') as HTMLElement
     const width = container.offsetWidth
@@ -297,11 +316,11 @@ export default class AnalyticsPage extends Vue {
       .style('opacity', 0)
 
     graph.selectAll()
-      .data(clustereds, function (d) { return `${getDayAndMonth(d?.timeBucket, tz)} + ':' + ${toTimeStr(d?.timeBucket ?? '', tz)}` })
+      .data(clustereds, function (d) { return `${getDayAndMonth(d?.timeBucket)} + ':' + ${toTimeStr(d?.timeBucket ?? '')}` })
       .enter()
       .append('rect')
-      .attr('x', function (d) { return x(getDayAndMonth(d?.timeBucket, tz) ?? '') ?? 100 })
-      .attr('y', function (d) { return y(toTimeStr(d?.timeBucket ?? '', tz) ?? '') ?? 100 })
+      .attr('x', function (d) { return x(getDayAndMonth(d?.timeBucket) ?? '') ?? 100 })
+      .attr('y', function (d) { return y(toTimeStr(d?.timeBucket ?? '') ?? '') ?? 100 })
       .attr('rx', 4)
       .attr('ry', 4)
       .attr('width', x.bandwidth())
@@ -318,7 +337,7 @@ export default class AnalyticsPage extends Vue {
       })
       .on('mouseover', (event, d) => {
         const eventText = `detection${d.aggregatedValue > 1 ? 's' : ''}`
-        tooltip.text(`${this.$t('Have')} ${d.aggregatedValue} ${eventText} ${this.$t('on')} ${getDayAndMonth(d?.timeBucket, tz)} ${toTimeStr(d?.timeBucket ?? '', tz)}`)
+        tooltip.text(`${d.aggregatedValue} ${eventText} ${this.$t('at')} ${getDayAndMonth(d?.timeBucket)} ${toTimeStr(d?.timeBucket ?? '')}`)
         tooltip.style('visibility', 'visible')
           .style('left', (event.pageX - 40).toString() + 'px')
           .style('top', (event.pageY - 45).toString() + 'px')
