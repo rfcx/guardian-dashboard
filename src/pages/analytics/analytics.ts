@@ -68,8 +68,8 @@ export default class AnalyticsPage extends Vue {
     this.emitDateChange()
 
     if (this.clusteredRequest !== undefined) {
-      this.clusteredRequest.start = `${this.dateValues[0]}T00:00:00.000Z`
-      this.clusteredRequest.end = `${this.dateValues[1]}T23:59:59.999Z`
+      this.clusteredRequest.start = new Date(new Date(this.dateValues[0]).setHours(0, 0, 0)).toISOString()
+      this.clusteredRequest.end = new Date(new Date(this.dateValues[1]).setHours(23, 59, 59)).toISOString()
     }
     void this.getClusteredEventsData(this.clusteredRequest)
   }
