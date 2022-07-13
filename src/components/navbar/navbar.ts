@@ -79,6 +79,7 @@ export default class NavigationBarComponent extends Vue {
   }
 
   public checkDefaultLanguage (): void {
+    if (localStorage === undefined) return
     const defaultLang = localStorage.getItem('GDLang')
     if (!defaultLang) return
     const l = this.languages.find(lang => {
