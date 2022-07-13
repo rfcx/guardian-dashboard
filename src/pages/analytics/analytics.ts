@@ -8,7 +8,7 @@ import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkb
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
-import { getDayAndMonth, getUTCDate, toTimeStr } from '@/utils'
+import { getDayAndMonth, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -258,7 +258,7 @@ export default class AnalyticsPage extends Vue {
       return
     }
     const tz = this.timezone
-    const dateValue = this.getDateArray(getUTCDate(request.start), getUTCDate(request.end)).map(c => getDayAndMonth(c))
+    const dateValue = this.getDateArray(dayjs.utc(request.start).toDate(), dayjs.utc(request.end).toDate()).map(c => getDayAndMonth(c))
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
     const container = document.querySelector('#analytics-page') as HTMLElement
     const width = container.offsetWidth
