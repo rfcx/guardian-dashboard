@@ -50,7 +50,7 @@ async function loginWithRedirect (o: RedirectLoginOptions): Promise<void> {
   return await client.loginWithRedirect(o)
 }
 
-async function getIdTokenClaims (o: GetIdTokenClaimsOptions): Promise<IdToken> {
+async function getIdTokenClaims (o: GetIdTokenClaimsOptions): Promise<IdToken | undefined> {
   return await client.getIdTokenClaims(o)
 }
 

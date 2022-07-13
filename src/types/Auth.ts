@@ -16,7 +16,7 @@ export interface Auth0Option {
   isAuthenticated: ComputedRef<boolean>
   loading: ComputedRef<boolean>
   user: ComputedRef<Auth0User>
-  getIdTokenClaims: (o?: GetIdTokenClaimsOptions) => Promise<IdToken>
+  getIdTokenClaims: (o?: GetIdTokenClaimsOptions) => Promise<IdToken | undefined>
   getTokenSilently: (o?: GetTokenSilentlyOptions) => Promise<string>
   getTokenWithPopup: (o?: GetTokenWithPopupOptions) => Promise<string>
   handleRedirectCallback: (o?: GetTokenWithPopupOptions) => Promise<string>
