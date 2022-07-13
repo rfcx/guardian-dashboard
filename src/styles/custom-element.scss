@@ -1,0 +1,99 @@
+/* Element plus class customization */
+
+@import "./variables";
+
+/* stylelint-disable selector-class-pattern */
+
+.el-date-editor {
+  &.el-input__wrapper {
+    box-shadow:0 0 0 0px !important;
+    height: 37px !important;
+  }
+}
+
+.el-date-range-picker {
+  --el-datepicker-border-color: #45485D !important;
+  --el-datepicker-inrange-hover-bg-color: #45485D !important;
+  --el-datepicker-active-color: #31984f !important;
+  --el-datepicker-hover-text-color: #31984f !important;
+  --el-datepicker-inrange-bg-color: #45485D !important;
+}
+
+.el-date-table td.today .el-date-table-cell__text {
+  color: #31984f;
+}
+
+.el-date-table td.today.end-date .el-date-table-cell__text {
+  color: white !important;
+}
+
+.el-picker-panel__icon-btn {
+  color: white !important;
+  &:hover {
+    color: #31984f !important;
+  }
+}
+
+.el-date-editor .el-range__icon svg,
+.el-date-editor .el-range-separator,
+.el-date-editor .el-range-input,
+.el-picker-panel,
+.el-date-table th {
+  color: white
+}
+
+.el-date-editor .el-range-input {
+  background-color: transparent !important;
+}
+
+.el-picker-panel,
+.el-picker-panel__sidebar {
+  background-color: $color-mirage-grey !important;
+}
+
+.el-popover .el-popper__arrow::before {
+  border: none !important;
+  background: $color-box-grey !important;
+}
+
+.el-input .el-input__inner {
+  border-radius: 0.25rem;
+  background: transparent !important;
+
+  &:focus-visible {
+    box-shadow: none;
+  }
+}
+
+.el-input .el-input__prefix {
+  left: 12px;
+}
+
+.el-input .el-input__suffix {
+  right: 12px;
+}
+
+.el-popper.is-light .el-popper__arrow::before {
+  background: $color-mirage-grey;
+}
+
+.el-select-dropdown__item {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.el-select-dropdown__item.is-disabled {
+  &:hover {
+    background-color: transparent !important;
+  }
+}
+
+.el-pagination {
+  --el-pagination-bg-color: trasparent;
+}
+
+.el-pagination button:disabled {
+  background-color: transparent;
+}
+
+/* stylelint-enable selector-class-pattern */

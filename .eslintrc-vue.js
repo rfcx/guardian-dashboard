@@ -7,6 +7,7 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-empty-function': 'off',
-    indent: 'off'
+    indent: 'off',
+    'vue/multi-word-component-names': 'off'
   }
 }

@@ -93,9 +93,19 @@ export const toTimeStr = (label: string, timezone: string = 'UTC'): string => {
   return dayjs(label).tz(timezone).format('HH:mm')
 }
 
+export const toIsoStr = (date: any): string => {
+  return dayjs(date).format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+}
+
 export const getLast6HoursLabel = (): string => {
   const now = Date.now().valueOf()
   return dayjs(now - 21600000).toISOString()
+}
+
+export const getUTCDate = (date: string): Date => {
+  const d = new Date(date)
+  const utcDate = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+  return utcDate
 }
 
 // ----------------------------

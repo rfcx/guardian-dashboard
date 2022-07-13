@@ -7,6 +7,9 @@ import ms from './ms.json'
 type MessageSchema = typeof en
 
 export const getLocalLang = (): string | null => {
+  if (typeof window === 'undefined' || localStorage === undefined) {
+    return 'en'
+  }
   const lang = localStorage.getItem('GDLang')
   if (lang !== null) {
     return lang

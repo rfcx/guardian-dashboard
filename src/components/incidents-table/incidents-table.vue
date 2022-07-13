@@ -3,7 +3,6 @@
     v-for="(incident, i) in itemsData"
     :key="i"
     :to="{ path: '/project/' + incident.projectId + '/incidents/'+ incident.id}"
-    tag="tr"
     class="grid grid-cols-5 gap-2 py-2 cursor-pointer hover:bg-gray-300 hover:bg-opacity-5 <sm:(flex flex-col)"
     :class="{ 'border-b border-gray-700': itemsData.length > 1 && i !== itemsData.length - 1 }"
   >

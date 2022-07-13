@@ -1,0 +1,30 @@
+<div id="analytics-page">
+  <div class="bg-gray overflow-hidden <sm:pt-0">
+    <div class="mt-1 flex flex-row items-center <sm:(flex-wrap flex-col items-start)">
+      <div class="mr-2">
+        <div class="block mr-2">
+          <dropdown-checkboxes :items="eventType" :dropdownValue="$t(getSelectedType())" :dropdownTitle="$t('Type')" @selected-item="toggleType"></dropdown-checkboxes>
+        </div>
+      </div>
+      <div class="mr-2">
+        <dropdown-checkboxes :items="streamStatus" :dropdownValue="$t(getSelectedStream())" :dropdownTitle="$t('Stream')" @selected-item="toggleStream"></dropdown-checkboxes>
+      </div>
+      <div class="block mr-2" v-if="dateValues">
+        <el-date-picker
+          class="relative w-full bg-steel-grey rounded-md"
+          v-model="dateValues"
+          type="daterange"
+          range-separator="To"
+          start-placeholder="Start date"
+          end-placeholder="End date"
+          value-format="YYYY-MM-DD"
+        />
+      </div>
+    </div>
+  </div>
+  <img v-if="isLoading" class="animate-spin bg-mirage-grey mt-50 h-10 w-10 mx-auto" src="/src/assets/spinner.svg">
+  <div class="mt-5" id="heatmapGraph"></div>
+  <div class= "mt-5 pl-11" v-if="showNumberOfEvents && !isLoading">{{ $t('Number of events') }}</div>
+  <div class="mt-1 pl-10" id="scaleOfHeatmapGraph"></div>
+  <div class= "mt-10" v-if="isHaveData && !isLoading">{{ $t('No data') }}</div>
+</div>

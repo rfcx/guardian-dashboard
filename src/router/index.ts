@@ -9,6 +9,7 @@ export const ROUTES_NAME = Object.freeze({
   index: 'index',
   incidents: 'incidents',
   incident: 'incident',
+  analytics: 'analytics',
   error: 'error',
   streams: 'streams'
 })
@@ -35,6 +36,12 @@ const routes: RouteRecordRaw[] = [
         path: '/project/:projectId/incidents/:id',
         name: ROUTES_NAME.incident,
         component: Pages.IncidentPage,
+        beforeEnter: [Auth0.routeGuard, selectProjectGuard]
+      },
+      {
+        path: '/project/:projectId/analytics',
+        name: ROUTES_NAME.analytics,
+        component: Pages.AnalyticsPage,
         beforeEnter: [Auth0.routeGuard, selectProjectGuard]
       },
       {
