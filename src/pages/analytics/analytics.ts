@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 import { Emit, Watch } from 'vue-property-decorator'
@@ -32,8 +32,8 @@ export default class AnalyticsPage extends Vue {
   public valueDate: Date[] = []
   public timezone = 'UTC'
   public clusteredRequest: ClusteredRequest = {
-    start: new Date(dayjs.utc().subtract(7, 'days').startOf('day').toDate().setHours(0, 0, 0)).toISOString(),
-    end: new Date(new Date().setHours(23, 59, 59)).toISOString(),
+    start: dayjs.utc().subtract(7, 'days').startOf('day').toISOString(),
+    end: dayjs.utc().endOf('day').toISOString(),
     streams: [],
     interval: '1h',
     limit: 1000
@@ -68,8 +68,8 @@ export default class AnalyticsPage extends Vue {
     this.emitDateChange()
 
     if (this.clusteredRequest !== undefined) {
-      this.clusteredRequest.start = new Date(new Date(this.dateValues[0]).setHours(0, 0, 0)).toISOString()
-      this.clusteredRequest.end = new Date(new Date(this.dateValues[1]).setHours(23, 59, 59)).toISOString()
+      this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').toISOString()
+      this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').toISOString()
     }
     void this.getClusteredEventsData(this.clusteredRequest)
   }
@@ -240,13 +240,11 @@ export default class AnalyticsPage extends Vue {
       .style('opacity', 0.8)
   }
 
-  public getDateArray = function (start: Date, end: Date): Date[] {
+  public getDateArray = function (start: Dayjs, end: Dayjs): Date[] {
     const arr = []
-    let loop = start
-    while (loop <= end) {
-      arr.push(loop)
-      const newDate = loop.setDate(loop.getDate() + 1)
-      loop = new Date(newDate)
+    while (start.toDate() <= end.toDate()) {
+      arr.push(start.toDate())
+      start = start.add(1, 'day')
     }
     return arr
   }
@@ -258,7 +256,7 @@ export default class AnalyticsPage extends Vue {
       return
     }
     const tz = this.timezone
-    const dateValue = this.getDateArray(dayjs.utc(request.start).toDate(), dayjs.utc(request.end).toDate()).map(c => getDayAndMonth(c))
+    const dateValue = this.getDateArray(dayjs.utc(request.start), dayjs.utc(request.end)).map(c => getDayAndMonth(c))
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
     const container = document.querySelector('#analytics-page') as HTMLElement
     const width = container.offsetWidth
