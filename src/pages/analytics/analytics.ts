@@ -288,11 +288,9 @@ export default class AnalyticsPage extends Vue {
     graph.append('g')
       .call(d3.axisLeft(y))
 
-    const maxValue = Math.max(...clustereds.map(function (c) { return c.aggregatedValue }))
-
     const myColor = d3.scaleLinear<string, number>()
       .range(['#ffffff', '#015a32'])
-      .domain([1, maxValue > 100 ? this.roundnum(maxValue) : 100])
+      .domain([1, 100])
 
     const tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
@@ -328,7 +326,7 @@ export default class AnalyticsPage extends Vue {
           .style('top', (event.pageY - 45).toString() + 'px')
       })
 
-    void this.buildScaleGraph(maxValue > 100 ? this.roundnum(maxValue) : 100)
+    void this.buildScaleGraph(100)
   }
 
   public generateTimes (startHour: number, stopHour: number): string[] {
