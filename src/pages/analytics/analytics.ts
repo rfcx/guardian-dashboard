@@ -32,8 +32,8 @@ export default class AnalyticsPage extends Vue {
   public valueDate: Date[] = []
   public timezone = 'UTC'
   public clusteredRequest: ClusteredRequest = {
-    start: dayjs.utc().subtract(7, 'days').startOf('day').toISOString(),
-    end: dayjs.utc().endOf('day').toISOString(),
+    start: new Date(dayjs.utc().subtract(7, 'days').startOf('day').toDate().setHours(0, 0, 0)).toISOString(),
+    end: new Date(new Date().setHours(23, 59, 59)).toISOString(),
     streams: [],
     interval: '1h',
     limit: 1000
