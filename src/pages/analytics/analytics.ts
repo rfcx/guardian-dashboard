@@ -12,6 +12,7 @@ import { getDayAndMonth, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 dayjs.extend(utc as any)
 
 @Options({
