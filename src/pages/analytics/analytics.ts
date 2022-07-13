@@ -30,6 +30,7 @@ export default class AnalyticsPage extends Vue {
   public showNumberOfEvents = false
   public selectedStream: string | undefined
   public valueDate: Date[] = []
+  public timezone = 'UTC'
   public clusteredRequest: ClusteredRequest = {
     start: dayjs.utc().subtract(7, 'days').startOf('day').toISOString(),
     end: dayjs.utc().endOf('day').toISOString(),
@@ -121,6 +122,7 @@ export default class AnalyticsPage extends Vue {
       this.streamsData = []
       this.streamStatus = []
       this.streamsData = res.data
+      this.timezone = res.data.length > 0 ? res.data[0].timezone : this.timezone
       this.streamStatus.push({ value: 'all', label: this.$t('All streams'), checked: true })
       res.data.forEach((s: Stream) => { this.streamStatus.push({ value: s.id, label: s.name, checked: false }) })
       this.getSelectedStream()
@@ -255,6 +257,7 @@ export default class AnalyticsPage extends Vue {
     if (clustereds.length === 0) {
       return
     }
+    const tz = this.timezone
     const dateValue = this.getDateArray(getUTCDate(request.start), getUTCDate(request.end)).map(c => getDayAndMonth(c))
     const margin = { top: 30, right: 30, bottom: 30, left: 50 }
     const container = document.querySelector('#analytics-page') as HTMLElement
@@ -298,11 +301,11 @@ export default class AnalyticsPage extends Vue {
       .style('opacity', 0)
 
     graph.selectAll()
-      .data(clustereds, function (d) { return `${getDayAndMonth(d?.timeBucket)} + ':' + ${toTimeStr(d?.timeBucket ?? '')}` })
+      .data(clustereds, function (d) { return `${getDayAndMonth(d?.timeBucket, tz)} + ':' + ${toTimeStr(d?.timeBucket ?? '', tz)}` })
       .enter()
       .append('rect')
-      .attr('x', function (d) { return x(getDayAndMonth(d?.timeBucket) ?? '') ?? 100 })
-      .attr('y', function (d) { return y(toTimeStr(d?.timeBucket ?? '') ?? '') ?? 100 })
+      .attr('x', function (d) { return x(getDayAndMonth(d?.timeBucket, tz) ?? '') ?? 100 })
+      .attr('y', function (d) { return y(toTimeStr(d?.timeBucket ?? '', tz) ?? '') ?? 100 })
       .attr('rx', 4)
       .attr('ry', 4)
       .attr('width', x.bandwidth())
@@ -319,7 +322,7 @@ export default class AnalyticsPage extends Vue {
       })
       .on('mouseover', (event, d) => {
         const eventText = `detection${d.aggregatedValue > 1 ? 's' : ''}`
-        tooltip.text(`${this.$t('Have')} ${d.aggregatedValue} ${eventText} ${this.$t('on')} ${getDayAndMonth(d?.timeBucket)} ${toTimeStr(d?.timeBucket ?? '')}`)
+        tooltip.text(`${this.$t('Have')} ${d.aggregatedValue} ${eventText} ${this.$t('on')} ${getDayAndMonth(d?.timeBucket, tz)} ${toTimeStr(d?.timeBucket ?? '', tz)}`)
         tooltip.style('visibility', 'visible')
           .style('left', (event.pageX - 40).toString() + 'px')
           .style('top', (event.pageY - 45).toString() + 'px')
