@@ -129,12 +129,12 @@
   "Closed on": "Tutup pada",
   "Language selector": "Pemilih bahasa",
   "Selected language": "Terpilih bahasa",
-  "Have": "Memiliki",
-  "on": "pada",
+  "detection": "deteksi",
+  "at": "di",
   "Analytics": "Analitik",
   "Type": "Jenis",
   "All types": "Semua jenis",
-  "All Stream:": "Semua arus",
+  "All streams": "Semua arus",
   "Number of events": "Jumlah acara",
   "No data": "Tidak ada data"
 }

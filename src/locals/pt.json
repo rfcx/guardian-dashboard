@@ -133,5 +133,13 @@
   "Closed on": "Fechado em",
   "Language selector": "Seletor de idioma",
   "Selected language": "Idioma selecionado",
-  "Time range of events": "Período de eventos"
+  "Time range of events": "Período de eventos",
+  "detection": "detecção",
+  "at": "em",
+  "Analytics": "Análise",
+  "Type": "Tipo",
+  "All types": "Todos os tipos",
+  "All streams": "Todos os streams",
+  "Number of events": "Número de eventos",
+  "No data": "Sem dados"
 }
