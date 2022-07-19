@@ -59,11 +59,40 @@ export default class AnalyticsPage extends Vue {
   @Watch('dateValues')
   onDateRangeChange (): void {
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
-      this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-      this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-    }
-    if (this.clusteredRequest !== undefined) {
-      void this.getClusteredEventsData(this.clusteredRequest)
+      const startMonth = dayjs(this.dateValues[0]).month()
+      const endMonth = dayjs(this.dateValues[1]).month()
+      d3.select('#heatmapGraph').selectAll('*').remove()
+      d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
+      const requests: ClusteredRequest[] = []
+
+      for (let index = startMonth; index <= endMonth; index++) {
+        const clustered: ClusteredRequest = {
+          start: '',
+          end: '',
+          streams: this.clusteredRequest.streams,
+          classifications: this.clusteredRequest.classifications,
+          interval: '1h',
+          limit: 1000
+        }
+        if (startMonth === endMonth) {
+          clustered.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          clustered.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        } else if (index === startMonth) {
+          clustered.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          clustered.end = dayjs.utc().month(index).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        } else if (index === endMonth) {
+          clustered.start = dayjs.utc().month(index).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          clustered.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        } else {
+          clustered.start = dayjs.utc().month(index).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          clustered.end = dayjs.utc().month(index).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        }
+        requests.push(clustered)
+      }
+
+      requests.forEach(request => {
+        void this.getClusteredEventsData(request)
+      })
     }
   }
 
@@ -192,8 +221,6 @@ export default class AnalyticsPage extends Vue {
 
   public async getClusteredEventsData (request: ClusteredRequest): Promise<void> {
     this.isLoading = true
-    d3.select('#heatmapGraph').selectAll('*').remove()
-    d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
 
     return await ClusteredService.getClusteredDetections(request).then(res => {
       this.clusteredData = res.data.map(i => {
