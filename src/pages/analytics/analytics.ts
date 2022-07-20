@@ -61,37 +61,33 @@ export default class AnalyticsPage extends Vue {
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
       const startMonth = dayjs(this.dateValues[0]).month()
       const endMonth = dayjs(this.dateValues[1]).month()
+      const startYear = dayjs(this.dateValues[0]).year()
+      const endYear = dayjs(this.dateValues[1]).year()
       d3.select('#heatmapGraph').selectAll('*').remove()
-      d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
-      const requests: ClusteredRequest[] = []
 
-      for (let index = startMonth; index <= endMonth; index++) {
-        const clustered: ClusteredRequest = {
-          start: '',
-          end: '',
-          streams: this.clusteredRequest.streams,
-          classifications: this.clusteredRequest.classifications,
-          interval: '1h',
-          limit: 1000
-        }
-        if (startMonth === endMonth) {
-          clustered.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-          clustered.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-        } else if (index === startMonth) {
-          clustered.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-          clustered.end = dayjs.utc().month(index).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-        } else if (index === endMonth) {
-          clustered.start = dayjs.utc().month(index).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-          clustered.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+      const requests: ClusteredRequest[] = []
+      for (let index = startYear; index <= endYear; index++) {
+        if (startYear === endYear) {
+          this.setClusteredRequest(startMonth, endMonth, index).forEach(request => {
+            requests.push(request)
+          })
+        } else if (index === startYear) {
+          this.setClusteredRequest(startMonth, 11, index).forEach(request => {
+            requests.push(request)
+          })
+        } else if (index === endYear) {
+          this.setClusteredRequest(0, endMonth, index).forEach(request => {
+            requests.push(request)
+          })
         } else {
-          clustered.start = dayjs.utc().month(index).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-          clustered.end = dayjs.utc().month(index).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          this.setClusteredRequest(0, 11, index).forEach(request => {
+            requests.push(request)
+          })
         }
-        requests.push(clustered)
       }
 
-      requests.forEach(request => {
-        void this.getClusteredEventsData(request)
+      requests.forEach((request, index) => {
+        void this.getClusteredEventsData(request, index === 0)
       })
     }
   }
@@ -112,6 +108,38 @@ export default class AnalyticsPage extends Vue {
     }
   }
 
+  public setClusteredRequest (startMonth: number, endMonth: number, year: number): ClusteredRequest[] {
+    if (!this.clusteredRequest) return []
+    if (!this.dateValues) return []
+
+    const requests: ClusteredRequest[] = []
+    for (let index = startMonth; index <= endMonth; index++) {
+      const clustered: ClusteredRequest = {
+        start: '',
+        end: '',
+        streams: this.clusteredRequest.streams,
+        classifications: this.clusteredRequest.classifications,
+        interval: '1h',
+        limit: 1000
+      }
+      if (startMonth === endMonth) {
+        clustered.start = dayjs.utc(this.dateValues[0]).year(year).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        clustered.end = dayjs.utc(this.dateValues[1]).year(year).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+      } else if (index === startMonth) {
+        clustered.start = dayjs.utc(this.dateValues[0]).year(year).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        clustered.end = dayjs.utc().month(index).year(year).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+      } else if (index === endMonth) {
+        clustered.start = dayjs.utc().month(index).year(year).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        clustered.end = dayjs.utc(this.dateValues[1]).year(year).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+      } else {
+        clustered.start = dayjs.utc().month(index).year(year).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        clustered.end = dayjs.utc().month(index).year(year).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+      }
+      requests.push(clustered)
+    }
+    return requests
+  }
+
   public getSelectedType (): string | undefined {
     const s = this.eventType.find(e => e.checked)
     return s?.label
@@ -125,7 +153,7 @@ export default class AnalyticsPage extends Vue {
 
       if (this.clusteredRequest !== undefined) {
         this.clusteredRequest.classifications = types
-        void this.getClusteredEventsData(this.clusteredRequest)
+        void this.getClusteredEventsData(this.clusteredRequest, true)
       }
       return
     } else {
@@ -133,7 +161,7 @@ export default class AnalyticsPage extends Vue {
     }
     if (this.clusteredRequest !== undefined) {
       this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.value)
-      void this.getClusteredEventsData(this.clusteredRequest)
+      void this.getClusteredEventsData(this.clusteredRequest, true)
     }
   }
 
@@ -181,7 +209,7 @@ export default class AnalyticsPage extends Vue {
       this.clusteredRequest.streams = this.streamsData.map(i => i.id)
     }
     if (this.clusteredRequest !== undefined) {
-      void this.getClusteredEventsData(this.clusteredRequest)
+      void this.getClusteredEventsData(this.clusteredRequest, true)
     }
   }
 
@@ -207,7 +235,7 @@ export default class AnalyticsPage extends Vue {
         streams.shift()
 
         this.clusteredRequest.streams = streams
-        void this.getClusteredEventsData(this.clusteredRequest)
+        void this.getClusteredEventsData(this.clusteredRequest, true)
         return
       } else {
         this.streamStatus[0].checked = false
@@ -215,11 +243,11 @@ export default class AnalyticsPage extends Vue {
       this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.value)
     }
     if (this.clusteredRequest !== undefined) {
-      void this.getClusteredEventsData(this.clusteredRequest)
+      void this.getClusteredEventsData(this.clusteredRequest, true)
     }
   }
 
-  public async getClusteredEventsData (request: ClusteredRequest): Promise<void> {
+  public async getClusteredEventsData (request: ClusteredRequest, reset: boolean): Promise<void> {
     this.isLoading = true
 
     return await ClusteredService.getClusteredDetections(request).then(res => {
@@ -227,6 +255,7 @@ export default class AnalyticsPage extends Vue {
         i.timeBucket = dayjs.utc(i.timeBucket).add(this.timezoneOffsetMins, 'minutes').toISOString()
         return i
       })
+      if (reset) d3.select('#heatmapGraph').selectAll('*').remove()
       void this.buildGraph(this.clusteredData, request)
     }).catch(e => {
       console.error(this.$t('Can not getting clustered events'), e)
@@ -247,6 +276,8 @@ export default class AnalyticsPage extends Vue {
   }
 
   public buildScaleGraph (max: number): void {
+    d3.select('#scaleOfHeatmapGraph').selectAll('*').remove()
+
     const myColor = d3.scaleLinear<string, number>()
       .range(['#ffffff', '#015a32'])
       .domain([1, max])
