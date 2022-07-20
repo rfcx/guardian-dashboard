@@ -8,7 +8,7 @@ import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkb
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
-import { getDayAndMonth, toTimeStr } from '@/utils'
+import { getDayAndMonth, toMonthYearStr, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -69,6 +69,7 @@ export default class AnalyticsPage extends Vue {
       for (let index = startYear; index <= endYear; index++) {
         if (startYear === endYear) {
           this.setClusteredRequest(startMonth, endMonth, index).forEach(request => {
+            console.log(request)
             requests.push(request)
           })
         } else if (index === startYear) {
@@ -327,6 +328,18 @@ export default class AnalyticsPage extends Vue {
   }
 
   public async buildGraph (clustereds: Clustered[], request: ClusteredRequest): Promise<void> {
+    const el = document.createElement('div')
+    el.classList.add('pl-11')
+    el.classList.add('mt-5')
+    el.classList.add('font-semibold')
+    let title = this.$t(toMonthYearStr(request.start))
+    if (clustereds.length === 0) {
+      title = this.$t(toMonthYearStr(request.start)) + ' - ' + this.$t('No data')
+    }
+    el.innerHTML = '<span>' + title + '</span>'
+    const box = document.getElementById('heatmapGraph')
+    box?.appendChild(el)
+
     this.showNumberOfEvents = clustereds.length !== 0
     this.isHaveData = clustereds.length === 0
     if (clustereds.length === 0) {
@@ -335,7 +348,7 @@ export default class AnalyticsPage extends Vue {
     const utcGlobalStart = dayjs.utc(request.start).add(this.timezoneOffsetMins, 'minutes')
     const utcGlobalEnd = dayjs.utc(request.end).add(this.timezoneOffsetMins, 'minutes')
     const dateValue = this.getDateArray(utcGlobalStart, utcGlobalEnd).map(c => getDayAndMonth(c))
-    const margin = { top: 30, right: 30, bottom: 30, left: 50 }
+    const margin = { top: 20, right: 30, bottom: 30, left: 50 }
     const container = document.querySelector('#analytics-page') as HTMLElement
     const width = container.offsetWidth
     const height = 600 - margin.top - margin.bottom
