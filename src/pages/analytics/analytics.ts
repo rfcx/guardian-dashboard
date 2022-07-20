@@ -42,9 +42,9 @@ export default class AnalyticsPage extends Vue {
     { value: 'chainsaw', label: 'Chainsaw', checked: false },
     { value: 'vehicle', label: 'Vehicle', checked: false },
     { value: 'gunshot', label: 'Gunshot', checked: false },
-    { value: 'human voice', label: 'Human voice', checked: false },
-    { value: 'bark', label: 'Bark', checked: false },
-    { value: 'elephant', label: 'Elephant', checked: false },
+    { value: 'humanvoice', label: 'Human voice', checked: false },
+    { value: 'dog_bark', label: 'Bark', checked: false },
+    { value: 'elephas_maximus', label: 'Elephant', checked: false },
     { value: 'fire', label: 'Fire', checked: false }
   ]
 
