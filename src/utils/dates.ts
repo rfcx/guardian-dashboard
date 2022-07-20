@@ -77,6 +77,10 @@ export const getDayAndMonth = (date: any, timezone: string = 'UTC'): string => {
   return `${item.substring(0, (item.length - 3))}${t(item.substr(item.length - 3))}`
 }
 
+export const getDay = (date: any, timezone: string = 'UTC'): string => {
+  return dayjs(date).tz(timezone).format('DD')
+}
+
 export const toDateStr = (date: any, timezone: string = 'UTC'): string => {
   const day = dayjs(date).tz(timezone).format('DD')
   const month = t(dayjs(date).tz(timezone).format('MMM'))

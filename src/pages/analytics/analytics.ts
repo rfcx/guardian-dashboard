@@ -8,7 +8,7 @@ import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkb
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
-import { getDayAndMonth, toMonthYearStr, toTimeStr } from '@/utils'
+import { getDayAndMonth, toMonthYearStr, toTimeStr, getDay } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -347,7 +347,7 @@ export default class AnalyticsPage extends Vue {
     }
     const utcGlobalStart = dayjs.utc(request.start).add(this.timezoneOffsetMins, 'minutes')
     const utcGlobalEnd = dayjs.utc(request.end).add(this.timezoneOffsetMins, 'minutes')
-    const dateValue = this.getDateArray(utcGlobalStart, utcGlobalEnd).map(c => getDayAndMonth(c))
+    const dateValue = this.getDateArray(utcGlobalStart, utcGlobalEnd).map(c => getDay(c))
     const margin = { top: 20, right: 30, bottom: 30, left: 50 }
     const container = document.querySelector('#analytics-page') as HTMLElement
     const width = container.offsetWidth
@@ -388,10 +388,10 @@ export default class AnalyticsPage extends Vue {
       .style('opacity', 0)
 
     graph.selectAll()
-      .data(clustereds, function (d) { return `${getDayAndMonth(d?.timeBucket)} + ':' + ${toTimeStr(d?.timeBucket ?? '')}` })
+      .data(clustereds, function (d) { return `${getDay(d?.timeBucket)} + ':' + ${toTimeStr(d?.timeBucket ?? '')}` })
       .enter()
       .append('rect')
-      .attr('x', function (d) { return x(getDayAndMonth(d?.timeBucket) ?? '') ?? 100 })
+      .attr('x', function (d) { return x(getDay(d?.timeBucket) ?? '') ?? 100 })
       .attr('y', function (d) { return y(toTimeStr(d?.timeBucket ?? '') ?? '') ?? 100 })
       .attr('rx', 4)
       .attr('ry', 4)
