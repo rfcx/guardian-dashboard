@@ -8,7 +8,7 @@ import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkb
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
-import { getDayAndMonth, toMonthYearStr, toTimeStr, getDay } from '@/utils'
+import { getDay, getDayAndMonth, toMonthYearStr, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -59,37 +59,9 @@ export default class AnalyticsPage extends Vue {
   @Watch('dateValues')
   onDateRangeChange (): void {
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
-      const startMonth = dayjs(this.dateValues[0]).month()
-      const endMonth = dayjs(this.dateValues[1]).month()
-      const startYear = dayjs(this.dateValues[0]).year()
-      const endYear = dayjs(this.dateValues[1]).year()
-      d3.select('#heatmapGraph').selectAll('*').remove()
-
-      const requests: ClusteredRequest[] = []
-      for (let index = startYear; index <= endYear; index++) {
-        if (startYear === endYear) {
-          this.setClusteredRequest(startMonth, endMonth, index).forEach(request => {
-            console.log(request)
-            requests.push(request)
-          })
-        } else if (index === startYear) {
-          this.setClusteredRequest(startMonth, 11, index).forEach(request => {
-            requests.push(request)
-          })
-        } else if (index === endYear) {
-          this.setClusteredRequest(0, endMonth, index).forEach(request => {
-            requests.push(request)
-          })
-        } else {
-          this.setClusteredRequest(0, 11, index).forEach(request => {
-            requests.push(request)
-          })
-        }
-      }
-
-      requests.forEach((request, index) => {
-        void this.getClusteredEventsData(request, index === 0)
-      })
+      this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+      this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+      this.checkRequestStartEnd()
     }
   }
 
@@ -109,6 +81,40 @@ export default class AnalyticsPage extends Vue {
     }
   }
 
+  public checkRequestStartEnd (): void {
+    if (this.dateValues === undefined) return
+    const startMonth = dayjs(this.dateValues[0]).month()
+    const endMonth = dayjs(this.dateValues[1]).month()
+    const startYear = dayjs(this.dateValues[0]).year()
+    const endYear = dayjs(this.dateValues[1]).year()
+
+    const requests: ClusteredRequest[] = []
+    for (let index = startYear; index <= endYear; index++) {
+      if (startYear === endYear) {
+        this.setClusteredRequest(startMonth, endMonth, index).forEach(request => {
+          console.log(request)
+          requests.push(request)
+        })
+      } else if (index === startYear) {
+        this.setClusteredRequest(startMonth, 11, index).forEach(request => {
+          requests.push(request)
+        })
+      } else if (index === endYear) {
+        this.setClusteredRequest(0, endMonth, index).forEach(request => {
+          requests.push(request)
+        })
+      } else {
+        this.setClusteredRequest(0, 11, index).forEach(request => {
+          requests.push(request)
+        })
+      }
+    }
+
+    requests.forEach((request, index) => {
+      void this.getClusteredEventsData(request, index === 0)
+    })
+  }
+
   public setClusteredRequest (startMonth: number, endMonth: number, year: number): ClusteredRequest[] {
     if (!this.clusteredRequest) return []
     if (!this.dateValues) return []
@@ -116,8 +122,8 @@ export default class AnalyticsPage extends Vue {
     const requests: ClusteredRequest[] = []
     for (let index = startMonth; index <= endMonth; index++) {
       const clustered: ClusteredRequest = {
-        start: '',
-        end: '',
+        start: this.clusteredRequest.start,
+        end: this.clusteredRequest.end,
         streams: this.clusteredRequest.streams,
         classifications: this.clusteredRequest.classifications,
         interval: '1h',
@@ -154,7 +160,7 @@ export default class AnalyticsPage extends Vue {
 
       if (this.clusteredRequest !== undefined) {
         this.clusteredRequest.classifications = types
-        void this.getClusteredEventsData(this.clusteredRequest, true)
+        this.checkRequestStartEnd()
       }
       return
     } else {
@@ -162,7 +168,7 @@ export default class AnalyticsPage extends Vue {
     }
     if (this.clusteredRequest !== undefined) {
       this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.value)
-      void this.getClusteredEventsData(this.clusteredRequest, true)
+      this.checkRequestStartEnd()
     }
   }
 
@@ -210,7 +216,7 @@ export default class AnalyticsPage extends Vue {
       this.clusteredRequest.streams = this.streamsData.map(i => i.id)
     }
     if (this.clusteredRequest !== undefined) {
-      void this.getClusteredEventsData(this.clusteredRequest, true)
+      this.checkRequestStartEnd()
     }
   }
 
@@ -236,7 +242,7 @@ export default class AnalyticsPage extends Vue {
         streams.shift()
 
         this.clusteredRequest.streams = streams
-        void this.getClusteredEventsData(this.clusteredRequest, true)
+        this.checkRequestStartEnd()
         return
       } else {
         this.streamStatus[0].checked = false
@@ -244,7 +250,7 @@ export default class AnalyticsPage extends Vue {
       this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.value)
     }
     if (this.clusteredRequest !== undefined) {
-      void this.getClusteredEventsData(this.clusteredRequest, true)
+      this.checkRequestStartEnd()
     }
   }
 
@@ -256,7 +262,10 @@ export default class AnalyticsPage extends Vue {
         i.timeBucket = dayjs.utc(i.timeBucket).add(this.timezoneOffsetMins, 'minutes').toISOString()
         return i
       })
-      if (reset) d3.select('#heatmapGraph').selectAll('*').remove()
+      if (reset) {
+        d3.select('#heatmapGraph').selectAll('*').remove()
+      }
+
       void this.buildGraph(this.clusteredData, request)
     }).catch(e => {
       console.error(this.$t('Can not getting clustered events'), e)
@@ -329,7 +338,6 @@ export default class AnalyticsPage extends Vue {
 
   public async buildGraph (clustereds: Clustered[], request: ClusteredRequest): Promise<void> {
     const el = document.createElement('div')
-    el.classList.add('pl-11')
     el.classList.add('mt-5')
     el.classList.add('font-semibold')
     let title = this.$t(toMonthYearStr(request.start))
