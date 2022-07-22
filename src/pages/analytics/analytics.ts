@@ -29,7 +29,6 @@ export default class AnalyticsPage extends Vue {
   public isLoading = true
   public streamsData: Stream[] | undefined
   public streamStatus: DropdownItem[] = []
-  public isHaveData = false
   public showNumberOfEvents = false
   public selectedStream: string | undefined
   public valueDate: Date[] = []
@@ -61,7 +60,7 @@ export default class AnalyticsPage extends Vue {
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
       this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
       this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-      this.checkRequestStartEnd()
+      void this.checkRequestStartEnd()
     }
   }
 
@@ -74,14 +73,13 @@ export default class AnalyticsPage extends Vue {
     return {
       eventType: this.eventType,
       streamStatus: this.streamStatus,
-      isHaveData: this.isHaveData,
       showNumberOfEvents: this.showNumberOfEvents,
       dateValues: this.dateValues,
       t: useI18n()
     }
   }
 
-  public checkRequestStartEnd (): void {
+  async checkRequestStartEnd (): Promise<void> {
     if (this.dateValues === undefined) return
     const startMonth = dayjs(this.dateValues[0]).month()
     const endMonth = dayjs(this.dateValues[1]).month()
@@ -92,7 +90,6 @@ export default class AnalyticsPage extends Vue {
     for (let index = startYear; index <= endYear; index++) {
       if (startYear === endYear) {
         this.setClusteredRequest(startMonth, endMonth, index).forEach(request => {
-          console.log(request)
           requests.push(request)
         })
       } else if (index === startYear) {
@@ -110,9 +107,9 @@ export default class AnalyticsPage extends Vue {
       }
     }
 
-    requests.forEach((request, index) => {
-      void this.getClusteredEventsData(request, index === 0)
-    })
+    for (const request of requests) {
+      await this.getClusteredEventsData(request, requests.indexOf(request) === 0)
+    }
   }
 
   public setClusteredRequest (startMonth: number, endMonth: number, year: number): ClusteredRequest[] {
@@ -160,7 +157,7 @@ export default class AnalyticsPage extends Vue {
 
       if (this.clusteredRequest !== undefined) {
         this.clusteredRequest.classifications = types
-        this.checkRequestStartEnd()
+        void this.checkRequestStartEnd()
       }
       return
     } else {
@@ -168,7 +165,7 @@ export default class AnalyticsPage extends Vue {
     }
     if (this.clusteredRequest !== undefined) {
       this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.value)
-      this.checkRequestStartEnd()
+      void this.checkRequestStartEnd()
     }
   }
 
@@ -216,7 +213,7 @@ export default class AnalyticsPage extends Vue {
       this.clusteredRequest.streams = this.streamsData.map(i => i.id)
     }
     if (this.clusteredRequest !== undefined) {
-      this.checkRequestStartEnd()
+      void this.checkRequestStartEnd()
     }
   }
 
@@ -242,7 +239,7 @@ export default class AnalyticsPage extends Vue {
         streams.shift()
 
         this.clusteredRequest.streams = streams
-        this.checkRequestStartEnd()
+        void this.checkRequestStartEnd()
         return
       } else {
         this.streamStatus[0].checked = false
@@ -250,7 +247,7 @@ export default class AnalyticsPage extends Vue {
       this.clusteredRequest.streams = this.streamStatus.filter(s => s.checked).map(i => i.value)
     }
     if (this.clusteredRequest !== undefined) {
-      this.checkRequestStartEnd()
+      void this.checkRequestStartEnd()
     }
   }
 
@@ -347,9 +344,7 @@ export default class AnalyticsPage extends Vue {
     el.innerHTML = '<span>' + title + '</span>'
     const box = document.getElementById('heatmapGraph')
     box?.appendChild(el)
-
     this.showNumberOfEvents = clustereds.length !== 0
-    this.isHaveData = clustereds.length === 0
     if (clustereds.length === 0) {
       return
     }
