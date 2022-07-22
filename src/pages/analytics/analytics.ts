@@ -266,7 +266,7 @@ export default class AnalyticsPage extends Vue {
         d3.select('#heatmapGraph').selectAll('*').remove()
       }
 
-      void this.buildGraph(this.clusteredData, request)
+      this.buildGraph(this.clusteredData, request)
     }).catch(e => {
       console.error(this.$t('Can not getting clustered events'), e)
     }).finally(() => {
@@ -336,7 +336,7 @@ export default class AnalyticsPage extends Vue {
     return arr
   }
 
-  public async buildGraph (clustereds: Clustered[], request: ClusteredRequest): Promise<void> {
+  public buildGraph (clustereds: Clustered[], request: ClusteredRequest): void {
     const el = document.createElement('div')
     el.classList.add('mt-5')
     el.classList.add('font-semibold')
