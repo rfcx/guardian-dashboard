@@ -106,7 +106,7 @@ export default class AnalyticsPage extends Vue {
         })
       }
     }
-
+    d3.select('#heatmapGraph').selectAll('*').remove()
     for (const request of requests) {
       await this.getClusteredEventsData(request, requests.indexOf(request) === 0)
     }
