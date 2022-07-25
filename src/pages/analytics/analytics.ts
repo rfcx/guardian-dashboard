@@ -51,8 +51,9 @@ export default class AnalyticsPage extends Vue {
 
   dateValues: [string, string] | undefined
 
-  mounted (): void {
+  async mounted (): Promise<void> {
     void this.onUpdatePage()
+    this.buildScaleGraph(100)
   }
 
   @Watch('dateValues')
@@ -417,8 +418,6 @@ export default class AnalyticsPage extends Vue {
           .style('left', (event.pageX - 40).toString() + 'px')
           .style('top', (event.pageY - 45).toString() + 'px')
       })
-
-    void this.buildScaleGraph(100)
   }
 
   public generateTimes (startHour: number, stopHour: number): string[] {
