@@ -67,6 +67,8 @@ export default class AnalyticsPage extends Vue {
 
   @Watch('$route.params')
   onRouteParamsChange (): void {
+    d3.select('#heatmapGraph').selectAll('*').remove()
+    this.eventType.forEach((e: DropdownItem) => { e.checked = (e.value === 'all') })
     void this.onUpdatePage()
   }
 
