@@ -347,6 +347,10 @@ export default class AnalyticsPage extends Vue {
     void this.buildScaleGraph(100)
   }
 
+  async downloadCsv (): Promise<void> {
+    console.log('downloadCsv')
+  }
+
   public generateTimes (startHour: number, stopHour: number): string[] {
     const hrs = []
     for (let h = startHour; h < stopHour; ++h) {
