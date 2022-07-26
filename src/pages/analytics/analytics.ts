@@ -128,14 +128,30 @@ export default class AnalyticsPage extends Vue {
         limit: 1000
       }
       if (startMonth === endMonth) {
-        clustered.start = dayjs.utc(this.dateValues[0]).year(year).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-        clustered.end = dayjs.utc(this.dateValues[1]).year(year).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        if (dayjs(this.startDateOfFilter()).year() === year) {
+          clustered.start = this.startDateOfFilter()
+        } else {
+          clustered.start = this.startOfMonth(startMonth, year)
+        }
+        if (dayjs(this.endDateOfFilter()).year() === year) {
+          clustered.end = this.endDateOfFilter()
+        } else {
+          clustered.end = this.endOfMonth(endMonth, year)
+        }
       } else if (index === startMonth) {
-        clustered.start = dayjs.utc(this.dateValues[0]).year(year).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-        clustered.end = dayjs.utc().month(index).year(year).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        if (dayjs(this.startDateOfFilter()).year() === year) {
+          clustered.start = this.startDateOfFilter()
+        } else {
+          clustered.start = this.startOfMonth(startMonth, year)
+        }
+        clustered.end = this.endOfMonth(index, year)
       } else if (index === endMonth) {
-        clustered.start = dayjs.utc().month(index).year(year).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-        clustered.end = dayjs.utc(this.dateValues[1]).year(year).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+        clustered.start = this.startOfMonth(index, year)
+        if (dayjs(this.endDateOfFilter()).year() === year) {
+          clustered.end = this.endDateOfFilter()
+        } else {
+          clustered.end = this.endOfMonth(endMonth, year)
+        }
       } else {
         clustered.start = dayjs.utc().month(index).year(year).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
         clustered.end = dayjs.utc().month(index).year(year).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
@@ -143,6 +159,24 @@ export default class AnalyticsPage extends Vue {
       requests.push(clustered)
     }
     return requests
+  }
+
+  public startOfMonth (monthNum: number, yearNum: number): string {
+    return dayjs.utc().month(monthNum).year(yearNum).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+  }
+
+  public endOfMonth (monthNum: number, yearNum: number): string {
+    return dayjs.utc().month(monthNum).year(yearNum).endOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+  }
+
+  public startDateOfFilter (): string {
+    if (!this.dateValues) return ''
+    return dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+  }
+
+  public endDateOfFilter (): string {
+    if (!this.dateValues) return ''
+    return dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
   }
 
   public getSelectedType (): string | undefined {
