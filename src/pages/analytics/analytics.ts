@@ -335,16 +335,6 @@ export default class AnalyticsPage extends Vue {
   }
 
   public buildGraph (clustereds: Clustered[], request: ClusteredRequest): void {
-    const el = document.createElement('div')
-    el.classList.add('mt-5')
-    el.classList.add('font-semibold')
-    let title = this.$t(toMonthYearStr(request.start))
-    if (clustereds.length === 0) {
-      title = this.$t(toMonthYearStr(request.start)) + ' - ' + this.$t('No data')
-    }
-    el.innerHTML = '<span>' + title + '</span>'
-    const box = document.getElementById('heatmapGraph')
-    box?.appendChild(el)
     this.showNumberOfEvents = clustereds.length !== 0
     if (clustereds.length === 0) {
       return
@@ -356,6 +346,17 @@ export default class AnalyticsPage extends Vue {
     const container = document.querySelector('#analytics-page') as HTMLElement
     const width = container.offsetWidth
     const height = 600 - margin.top - margin.bottom
+
+    const el = document.createElement('div')
+    el.classList.add('mt-5')
+    el.classList.add('font-semibold')
+    let title = this.$t(toMonthYearStr(utcGlobalStart))
+    if (clustereds.length === 0) {
+      title = this.$t(toMonthYearStr(utcGlobalStart)) + ' - ' + this.$t('No data')
+    }
+    el.innerHTML = '<span>' + title + '</span>'
+    const box = document.getElementById('heatmapGraph')
+    box?.appendChild(el)
 
     const graph = d3.select('#heatmapGraph')
       .append('svg')

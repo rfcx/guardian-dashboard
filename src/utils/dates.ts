@@ -97,9 +97,9 @@ export const toTimeStr = (label: string, timezone: string = 'UTC'): string => {
   return dayjs(label).tz(timezone).format('HH:mm')
 }
 
-export const toMonthYearStr = (label: string): string => {
-  const month = t(dayjs(label).format('MMMM'))
-  const year = dayjs(label).format('YYYY')
+export const toMonthYearStr = (dayjs: any, timezone: string = 'UTC'): string => {
+  const month = t(dayjs.tz(timezone).format('MMMM'))
+  const year = t(dayjs.tz(timezone).format('YYYY'))
   return `${month} ${year}`
 }
 
