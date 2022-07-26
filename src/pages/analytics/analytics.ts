@@ -336,9 +336,6 @@ export default class AnalyticsPage extends Vue {
 
   public buildGraph (clustereds: Clustered[], request: ClusteredRequest): void {
     this.showNumberOfEvents = clustereds.length !== 0
-    if (clustereds.length === 0) {
-      return
-    }
     const utcGlobalStart = dayjs.utc(request.start).add(this.timezoneOffsetMins, 'minutes')
     const utcGlobalEnd = dayjs.utc(request.end).add(this.timezoneOffsetMins, 'minutes')
     const dateValue = this.getDateArray(utcGlobalStart, utcGlobalEnd).map(c => getDay(c))
@@ -357,6 +354,10 @@ export default class AnalyticsPage extends Vue {
     el.innerHTML = '<span>' + title + '</span>'
     const box = document.getElementById('heatmapGraph')
     box?.appendChild(el)
+
+    if (clustereds.length === 0) {
+      return
+    }
 
     const graph = d3.select('#heatmapGraph')
       .append('svg')
