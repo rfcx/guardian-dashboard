@@ -15,6 +15,11 @@ import '@vuepic/vue-datepicker/dist/main.css'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 dayjs.extend(utc as any)
 
+export interface DateRangeShortcut {
+  text: string
+  value: () => [string, string]
+}
+
 @Options({
   components: {
     'nav-bar': NavigationBarComponent,
@@ -50,6 +55,27 @@ export default class AnalyticsPage extends Vue {
   public clusteredData: Clustered[] | undefined
 
   dateValues: [string, string] | undefined
+
+  get dateShortcuts (): DateRangeShortcut[] {
+    return [
+      {
+        text: this.$t('Last month'),
+        value: () => {
+          const start = dayjs.utc().month(dayjs().month() - 1).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          const end = dayjs.utc().month(dayjs().month() - 1).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          return [start, end]
+        }
+      },
+      {
+        text: this.$t('Last 3 months'),
+        value: () => {
+          const start = dayjs.utc().month(dayjs().month() - 3).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          const end = dayjs.utc().month(dayjs().month() - 1).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          return [start, end]
+        }
+      }
+    ]
+  }
 
   async mounted (): Promise<void> {
     void this.onUpdatePage()
