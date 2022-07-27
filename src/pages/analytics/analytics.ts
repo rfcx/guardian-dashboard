@@ -8,7 +8,7 @@ import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkb
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
-import { getDayAndMonth, toTimeStr } from '@/utils'
+import { getDayAndMonth, toDateStr, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -351,7 +351,7 @@ export default class AnalyticsPage extends Vue {
     await this.get()
   }
 
-  public csvmaker (data: Clustered[]): string {
+  public csvmaker (data: DetectionsCsc[]): string {
     const csvRows = []
     const headers = Object.keys(data[0])
     csvRows.push(headers.join(','))
@@ -363,20 +363,27 @@ export default class AnalyticsPage extends Vue {
     return csvRows.join('\n')
   }
 
-  public download (data: string): void {
+  public download (data: string, fileName: string): void {
     const blob = new Blob([data], { type: 'text/csv' })
     const url = window.URL.createObjectURL(blob)
 
     const a = document.createElement('a')
     a.setAttribute('href', url)
-    a.setAttribute('download', 'download.csv')
+    a.setAttribute('download', `Detections on ${fileName}.csv`)
     a.click()
   }
 
   async get (): Promise<void> {
     if (this.clusteredData === undefined) return
-    const csvdata = this.csvmaker(this.clusteredData)
-    this.download(csvdata)
+    const arr: DetectionsCsc[] = []
+    this.clusteredData.forEach(c => {
+      arr.push({ date: toDateStr(c?.timeBucket), hour: toTimeStr(c?.timeBucket ?? ''), detections: c.aggregatedValue })
+    })
+    const csvdata = this.csvmaker(arr)
+    const startDate = toDateStr(this.clusteredData[0].timeBucket)
+    const endDate = toDateStr(this.clusteredData[this.clusteredData.length - 1].timeBucket)
+
+    this.download(csvdata, `${startDate} to ${endDate}`)
   }
 
   public generateTimes (startHour: number, stopHour: number): string[] {
@@ -397,4 +404,10 @@ interface Item {
   x: number
   y: number
   value: number
+}
+
+interface DetectionsCsc {
+  date: string
+  hour: string
+  detections: number
 }
