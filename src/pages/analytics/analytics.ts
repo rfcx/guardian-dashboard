@@ -348,7 +348,35 @@ export default class AnalyticsPage extends Vue {
   }
 
   async downloadCsv (): Promise<void> {
-    console.log('downloadCsv')
+    await this.get()
+  }
+
+  public csvmaker (data: Clustered[]): string {
+    const csvRows = []
+    const headers = Object.keys(data[0])
+    csvRows.push(headers.join(','))
+
+    data.forEach(a => {
+      const values = Object.values(a).join(',')
+      csvRows.push(values)
+    })
+    return csvRows.join('\n')
+  }
+
+  public download (data: string): void {
+    const blob = new Blob([data], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+
+    const a = document.createElement('a')
+    a.setAttribute('href', url)
+    a.setAttribute('download', 'download.csv')
+    a.click()
+  }
+
+  async get (): Promise<void> {
+    if (this.clusteredData === undefined) return
+    const csvdata = this.csvmaker(this.clusteredData)
+    this.download(csvdata)
   }
 
   public generateTimes (startHour: number, stopHour: number): string[] {
