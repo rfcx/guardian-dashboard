@@ -61,16 +61,16 @@ export default class AnalyticsPage extends Vue {
       {
         text: this.$t('Last month'),
         value: () => {
-          const start = dayjs.utc().month(dayjs().month() - 1).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-          const end = dayjs.utc().month(dayjs().month() - 1).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          const start = dayjs.utc().startOf('month').subtract(1, 'day').startOf('month').format('YYYY-MM-DD')
+          const end = dayjs.utc().startOf('month').subtract(1, 'day').endOf('month').endOf('day').format('YYYY-MM-DD')
           return [start, end]
         }
       },
       {
         text: this.$t('Last 3 months'),
         value: () => {
-          const start = dayjs.utc().month(dayjs().month() - 3).startOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
-          const end = dayjs.utc().month(dayjs().month() - 1).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+          const start = dayjs.utc().startOf('month').subtract(1, 'day').subtract(2, 'months').startOf('month').format('YYYY-MM-DD')
+          const end = dayjs.utc().startOf('month').subtract(1, 'day').endOf('month').endOf('day').format('YYYY-MM-DD')
           return [start, end]
         }
       }
