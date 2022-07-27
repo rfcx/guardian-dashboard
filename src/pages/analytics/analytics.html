@@ -14,6 +14,7 @@
           class="relative w-full bg-steel-grey rounded-md"
           v-model="dateValues"
           type="daterange"
+          :shortcuts="dateShortcuts"
           range-separator="To"
           start-placeholder="Start date"
           end-placeholder="End date"
@@ -28,9 +29,8 @@
       </div>
     </div>
   </div>
-  <img v-if="isLoading" class="animate-spin bg-mirage-grey mt-50 h-10 w-10 mx-auto" src="/src/assets/spinner.svg">
   <div class="mt-5" id="heatmapGraph"></div>
-  <div class= "mt-5 pl-11" v-if="showNumberOfEvents && !isLoading">{{ $t('Number of events') }}</div>
-  <div class="mt-1 pl-10" id="scaleOfHeatmapGraph"></div>
-  <div class= "mt-10" v-if="isHaveData && !isLoading">{{ $t('No data') }}</div>
+  <img v-if="isLoading" class="animate-spin bg-mirage-grey mt-50 h-10 w-10 mx-auto" src="/src/assets/spinner.svg">
+  <div class= "mt-5 pl-11" v-show="showNumberOfEvents && !isLoading">{{ $t('Number of events') }}</div>
+  <div class="mt-1 pl-10" v-show="showNumberOfEvents && !isLoading" id="scaleOfHeatmapGraph"></div>
 </div>
