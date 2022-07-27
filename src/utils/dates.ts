@@ -81,11 +81,15 @@ export const getDay = (date: any, timezone: string = 'UTC'): string => {
   return dayjs(date).tz(timezone).format('DD')
 }
 
-export const toDateStr = (date: any, timezone: string = 'UTC'): string => {
+export const toHumanDateStr = (date: any, timezone: string = 'UTC'): string => {
   const day = dayjs(date).tz(timezone).format('DD')
   const month = t(dayjs(date).tz(timezone).format('MMM'))
   const year = dayjs(date).tz(timezone).format('YYYY')
   return `${day} ${month} ${year}`
+}
+
+export const toDateStr = (date: any, timezone: string = 'UTC'): string => {
+  return dayjs(date).tz(timezone).format('YYYY-MM-DD')
 }
 
 export const formatDiffFromNow = (label: string, timezone: string = 'UTC'): any => {
@@ -95,6 +99,10 @@ export const formatDiffFromNow = (label: string, timezone: string = 'UTC'): any 
 
 export const toTimeStr = (label: string, timezone: string = 'UTC'): string => {
   return dayjs(label).tz(timezone).format('HH:mm')
+}
+
+export const toHourStr = (label: string, timezone: string = 'UTC'): string => {
+  return dayjs(label).tz(timezone).format('HH')
 }
 
 export const toMonthYearStr = (dayjs: any, timezone: string = 'UTC'): string => {

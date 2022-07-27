@@ -8,7 +8,7 @@ import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkb
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
-import { getDay, getDayAndMonth, toMonthYearStr, toTimeStr } from '@/utils'
+import { getDay, getDayAndMonth, toDateStr, toHourStr, toMonthYearStr, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -53,7 +53,7 @@ export default class AnalyticsPage extends Vue {
   ]
 
   public clusteredData: Clustered[] | undefined
-
+  public allClustered: Clustered[] = []
   dateValues: [string, string] | undefined
 
   get dateShortcuts (): DateRangeShortcut[] {
@@ -135,6 +135,7 @@ export default class AnalyticsPage extends Vue {
         })
       }
     }
+    this.allClustered = []
     d3.select('#heatmapGraph').selectAll('*').remove()
     for (const request of requests) {
       await this.getClusteredEventsData(request, requests.indexOf(request) === 0)
@@ -322,6 +323,9 @@ export default class AnalyticsPage extends Vue {
         i.timeBucket = dayjs.utc(i.timeBucket).add(this.timezoneOffsetMins, 'minutes').toISOString()
         return i
       })
+      this.clusteredData.forEach(c => {
+        this.allClustered.push(c)
+      })
       if (reset) {
         d3.select('#heatmapGraph').selectAll('*').remove()
       }
@@ -456,7 +460,7 @@ export default class AnalyticsPage extends Vue {
       .style('opacity', 0)
 
     graph.selectAll()
-      .data(clustereds, function (d) { return `${getDay(d?.timeBucket)} + ':' + ${toTimeStr(d?.timeBucket ?? '')}` })
+      .data(clustereds, function (d) { return `${getDay(d?.timeBucket ?? '')} + ':' + ${toTimeStr(d?.timeBucket ?? '')}` })
       .enter()
       .append('rect')
       .attr('x', function (d) { return x(getDay(d?.timeBucket) ?? '') ?? 100 })
@@ -484,6 +488,49 @@ export default class AnalyticsPage extends Vue {
       })
   }
 
+  async downloadCsv (): Promise<void> {
+    await this.get()
+  }
+
+  public csvmaker (data: DetectionsCsc[]): string {
+    const csvRows = []
+    const headers = Object.keys(data[0])
+    csvRows.push(headers.join(','))
+
+    data.forEach(a => {
+      const values = Object.values(a).join(',')
+      csvRows.push(values)
+    })
+    return csvRows.join('\n')
+  }
+
+  public download (data: string, fileName: string): void {
+    const blob = new Blob([data], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+
+    const a = document.createElement('a')
+    a.setAttribute('href', url)
+    a.setAttribute('download', `Detections on ${fileName}.csv`)
+    a.click()
+  }
+
+  async get (): Promise<void> {
+    if (this.allClustered === []) return
+    const arr: DetectionsCsc[] = []
+    let startDate = dayjs.utc(this.clusteredRequest?.start).add(this.timezoneOffsetMins, 'minutes')
+    const endDate = dayjs.utc(this.clusteredRequest?.end).add(this.timezoneOffsetMins, 'minutes')
+    const fileTitle = `${toDateStr(startDate)} to ${toDateStr(endDate)}`
+    while (startDate <= endDate) {
+      console.log(startDate.toISOString())
+      const startIso = startDate.toISOString()
+      const cluster = this.allClustered.find(c => c.timeBucket === startIso)
+      arr.push({ date: toDateStr(startIso), hour: toHourStr(startIso), detections: cluster ? cluster.aggregatedValue : 0 })
+      startDate = startDate.add(1, 'hour')
+    }
+    const csvdata = this.csvmaker(arr)
+    this.download(csvdata, fileTitle)
+  }
+
   public generateTimes (startHour: number, stopHour: number): string[] {
     const hrs = []
     for (let h = startHour; h < stopHour; ++h) {
@@ -502,4 +549,10 @@ interface Item {
   x: number
   y: number
   value: number
+}
+
+interface DetectionsCsc {
+  date: string
+  hour: string
+  detections: number
 }
