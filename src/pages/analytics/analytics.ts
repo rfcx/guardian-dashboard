@@ -8,7 +8,7 @@ import DropdownCheckboxes from '@/components/dropdown-checkboxes/dropdown-checkb
 import NavigationBarComponent from '@/components/navbar/navbar.vue'
 import { ClusteredService, StreamService, VuexService } from '@/services'
 import { Auth0Option, Clustered, ClusteredRequest, DropdownItem, Stream } from '@/types'
-import { getDay, getDayAndMonth, toDateStr, toMonthYearStr, toTimeStr } from '@/utils'
+import { getDay, getDayAndMonth, toDateStr, toHourStr, toMonthYearStr, toTimeStr } from '@/utils'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -517,14 +517,18 @@ export default class AnalyticsPage extends Vue {
   async get (): Promise<void> {
     if (this.allClustered === []) return
     const arr: DetectionsCsc[] = []
-    this.allClustered.forEach(c => {
-      arr.push({ date: toDateStr(c?.timeBucket), hour: toTimeStr(c?.timeBucket ?? ''), detections: c.aggregatedValue })
-    })
+    let startDate = dayjs.utc(this.clusteredRequest?.start).add(this.timezoneOffsetMins, 'minutes')
+    const endDate = dayjs.utc(this.clusteredRequest?.end).add(this.timezoneOffsetMins, 'minutes')
+    const fileTitle = `${toDateStr(startDate)} to ${toDateStr(endDate)}`
+    while (startDate <= endDate) {
+      console.log(startDate.toISOString())
+      const startIso = startDate.toISOString()
+      const cluster = this.allClustered.find(c => c.timeBucket === startIso)
+      arr.push({ date: toDateStr(startIso), hour: toHourStr(startIso), detections: cluster ? cluster.aggregatedValue : 0 })
+      startDate = startDate.add(1, 'hour')
+    }
     const csvdata = this.csvmaker(arr)
-    const startDate = toDateStr(this.allClustered[0].timeBucket)
-    const endDate = toDateStr(this.allClustered[this.allClustered.length - 1].timeBucket)
-
-    this.download(csvdata, `${startDate} to ${endDate}`)
+    this.download(csvdata, fileTitle)
   }
 
   public generateTimes (startHour: number, stopHour: number): string[] {

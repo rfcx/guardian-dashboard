@@ -13,7 +13,7 @@ import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
 import { IncidentsService, StreamService } from '@/services'
 import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, RawImageItem, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
-import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, toDateStr, toTimeStr, twoDateDiffExcludeHours } from '@/utils'
+import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, toHumanDateStr, toTimeStr, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
 
 dayjs.extend(timezone)
@@ -129,8 +129,8 @@ export default class IncidentPage extends Vue {
 
   public getEventLabel (start: string, end: string): string {
     const tz = this.stream?.timezone
-    if (toDateStr(start, tz) === toDateStr(end, tz)) {
-      return `${toDateStr(start, tz)}, ${toTimeStr(start, tz)}-${toTimeStr(end, tz)}`
+    if (toHumanDateStr(start, tz) === toHumanDateStr(end, tz)) {
+      return `${toHumanDateStr(start, tz)}, ${toTimeStr(start, tz)}-${toTimeStr(end, tz)}`
     } else {
       return `${this.toDateTimeStr(start, tz)} - ${this.toDateTimeStr(end, tz)}`
     }
@@ -203,7 +203,7 @@ export default class IncidentPage extends Vue {
 
   public getIncidentStatus (): void {
     if (this.incident !== undefined) {
-      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toHumanDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
     }
   }
 
