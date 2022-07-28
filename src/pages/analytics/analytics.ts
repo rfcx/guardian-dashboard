@@ -214,7 +214,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public toggleType (t: DropdownItem[]): void {
-    if (t[0].value === 'all') {
+    if (t.length === 0 || t[0].value === 'all') {
       this.eventType.forEach((e: DropdownItem) => { e.checked = (e.value === 'all') })
       const types = this.eventType.map(e => e.value)
       types.shift()
@@ -515,7 +515,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   async get (): Promise<void> {
-    if (this.allClustered === []) return
+    if (this.allClustered.length === 0) return
     const arr: DetectionsCsc[] = []
     let startDate = dayjs.utc(this.clusteredRequest?.start).add(this.timezoneOffsetMins, 'minutes')
     const endDate = dayjs.utc(this.clusteredRequest?.end).add(this.timezoneOffsetMins, 'minutes')
