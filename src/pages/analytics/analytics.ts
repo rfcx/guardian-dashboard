@@ -84,6 +84,12 @@ export default class AnalyticsPage extends Vue {
 
   @Watch('dateValues')
   onDateRangeChange (): void {
+    if (this.dateValues === null) {
+      const utcStart = dayjs.utc().subtract(7, 'days').startOf('day')
+      const utcEnd = dayjs.utc().endOf('day')
+      this.dateValues = [utcStart.format('YYYY-MM-DD'), utcEnd.format('YYYY-MM-DD')]
+    }
+
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
       this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
       this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
