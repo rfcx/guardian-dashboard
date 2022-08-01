@@ -4,6 +4,7 @@ import en from './en.json'
 import ind from './in.json'
 import ms from './ms.json'
 import pt from './pt.json'
+import srn from './srn.json'
 
 type MessageSchema = typeof en
 
@@ -24,6 +25,9 @@ export const getLocalLang = (): string | null => {
   if (['pt_ID', 'pt'].includes(navigator.language)) {
     return 'pt'
   }
+  if (['srn_ID', 'srn'].includes(navigator.language)) {
+    return 'srn'
+  }
   return 'en'
 }
 
@@ -33,7 +37,8 @@ const i18n = createI18n<I18nOptions, [MessageSchema], 'en', 'in'>({
     en: en,
     in: ind,
     ms: ms,
-    pt: pt
+    pt: pt,
+    srn: srn
   },
   globalInjection: true,
   fallbackLocale: 'en'
