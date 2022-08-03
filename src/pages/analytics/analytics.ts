@@ -201,7 +201,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public endOfMonth (monthNum: number, yearNum: number): string {
-    return dayjs.utc().month(monthNum).year(yearNum).endOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+    return dayjs.utc().month(monthNum).year(yearNum).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
   }
 
   public startDateOfFilter (): string {
