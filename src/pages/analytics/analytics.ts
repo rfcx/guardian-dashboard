@@ -303,7 +303,7 @@ export default class AnalyticsPage extends Vue {
 
   public toggleStream (streams: DropdownItem[]): void {
     if (this.clusteredRequest !== undefined) {
-      if (streams[0].value === 'all') {
+      if (streams.length === 0 || streams[0].value === 'all') {
         this.streamStatus.forEach((s: DropdownItem) => { s.checked = (s.value === 'all') })
         const streams = this.streamStatus.map(s => s.value)
         streams.shift()
