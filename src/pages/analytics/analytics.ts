@@ -407,7 +407,7 @@ export default class AnalyticsPage extends Vue {
     const dateValue = this.getDateArray(utcGlobalStart, utcGlobalEnd).map(c => getDay(c))
     const margin = { top: 20, right: 30, bottom: 30, left: 50 }
     const container = document.querySelector('#analytics-page') as HTMLElement
-    const width = container.offsetWidth
+    const width = container.offsetWidth - margin.left - margin.right
     const height = 600 - margin.top - margin.bottom
 
     const el = document.createElement('div')
