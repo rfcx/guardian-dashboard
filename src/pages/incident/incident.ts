@@ -67,6 +67,11 @@ export default class IncidentPage extends Vue {
     void this.onUpdatePage()
   }
 
+  @Watch('$i18n.locale')
+  onLocaleChange (): void {
+    this.combineTitles()
+  }
+
   async created (): Promise<void> {
     await this.onUpdatePage()
   }
@@ -74,16 +79,18 @@ export default class IncidentPage extends Vue {
   async onUpdatePage (): Promise<void> {
     await this.getIncidentData()
     await this.getStreamData()
-      .then(() => {
-        if (this.incident !== undefined) {
-          this.incident.eventsTitle = this.getEventsTitle()
-          this.incident.eventsLabel = this.getEventsLabel()
-          this.incident.responseTitle = this.getResponseTitle()
-          this.incident.responseLabel = this.getResponseLabel()
-        }
-      })
+      .then(this.combineTitles)
     this.initializeIncidentMap()
     await this.getAssets()
+  }
+
+  public combineTitles (): void {
+    if (this.incident !== undefined) {
+      this.incident.eventsTitle = this.getEventsTitle()
+      this.incident.eventsLabel = this.getEventsLabel()
+      this.incident.responseTitle = this.getResponseTitle()
+      this.incident.responseLabel = this.getResponseLabel()
+    }
   }
 
   public getIconTitle (count: number, title: string): string {

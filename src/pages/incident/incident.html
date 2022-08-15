@@ -35,7 +35,7 @@
             <div class="text-sm text-gray-500 pt-2">{{ $t('Events summary') }}</div>
             <div class="pt-2 flex">
               <img v-if="incident.events.length" :title="$t('Time range of events')" class="h-5 w-5 cursor-default inline-block mr-2" src="/src/assets/alert.svg" alt="">
-              <div class="text-sm text-gray-200 cursor-default inline-block" :title="incident.eventsTitle">{{ getEventsLabel() }}</div>
+              <div class="text-sm text-gray-200 cursor-default inline-block" :title="incident.eventsTitle">{{ incident.eventsLabel }}</div>
             </div>
             <div v-for="event in getEventsCount(incident.events)" :key="event.value" class="text-sm text-gray-400 inline-flex items-center cursor-default pt-2 mr-3" :title="getIconTitle(event.count, event.value)">
               <img class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-300" :src="`https://static.rfcx.org/img/guardian/ic_${event.value}.svg`" alt="" @error="setDefaultReportImg">
@@ -55,7 +55,7 @@
               <img :title="$t('Duration between the first event and the first response')" class="h-4.5 w-4.5 self-center ml-1 cursor-default" src="/src/assets/info.svg" alt="i">
             </div>
             <div v-if="incident.responseLabel" class="pt-1">
-              <span class="text-lg text-gray-200 cursor-default" :title="incident.responseTitle">{{ getResponseLabel() }}</span>
+              <span class="text-lg text-gray-200 cursor-default" :title="incident.responseTitle">{{ incident.responseLabel }}</span>
             </div>
           </div>
           <div class="flex justify-center items-center">
