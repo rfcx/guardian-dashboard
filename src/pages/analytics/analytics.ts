@@ -84,6 +84,12 @@ export default class AnalyticsPage extends Vue {
 
   @Watch('dateValues')
   onDateRangeChange (): void {
+    if (this.dateValues === null) {
+      const utcStart = dayjs.utc().subtract(7, 'days').startOf('day')
+      const utcEnd = dayjs.utc().endOf('day')
+      this.dateValues = [utcStart.format('YYYY-MM-DD'), utcEnd.format('YYYY-MM-DD')]
+    }
+
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
       this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
       this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
@@ -154,7 +160,7 @@ export default class AnalyticsPage extends Vue {
         streams: this.clusteredRequest.streams,
         classifications: this.clusteredRequest.classifications,
         interval: '1h',
-        limit: 1000
+        limit: 10000
       }
       if (startMonth === endMonth) {
         if (dayjs(this.startDateOfFilter()).year() === year) {
@@ -195,7 +201,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public endOfMonth (monthNum: number, yearNum: number): string {
-    return dayjs.utc().month(monthNum).year(yearNum).endOf('month').startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
+    return dayjs.utc().month(monthNum).year(yearNum).endOf('month').endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
   }
 
   public startDateOfFilter (): string {
@@ -214,7 +220,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public toggleType (t: DropdownItem[]): void {
-    if (t[0].value === 'all') {
+    if (t.length === 0 || t[0].value === 'all') {
       this.eventType.forEach((e: DropdownItem) => { e.checked = (e.value === 'all') })
       const types = this.eventType.map(e => e.value)
       types.shift()
@@ -241,7 +247,7 @@ export default class AnalyticsPage extends Vue {
       end: utcEnd.subtract(this.timezoneOffsetMins, 'minutes').toISOString(),
       streams: [],
       interval: '1h',
-      limit: 1000
+      limit: 10000
     }
     this.dateValues = [utcStart.format('YYYY-MM-DD'), utcEnd.format('YYYY-MM-DD')]
   }
@@ -297,7 +303,7 @@ export default class AnalyticsPage extends Vue {
 
   public toggleStream (streams: DropdownItem[]): void {
     if (this.clusteredRequest !== undefined) {
-      if (streams[0].value === 'all') {
+      if (streams.length === 0 || streams[0].value === 'all') {
         this.streamStatus.forEach((s: DropdownItem) => { s.checked = (s.value === 'all') })
         const streams = this.streamStatus.map(s => s.value)
         streams.shift()
@@ -515,7 +521,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   async get (): Promise<void> {
-    if (this.allClustered === []) return
+    if (this.allClustered.length === 0) return
     const arr: DetectionsCsc[] = []
     let startDate = dayjs.utc(this.clusteredRequest?.start).add(this.timezoneOffsetMins, 'minutes')
     const endDate = dayjs.utc(this.clusteredRequest?.end).add(this.timezoneOffsetMins, 'minutes')
