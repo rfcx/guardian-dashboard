@@ -265,26 +265,19 @@ export default class AnalyticsPage extends Vue {
       this.streamsData = res.data
       this.timezone = res.data.length > 0 ? res.data[0].timezone : this.timezone
       this.timezoneOffsetMins = dayjs.tz(Date.now(), this.timezone).utcOffset()
-      this.initFilterOptions()
       this.streamStatus.push({ value: 'all', label: this.$t('All streams'), checked: true })
       res.data.forEach((s: Stream) => { this.streamStatus.push({ value: s.id, label: s.name, checked: false }) })
       this.getSelectedStream()
-      this.refreshClusteredEvents()
+      if (this.clusteredRequest !== undefined && this.streamsData !== undefined) {
+        this.clusteredRequest.streams = this.streamsData.map(i => i.id)
+      }
+      this.initFilterOptions()
     }).catch(e => {
       this.isLoading = false
       console.error(this.$t('Can not getting streams with incidents'), e)
     }).finally(() => {
       this.isLoading = false
     })
-  }
-
-  public refreshClusteredEvents (): void {
-    if (this.clusteredRequest !== undefined && this.streamsData !== undefined) {
-      this.clusteredRequest.streams = this.streamsData.map(i => i.id)
-    }
-    if (this.clusteredRequest !== undefined) {
-      void this.checkRequestStartEnd()
-    }
   }
 
   async onUpdatePage (): Promise<void> {
