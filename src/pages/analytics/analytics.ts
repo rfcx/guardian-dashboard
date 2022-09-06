@@ -39,6 +39,7 @@ export default class AnalyticsPage extends Vue {
   public valueDate: Date[] = []
   public timezone = 'UTC'
   public timezoneOffsetMins = 0
+  public maxValue = 100
   public clusteredRequest: ClusteredRequest | undefined
 
   public eventType: DropdownItem[] = [
@@ -79,7 +80,6 @@ export default class AnalyticsPage extends Vue {
 
   async mounted (): Promise<void> {
     void this.onUpdatePage()
-    this.buildScaleGraph(100)
   }
 
   @Watch('dateValues')
@@ -220,6 +220,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public toggleType (t: DropdownItem[]): void {
+    this.maxValue = 100
     if (t.length === 0 || t[0].value === 'all') {
       this.eventType.forEach((e: DropdownItem) => { e.checked = (e.value === 'all') })
       const types = this.eventType.map(e => e.value)
@@ -302,6 +303,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public toggleStream (streams: DropdownItem[]): void {
+    this.maxValue = 100
     if (this.clusteredRequest !== undefined) {
       if (streams.length === 0 || streams[0].value === 'all') {
         this.streamStatus.forEach((s: DropdownItem) => { s.checked = (s.value === 'all') })
@@ -364,7 +366,7 @@ export default class AnalyticsPage extends Vue {
 
     const svg = d3.select('#scaleOfHeatmapGraph')
       .append('svg')
-      .attr('width', 600)
+      .attr('width', 1000)
       .attr('height', 100)
       .append('g')
       .attr('transform', 'translate(5, 5)')
@@ -407,6 +409,9 @@ export default class AnalyticsPage extends Vue {
   }
 
   public buildGraph (clustereds: Clustered[], request: ClusteredRequest): void {
+    const maxLable = Math.max(...clustereds.map(function (c) { return c.aggregatedValue }))
+    if (this.maxValue < maxLable) this.maxValue = this.roundnum(maxLable)
+
     this.showNumberOfEvents = clustereds.length !== 0
     const utcGlobalStart = dayjs.utc(request.start).add(this.timezoneOffsetMins, 'minutes')
     const utcGlobalEnd = dayjs.utc(request.end).add(this.timezoneOffsetMins, 'minutes')
@@ -457,7 +462,7 @@ export default class AnalyticsPage extends Vue {
 
     const myColor = d3.scaleLinear<string, number>()
       .range(['#DDDDDD', '#BB0A1E'])
-      .domain([1, 100])
+      .domain([1, this.maxValue])
 
     const tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
@@ -492,6 +497,8 @@ export default class AnalyticsPage extends Vue {
           .style('left', (event.pageX - 40).toString() + 'px')
           .style('top', (event.pageY - 45).toString() + 'px')
       })
+
+    this.buildScaleGraph(this.maxValue)
   }
 
   async downloadCsv (): Promise<void> {
@@ -547,7 +554,7 @@ export default class AnalyticsPage extends Vue {
   }
 
   public roundnum (num: number): number {
-    return Math.round(Math.round(num / 25) / 2) * 50
+    return Math.round(num / 100) * 100
   }
 }
 
