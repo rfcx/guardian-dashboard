@@ -88,6 +88,7 @@ export default class AnalyticsPage extends Vue {
       const utcStart = dayjs.utc().subtract(7, 'days').startOf('day')
       const utcEnd = dayjs.utc().endOf('day')
       this.dateValues = [utcStart.format('YYYY-MM-DD'), utcEnd.format('YYYY-MM-DD')]
+      return
     }
 
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
