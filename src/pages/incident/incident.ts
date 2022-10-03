@@ -11,7 +11,7 @@ import RangerNotes from '@/components/ranger-notes/ranger-notes.vue'
 import RangerPlayerComponent from '@/components/ranger-player-modal/ranger-player-modal.vue'
 import RangerSliderComponent from '@/components/ranger-slider/ranger-slider.vue'
 import RangerTrackModalComponent from '@/components/ranger-track-modal/ranger-track-modal.vue'
-import { IncidentsService, StreamService } from '@/services'
+import { IncidentsService, StreamService, UserService } from '@/services'
 import { Answer, AnswerItem, Event as Ev, Incident, MapboxOptions, RawImageItem, Response, ResponseExtended, ResponseExtendedWithStatus, Stream, User } from '@/types'
 import { downloadContext, formatDateTime, formatDateTimeRange, formatDateTimeWithoutYear, formatTwoDateDiff, getTzAbbr, inLast1Minute, inLast24Hours, isDefined, isNotDefined, toHumanDateStr, toTimeStr, twoDateDiffExcludeHours } from '@/utils'
 import icons from '../../assets/index'
@@ -210,7 +210,8 @@ export default class IncidentPage extends Vue {
 
   public getIncidentStatus (): void {
     if (this.incident !== undefined) {
-      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toHumanDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')}` : 'Mark as closed'
+      const username = UserService.formatUserName(this.incident.closedBy)
+      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toHumanDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')} by ${username}` : 'Mark as closed'
     }
   }
 
