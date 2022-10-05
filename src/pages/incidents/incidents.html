@@ -157,7 +157,7 @@
           <on-click-outside @trigger="closeGuardianMap">
             <div class="bg-steel-grey px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <p class="text-lg pb-2">{{ mapData.title }}</p>
-              <map-component :zoom="mapData.zoom" :center="mapData.center" classes="h-100"/>
+              <map-component :zoom="mapData.zoom" :center="mapData.center" classes="h-100" :controls="['zoom']"/>
               <div class="text-center py-8">{{ mapData.center.lat }}, {{ mapData.center.lng }}</div>
             </div>
           </on-click-outside>

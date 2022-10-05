@@ -15,6 +15,9 @@ export default class MapComponent extends Vue {
   @Prop({ default: '' })
   classes!: string
 
+  @Prop({ default: [] })
+  controls!: string[]
+
   public mapbox?: Mapbox.Map
   public mapIndex = Math.floor(Math.random() * 1000)
   public isLoading = false
@@ -51,6 +54,9 @@ export default class MapComponent extends Vue {
         new Mapbox.Marker({ color: 'red', scale: 0.5 })
           .setLngLat(this.center)
           .addTo(this.mapbox)
+      }
+      if (this.controls.includes('zoom')) {
+        this.mapbox.addControl(new Mapbox.NavigationControl(), 'top-right')
       }
     } catch (err) {
       console.log('err', err)

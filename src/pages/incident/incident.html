@@ -60,7 +60,7 @@
           </div>
           <div class="flex justify-center items-center">
             <div v-if="!stream" class="text-xs text-gray-500 my-3 py-12 text-center">{{ $t('map n/a') }}</div>
-            <map-component v-if="stream && mapData && mapData.center && mapData.center" :zoom="mapData.zoom" :center="mapData.center" :width="'h-140px'"/>
+            <map-component v-if="stream && mapData && mapData.center && mapData.center" :zoom="mapData.zoom" :center="mapData.center" classes="h-164px w-300px"/>
           </div>
         </div>
       </div>
