@@ -1,12 +1,16 @@
+import Mapbox from 'mapbox-gl'
 import { Options, Vue } from 'vue-class-component'
 import { useI18n } from 'vue-i18n'
 import { Watch } from 'vue-property-decorator'
 
+import { OnClickOutside } from '@vueuse/components'
+
 import IncidentsTableRows from '@/components/incidents-table/incidents-table.vue'
 import InvalidPageStateComponent from '@/components/invalid-page-state/invalid-page-state.vue'
+import MapComponent from '@/components/map/map.vue'
 import PaginationComponent from '@/components/pagination/pagination.vue'
 import { StreamService, VuexService } from '@/services'
-import { Auth0Option, IncidentStatus, Pagination, Project, Stream } from '@/types'
+import { Auth0Option, IncidentStatus, MapboxOptionsWTitle, Pagination, Project, Stream } from '@/types'
 
 interface statusOptions {
   include_closed_incidents?: boolean
@@ -18,6 +22,8 @@ interface statusOptions {
   components: {
     IncidentsTableRows,
     InvalidPageStateComponent,
+    MapComponent,
+    OnClickOutside,
     PaginationComponent
   }
 })
@@ -36,6 +42,8 @@ export default class IncidentsPage extends Vue {
   public isDataValid = true
   public statusSelected = false
   public streamsData: Stream[] | undefined
+  public showMap: boolean = false
+  public mapData: MapboxOptionsWTitle | undefined
   public incidentsStatus: IncidentStatus[] = [
     { value: 'any', label: 'Any', checked: true },
     { value: 'recent', label: 'Recent', checked: false },
@@ -159,6 +167,22 @@ export default class IncidentsPage extends Vue {
     this.incidentsStatus.forEach((s: IncidentStatus) => { s.checked = false })
     status.checked = true
     void this.getStreamsData(this.getProjectIdFromRouterParams(), this.getSelectedValue())
+  }
+
+  public showGuardianMap (stream: Stream): void {
+    if (stream.latitude !== undefined && stream.longitude !== undefined) {
+      this.mapData = {
+        center: new Mapbox.LngLat(stream.longitude, stream.latitude),
+        zoom: 12,
+        title: stream.name
+      }
+      this.showMap = true
+    }
+  }
+
+  public closeGuardianMap (): void {
+    this.showMap = false
+    this.mapData = undefined
   }
 
   public async getStreamsData (projectId?: string, status?: string): Promise<void> {

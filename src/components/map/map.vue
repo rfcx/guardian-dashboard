@@ -29,4 +29,7 @@
   .mapboxgl-ctrl-bottom-right {
     display: none !important;
   }
+  .mapboxgl-canvas {
+    height: 100%;
+  }
 </style>

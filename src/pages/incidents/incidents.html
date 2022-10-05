@@ -77,6 +77,9 @@
               <span class="text-secondary text-xl self-end mr-2 truncate" :title="getStreamName(stream.id)">{{ getStreamName(stream.id) }}</span>
             </router-link>
             <span v-else class="text-secondary text-xl self-end mr-2 truncate" :title="getStreamName(stream.id)">{{ getStreamName(stream.id) }}</span>
+            <button v-if="stream.latitude !== undefined && stream.longitude !== undefined" @click="showGuardianMap(stream)">
+              <img class="h-6 w-5 inline-block self-center mr-1" src="https://static.rfcx.org/img/guardian/ic_pin.svg" title="Show on map" alt="">
+            </button>
             <div v-if="['cell','satellite'].includes(stream.guardianType)" class="flex items-center mr-4" :class="{ '<lg:max-w-2/5': ['cell','satellite'].includes(stream.guardianType) && stream.tags.length }">
               <img class="h-6 w-6 inline-block self-center mr-1" :src="`https://static.rfcx.org/img/guardian/ic_${stream.guardianType}.svg`" :title="`${$t(stream.guardianType)} ` + $t('type')" alt="">
               <span class="text-secondary capitalize inline-block self-end text-lg truncate" :title="`${$t(stream.guardianType)} ` + $t('type')">{{ stream.guardianType === 'satellite' ? $t('Sat') : $t(stream.guardianType) }}</span>
@@ -140,5 +143,25 @@
       </div>
     </div>
     <invalid-page-state-component v-if="!isDataValid" :message="'This project either does not exist or you do not have permission to access it'"/>
+  </div>
+  <div
+      v-if="showMap"
+      class="fixed inset-0 z-10 bg-mirage-grey bg-opacity-75 transition-opacity overflow-y-auto h-full w-full"
+      role="dialog"
+      aria-labelledby="modal-title"
+      aria-modal="true"
+    >
+      <div class="flex justify-center pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"></span>
+        <div class="inline-block align-middle bg-steel-grey rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+          <on-click-outside @trigger="closeGuardianMap">
+            <div class="bg-steel-grey px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <p class="text-lg pb-2">{{ mapData.title }}</p>
+              <map-component :zoom="mapData.zoom" :center="mapData.center" classes="h-100"/>
+              <div class="text-center py-8">{{ mapData.center.lat }}, {{ mapData.center.lng }}</div>
+            </div>
+          </on-click-outside>
+        </div>
+      </div>
   </div>
 </div>
