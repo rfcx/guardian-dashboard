@@ -37,7 +37,8 @@ export default class NavigationBarComponent extends Vue {
     { value: 'in', label: 'Bahasa Indonesia', checked: false },
     { value: 'ms', label: 'Malay', checked: false },
     { value: 'pt', label: 'Portuguese', checked: false },
-    { value: 'srn', label: 'Sranan tongo', checked: false }
+    { value: 'srn', label: 'Sranan tongo', checked: false },
+    { value: 'nl', label: 'Dutch', checked: false }
   ]
 
   updated (): void {
