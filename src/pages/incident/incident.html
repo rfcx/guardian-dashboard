@@ -28,7 +28,7 @@
               <a v-if="!incident.closedAt && !isError()" @click="closeReport()" class="inline-flex items-center justify-center px-3 py-0.5 border border-transparent text-white font-small rounded-md font-semibold bg-gray-600 bg-opacity-70 hover:bg-steel-grey cursor-pointer">
                 {{ $t('Mark as closed') }}
               </a>
-              <span v-else class="text-sm font-medium text-white py-0.7 font-semibold" :class="{'text-danger': isError()}">{{incidentStatus}}</span>
+              <span v-else class="text-sm font-medium text-white py-0.7 font-semibold" :class="{'text-danger': isError()}">{{incident.status}}</span>
             </div>
           </div>
           <div class="pl-4 border-l-4 border-gray-800">
