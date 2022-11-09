@@ -260,7 +260,7 @@ export default class IncidentPage extends Vue {
             responseTitle: '',
             responseLabel: '',
             resposeSummary: [],
-            status: '',
+            status: ''
           })
           return inc
         })
