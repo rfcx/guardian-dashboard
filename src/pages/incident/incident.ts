@@ -259,12 +259,12 @@ export default class IncidentPage extends Vue {
             eventsLabel: '',
             responseTitle: '',
             responseLabel: '',
-            resposeSummary: []
+            resposeSummary: [],
+            status: '',
           })
           return inc
         })
       this.isLoading = false
-      this.getIncidentStatus()
     } catch (e) {
       this.isLoading = false
     }
