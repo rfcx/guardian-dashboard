@@ -70,6 +70,7 @@ export default class IncidentPage extends Vue {
   @Watch('$i18n.locale')
   onLocaleChange (): void {
     this.combineTitles()
+    this.getIncidentStatus()
   }
 
   async created (): Promise<void> {
@@ -211,7 +212,7 @@ export default class IncidentPage extends Vue {
   public getIncidentStatus (): void {
     if (this.incident !== undefined) {
       const username = UserService.formatUserName(this.incident.closedBy)
-      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toHumanDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')} by ${username}` : 'Mark as closed'
+      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toHumanDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')} ${this.$t('by')} ${username}` : `${this.$t('Mark as closed')}`
     }
   }
 
