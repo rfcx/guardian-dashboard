@@ -24,6 +24,8 @@ interface IncidentLabel extends Incident {
   responseTitle: string
   responseLabel: string
   resposeSummary: string[]
+  status: string
+
 }
 interface EventItem {
   title: string
@@ -90,6 +92,7 @@ export default class IncidentPage extends Vue {
       this.incident.eventsLabel = this.getEventsLabel()
       this.incident.responseTitle = this.getResponseTitle()
       this.incident.responseLabel = this.getResponseLabel()
+      this.incident.status = this.getIncidentStatus()
     }
   }
 
@@ -208,11 +211,10 @@ export default class IncidentPage extends Vue {
     return inLast1Minute(from, to)
   }
 
-  public getIncidentStatus (): void {
-    if (this.incident !== undefined) {
-      const username = UserService.formatUserName(this.incident.closedBy)
-      this.incidentStatus = this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toHumanDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')} by ${username}` : 'Mark as closed'
-    }
+  public getIncidentStatus (): string {
+    if (this.incident === undefined) return '-'
+    const username = UserService.formatUserName(this.incident.closedBy)
+    return this.incident.closedAt ? `${this.$t('Closed on')} ${(inLast24Hours(this.incident.closedAt) ? formatDateTimeWithoutYear : toHumanDateStr)(this.incident.closedAt, this.stream?.timezone ?? 'UTC')} ${this.$t('by')} ${username}` : `${this.$t('Mark as closed')}`
   }
 
   public dateFormatted (date: string): string {
@@ -257,12 +259,12 @@ export default class IncidentPage extends Vue {
             eventsLabel: '',
             responseTitle: '',
             responseLabel: '',
-            resposeSummary: []
+            resposeSummary: [],
+            status: ''
           })
           return inc
         })
       this.isLoading = false
-      this.getIncidentStatus()
     } catch (e) {
       this.isLoading = false
     }
