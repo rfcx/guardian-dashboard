@@ -1,8 +1,9 @@
 ## ✅ DoD
 
-- [x] Resolves #TODO
-- [ ] Documentation updated / na
+- [x] Resolves #XX
 - [ ] CHANGELOG updated / na
+- [ ] HelpScout documentation updates proposed / na
+- [ ] Translation is reviewed (by screenshots) / na
 
 ## 📝 Summary
 
