@@ -49,7 +49,9 @@ export default class AnalyticsPage extends Vue {
     { value: 'humanvoice', label: 'Human voice', checked: false },
     { value: 'dog_bark', label: 'Bark', checked: false },
     { value: 'elephas_maximus', label: 'Elephant', checked: false },
-    { value: 'fire', label: 'Fire', checked: false }
+    { value: 'fire', label: 'Fire', checked: false },
+    { value: 'sciurus_vulgaris_simple_call_1,sciurus_vulgaris_simple_call_2', label: 'Red squirrel', checked: false },
+    { value: 'sciurus_carolinensis_simple_call_1,sciurus_carolinensis_simple_call_2', label: 'Grey squirrel', checked: false }
   ]
 
   public clusteredData: Clustered[] | undefined
@@ -235,7 +237,7 @@ export default class AnalyticsPage extends Vue {
       this.eventType[0].checked = false
     }
     if (this.clusteredRequest !== undefined) {
-      this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.value)
+      this.clusteredRequest.classifications = this.eventType.filter(e => e.checked).map(i => i.value.split(',')).flat()
       void this.checkRequestStartEnd()
     }
   }
