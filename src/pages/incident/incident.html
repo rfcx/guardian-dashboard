@@ -19,7 +19,7 @@
                 class="shadow-sm text-xs text-gray-200 tracking-wide cursor-default rounded-lg leading-none mr-2 px-2 py-1 inline-block capitalize"
                 :title="`${$t(tag)} ` + $t('tag')"
                 :class="{'bg-blue-500 bg-opacity-70': tag === 'recent', 'bg-red-400 bg-opacity-70': tag === 'hot',
-                  'bg-green-600 bg-opacity-70': tag === 'open'}"
+                  'bg-green-600 bg-opacity-70': tag === 'open', 'bg-orange-500 bg-opacity-70': tag === 'Other' } "
               >
                 {{ $t(tag) }}
               </div>

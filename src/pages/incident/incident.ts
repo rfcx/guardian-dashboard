@@ -234,6 +234,12 @@ export default class IncidentPage extends Vue {
     if (!this.incident?.streamId) return
     const streamData = await StreamService.getStream(this.incident.streamId)
     this.stream = streamData.data
+    if (this.incident.responses.length) {
+      const responses = this.incident.responses.filter(r => r.is_unexpected)
+      if (responses.length !== 0) {
+        this.stream?.tags?.push('Other')
+      }
+    }
   }
 
   public initializeIncidentMap (): void {
