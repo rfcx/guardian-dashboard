@@ -112,10 +112,7 @@ export default class IncidentsTableRows extends Vue {
 
   public getIsUnexpected (incident: IncidentItem): boolean {
     if (!incident.responses.length) return false
-    const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
-    console.log(firstResponse)
-    if (!firstResponse) return false
-    return firstResponse.is_unexpected
+    return incident.responses.filter(r => r.is_unexpected).length !== 0
   }
 
   public getResponseLabel (incident: IncidentItem): string {
