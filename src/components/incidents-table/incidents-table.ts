@@ -11,6 +11,7 @@ interface IncidentItem extends Ev, Incident, Response {
   eventsLabel: string
   responseTitle: string
   responseLabel: string
+  getIsUnexpected: boolean
 }
 interface EventItem {
   title: string
@@ -51,6 +52,7 @@ export default class IncidentsTableRows extends Vue {
     items.forEach((incident: IncidentItem) => {
       incident.eventsTitle = incident.events.length ? this.getEventsTitle(incident.events) : ''
       incident.eventsLabel = incident.events.length ? this.getEventsLabel(incident.events) : ''
+      incident.getIsUnexpected = this.getIsUnexpected(incident)
       incident.responseTitle = this.getResponseTitle(incident)
       incident.responseLabel = this.getResponseLabel(incident)
     })
@@ -106,6 +108,14 @@ export default class IncidentsTableRows extends Vue {
     const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
     if (!firstResponse) return '-'
     return formatDateTime(firstResponse.investigatedAt, this.timezone)
+  }
+
+  public getIsUnexpected (incident: IncidentItem): boolean {
+    if (!incident.responses.length) return false
+    const firstResponse = this.getFirstResponse(incident.responses, incident.firstResponseId)
+    console.log(firstResponse)
+    if (!firstResponse) return false
+    return firstResponse.is_unexpected
   }
 
   public getResponseLabel (incident: IncidentItem): string {

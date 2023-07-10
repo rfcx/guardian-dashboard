@@ -9,6 +9,13 @@
     <div class="pr-2 flex flex-nowrap items-center justify-start flex-1 <sm:py-1">
       <span class="text-white text-lg mr-2">#{{ incident.ref }}</span>
       <div
+        v-if="incident.getIsUnexpected"
+        class="px-3 shadow-sm inline-block mr-2 flex justify-center items-center text-sm tracking-wide btn-tag leading-none capitalize"
+        :class="{'bg-orange-500 bg-opacity-70': incident.getIsUnexpected}"
+        :title="$t('Other')">
+        {{ $t('Other') }}
+      </div>
+      <div
         v-if="incident.closedAt"
         class="px-3 shadow-sm inline-block mr-2 flex self-center items-center text-sm tracking-wide btn-tag leading-none bg-gray-600 bg-opacity-70"
       >

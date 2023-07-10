@@ -49,6 +49,7 @@ export interface Response {
   createdBy: User
   answers: Answer[]
   incident: IncidentLite
+  is_unexpected: boolean
 }
 
 export interface Answer {
