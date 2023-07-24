@@ -93,7 +93,19 @@ export default class AnalyticsPage extends Vue {
       return
     }
 
-    if (this.clusteredRequest !== undefined && this.dateValues !== undefined) {
+    if (this.clusteredRequest !== undefined && this.dateValues !== undefined && this.streamsData !== undefined) {
+      if (this.streamsData.length === 0) {
+        this.showNumberOfEvents = false
+
+        const el = document.createElement('div')
+        el.classList.add('mt-5')
+        el.classList.add('font-semibold')
+        el.innerHTML = '<span>' + this.$t('No streams data') + '</span>'
+        const box = document.getElementById('heatmapGraph')
+        box?.appendChild(el)
+        return
+      }
+
       this.clusteredRequest.start = dayjs.utc(this.dateValues[0]).startOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
       this.clusteredRequest.end = dayjs.utc(this.dateValues[1]).endOf('day').subtract(this.timezoneOffsetMins, 'minutes').toISOString()
       void this.checkRequestStartEnd()
