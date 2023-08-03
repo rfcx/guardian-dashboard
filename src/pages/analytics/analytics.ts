@@ -35,6 +35,7 @@ export default class AnalyticsPage extends Vue {
   public streamsData: Stream[] | undefined
   public streamStatus: DropdownItem[] = []
   public showNumberOfEvents = false
+  public showNoData = false
   public selectedStream: string | undefined
   public valueDate: Date[] = []
   public timezone = 'UTC'
@@ -96,13 +97,7 @@ export default class AnalyticsPage extends Vue {
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined && this.streamsData !== undefined) {
       if (this.streamsData.length === 0) {
         this.showNumberOfEvents = false
-
-        const el = document.createElement('div')
-        el.classList.add('mt-5')
-        el.classList.add('font-semibold')
-        el.innerHTML = '<span>' + this.$t('No streams data') + '</span>'
-        const box = document.getElementById('heatmapGraph')
-        box?.appendChild(el)
+        this.showNoData = true
         return
       }
 
@@ -269,6 +264,7 @@ export default class AnalyticsPage extends Vue {
 
   public async getStreamsData (projectId?: string): Promise<void> {
     this.isLoading = true
+    this.showNoData = false
     return await StreamService.getStreams({
       ...projectId !== undefined && { projects: [projectId] },
       limit: 100,
