@@ -21,7 +21,7 @@
           value-format="YYYY-MM-DD"
         />
       </div>
-      <div class="mr-2">
+      <div class="mr-2" v-if="!notHaveData">
         <button class="relative w-full bg-steel-grey rounded-md shadow-sm pl-3 pr-3 py-2 text-left cursor-pointer outline-none focus:outline-none focus:border-transparent border-transparent sm:text-sm flex items-center mr-2 <sm:mb-2" @click="downloadCsv()">
           <img class="h-5 w-5 pr-1 inline-block" src="/src/assets/download.svg" alt="">
           {{ $t('Download csv') }}
@@ -30,7 +30,7 @@
     </div>
   </div>
   <div class="mt-5" id="heatmapGraph"></div>
-  <div v-if="showNoData">
+  <div v-if="notHaveData">
     <span class="mt-5 font-semibold">{{ $t('No streams data') }}</span>
   </div>
   <img v-if="isLoading" class="animate-spin bg-mirage-grey mt-50 h-10 w-10 mx-auto" src="/src/assets/spinner.svg">
