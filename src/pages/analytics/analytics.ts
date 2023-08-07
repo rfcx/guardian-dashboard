@@ -126,6 +126,9 @@ export default class AnalyticsPage extends Vue {
 
   async checkRequestStartEnd (): Promise<void> {
     if (this.dateValues === undefined) return
+    if (this.streamsData !== undefined) {
+      if (this.streamsData.length === 0) return
+    }
     const startMonth = dayjs(this.dateValues[0]).month()
     const endMonth = dayjs(this.dateValues[1]).month()
     const startYear = dayjs(this.dateValues[0]).year()
