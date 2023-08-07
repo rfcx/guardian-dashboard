@@ -35,7 +35,7 @@ export default class AnalyticsPage extends Vue {
   public streamsData: Stream[] | undefined
   public streamStatus: DropdownItem[] = []
   public showNumberOfEvents = false
-  public showNoData = false
+  public notHaveData = false
   public selectedStream: string | undefined
   public valueDate: Date[] = []
   public timezone = 'UTC'
@@ -97,7 +97,7 @@ export default class AnalyticsPage extends Vue {
     if (this.clusteredRequest !== undefined && this.dateValues !== undefined && this.streamsData !== undefined) {
       if (this.streamsData.length === 0) {
         this.showNumberOfEvents = false
-        this.showNoData = true
+        this.notHaveData = true
         return
       }
 
@@ -267,7 +267,7 @@ export default class AnalyticsPage extends Vue {
 
   public async getStreamsData (projectId?: string): Promise<void> {
     this.isLoading = true
-    this.showNoData = false
+    this.notHaveData = false
     return await StreamService.getStreams({
       ...projectId !== undefined && { projects: [projectId] },
       limit: 100,
