@@ -60,10 +60,25 @@ jobs:
     secrets:
       kube-config: ${{ secrets.KUBE_CONFIG_SUPER }}
 
+  deploy-rfcx-local:
+    name: 'Deploy: rfcx-local'
+    needs: [prepare, configure]
+    if: ${{ needs.configure.outputs.namespace == 'production' }}
+    uses: rfcx/cicd/.github/workflows/rfcx-local-cd.yaml@master
+    with:
+      repo: guardian-dashboard
+      dockerfile: build/Dockerfile
+      targets: '["guardian-dashboard"]'
+      deployments: |
+        [
+          {"name": "guardian-dashboard", "image": "guardian-dashboard"}
+        ]
+
+
   notify:
     name: 'Notify'
     if: ${{ always() }}
-    needs: [prepare, build, deploy]
+    needs: [prepare, build, deploy, deploy-rfcx-local]
     uses: rfcx/cicd/.github/workflows/notify-send.yaml@master
     with:
       repo: guardian-dashboard
