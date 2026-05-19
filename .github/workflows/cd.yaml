@@ -35,31 +35,6 @@ jobs:
             echo "::set-output name=namespace::testing"
           fi
 
-  build:
-    name: 'Build'
-    needs: [prepare, configure]
-    uses: rfcx/cicd/.github/workflows/ecr-build-push.yaml@master
-    with:
-      dockerfile: build/Dockerfile
-      targets: "[\"guardian-dashboard\"]"
-      build-args: |
-        mode=${{ needs.configure.outputs.namespace }}
-      tag-environment: ${{ needs.configure.outputs.namespace }}
-      tag-latest: ${{ needs.configure.outputs.namespace == 'production' }}
-    secrets:
-      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-  deploy:
-    name: 'Deploy'
-    needs: [build, configure]
-    uses: rfcx/cicd/.github/workflows/k8s-deploy.yaml@master
-    with:
-      tag: ${{ needs.build.outputs.unique-tag }}
-      namespace: ${{ needs.configure.outputs.namespace }}
-    secrets:
-      kube-config: ${{ secrets.KUBE_CONFIG_SUPER }}
-
   deploy-rfcx-local:
     name: 'Deploy: rfcx-local'
     needs: [prepare, configure]
@@ -78,17 +53,17 @@ jobs:
   notify:
     name: 'Notify'
     if: ${{ always() }}
-    needs: [prepare, build, deploy, deploy-rfcx-local]
+    needs: [prepare, deploy-rfcx-local]
     uses: rfcx/cicd/.github/workflows/notify-send.yaml@master
     with:
       repo: guardian-dashboard
       branch-name: ${{ needs.prepare.outputs.branch-name }}
       workflow-id: cd.yaml
       previous-run-id: ${{ needs.prepare.outputs.previous-run-id }}
-      status: ${{ needs.deploy.result }}
+      status: ${{ needs.deploy-rfcx-local.result }}
       always: true
       notification-title: 'CD: Guardian Dashboard'
-      notification-footer: "Build: ${{ needs.build.result || 'n/a' }} | Deploy: ${{ needs.deploy.result || 'n/a' }}"
+      notification-footer: "Deploy (rfcx-local): ${{ needs.deploy-rfcx-local.result || 'n/a' }}"
       notification-success-statement: '{0} deployed the build!'
     secrets:
       slack-webhook: ${{ secrets.SLACK_ALERT_COREDT_WEBHOOK }}
